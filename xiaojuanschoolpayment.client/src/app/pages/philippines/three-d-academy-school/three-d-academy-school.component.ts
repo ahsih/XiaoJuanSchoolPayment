@@ -15,7 +15,6 @@ interface TuitionOption { id: string; name: string; lessons: string; price4Weeks
 interface AccommodationOption { id: string; name: string; price4Weeks: number; note: string; }
 interface LocalFee { item: string; amount: string; note: string; }
 interface FitItem { title: string; text: string; }
-interface SourceLink { label: string; url: string; }
 interface SideNavItem { label: string; target: string; icon: string; }
 
 @Component({
@@ -42,7 +41,7 @@ export class ThreeDAcademySchoolComponent {
     { icon: 'location_on', title: 'JY Square市中心位置', text: '学校位于Lahug的JY Square商业区，教室、宿舍、餐厅和日常生活设施集中，通勤成本低。' },
     { icon: 'payments', title: '宿务高性价比', text: '当前费用表中，General ESL加校内六人房的4周课程住宿费为USD 1,189。' },
     { icon: 'record_voice_over', title: '一对一课时充足', text: 'General ESL每天安排4节一对一和3节团体课；Intensive ESL与Power MTM可进一步增加一对一课时。' },
-    { icon: 'groups', title: '多国籍环境', text: '官方资料列出日本、韩国、中国台湾、中国大陆、俄罗斯、中东、欧洲等来源学生，适合想提高英文使用频率的人。' },
+    { icon: 'groups', title: '学生来源多元', text: '学生来自日本、韩国、中国台湾、中国大陆、俄罗斯、中东、欧洲等多个国家和地区，适合想提高英文使用频率的人。' },
     { icon: 'restaurant', title: '三餐与洗衣打包', text: '多数食宿方案包含课程、住宿、每日三餐、洗衣、清洁、Wi-Fi和健身房使用。' },
     { icon: 'directions_walk', title: 'Walk-in通学方案', text: '如果学生自己安排住宿，可以选择Walk-in课程，保留上课和学校设施，预算更灵活。' },
   ];
@@ -63,13 +62,13 @@ export class ThreeDAcademySchoolComponent {
     {
       category: '住宿',
       title: '新型多人宿舍',
-      text: '官方住宿页列有单人、双人、三人、新三人、四人和六人房等不同预算选择。',
+      text: '有单人、双人、三人、新三人、四人和六人房等不同预算选择。',
       src: 'https://3d-universal.com/en/wp-content/uploads/2025/05/IMG_20240531_165228-1-1024x768-1.jpg',
     },
     {
       category: '生活',
       title: '餐厅与自习氛围',
-      text: '食宿方案包含三餐，官方2026说明提到餐食已升级为自助餐形式。',
+      text: '食宿方案包含三餐，2026年起餐食为自助餐形式。',
       src: 'https://cdn.amebaowndme.com/madrid-prd/madrid-web/images/sites/381181/723cd9f0808ab12ed8414b9978210b23_86362d849a01e249620b5242db4a7f60.png?width=960',
     },
     {
@@ -122,15 +121,15 @@ export class ThreeDAcademySchoolComponent {
   ];
 
   readonly localFees: LocalFee[] = [
-    { item: '入学金', amount: 'USD 100', note: '一次性费用，本页报价器已加入。' },
+    { item: '入学金', amount: 'USD 100', note: '一次性费用，报价已计入。' },
     { item: '机场接机', amount: 'USD 30', note: '麦克坦宿务机场到学校单程接机参考。' },
-    { item: 'SSP', amount: 'PHP 12,040', note: '官方列为3个月有效的Special Study Permit费用。' },
+    { item: 'SSP', amount: 'PHP 12,040', note: '3个月有效的Special Study Permit费用。' },
     { item: 'ACR I-Card', amount: 'PHP 4,000', note: '通常停留超过59天需要办理。' },
     { item: '教材费', amount: '约PHP 1,000 / 4周', note: '按课程和实际教材数量可能增减。' },
-    { item: '电费', amount: 'PHP 1,000-1,500 / 4周', note: '官方列为按用量参考。' },
+    { item: '电费', amount: 'PHP 1,000-1,500 / 4周', note: '按实际用量收取。' },
     { item: '维护费', amount: 'PHP 500 / 周', note: '到校一次性支付，按学习周数计算。' },
     { item: '宿舍押金', amount: 'PHP 4,500 / 9,000', note: '1-19周为PHP 4,500；20-47周为PHP 9,000。' },
-    { item: '签证延长', amount: 'PHP 4,440起', note: '超过30天需要延签；官方列出1-5次延签阶梯。' },
+    { item: '签证延长', amount: 'PHP 4,440起', note: '超过30天需要延签，按延签次数逐级计费。' },
     { item: '额外选修课', amount: 'PHP 1,500-2,500 / 周', note: '小组ESL约PHP 1,500/周；一对一ESL约PHP 2,500/周。' },
   ];
 
@@ -142,20 +141,9 @@ export class ThreeDAcademySchoolComponent {
   ];
 
   readonly notSuitableFor: FitItem[] = [
-    { title: '追求全新豪华校区', text: '官方2026文章也承认当前校舍较旧，并提到2026年10月计划搬迁至MIT Building，报名时要确认校区状态。' },
+    { title: '追求全新豪华校区', text: '当前校舍较旧，学校计划2026年10月搬迁至MIT Building，报名时要确认校区状态。' },
     { title: '必须要度假村环境', text: '3D是市中心商业楼校区，不是CIA Mactan或CPI那类泳池度假村式校园。' },
     { title: '需要严格斯巴达管理', text: '3D更偏实用、便利和高性价比，若目标是强制自习、每日测试和严格门禁，应同时比较SMEAG、EV等学校。' },
-  ];
-
-  readonly sourceLinks: SourceLink[] = [
-    { label: '3D Academy官方英文首页', url: 'https://3d-universal.com/en/' },
-    { label: '3D Academy官方About与学校资料', url: 'https://3d-universal.com/en/about/' },
-    { label: '3D Academy ESL课程与费用表', url: 'https://3d-universal.com/en/generalenglish.com' },
-    { label: '3D Academy Walk-in通学费用表', url: 'https://3d-universal.com/en/course/walk-in-course' },
-    { label: '3D Academy住宿介绍', url: 'https://3d-universal.com/en/accommodations' },
-    { label: '3D Academy官方Facebook', url: 'https://www.facebook.com/3dUniversalEnglish/' },
-    { label: '3D Academy Facebook公开内容镜像', url: 'https://www.schoolandcollegelistings.com/PH/Cebu-City/150273788437025/3D-ACADEMY' },
-    { label: '3D Academy 2026官方代表说明', url: 'https://3d-universal.com/en/blogs/5-reasons-to-choose-3d-academy.html' },
   ];
 
   readonly mobileAnchors: SideNavItem[] = [

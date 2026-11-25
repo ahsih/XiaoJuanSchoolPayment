@@ -30,11 +30,6 @@ interface FaqItem {
   answer: string;
 }
 
-interface SourceLink {
-  label: string;
-  url: string;
-}
-
 @Component({
   selector: 'app-american-english-school',
   standalone: true,
@@ -49,7 +44,7 @@ export class AmericanEnglishSchoolComponent {
     { label: '学校定位', value: '成人英语、商务沟通、一对一、团体课与企业培训中心' },
     { label: '上课形式', value: 'Online、Face to Face、One-on-One、Group、Corporate' },
     { label: '住宿', value: '非寄宿制，住宿与通勤需另行安排' },
-    { label: '参考费用', value: '公开课程页可见约₱24,000-₱98,000区间，最终需按课程核价' },
+    { label: '参考费用', value: '课程价格约24,000-98,000比索，最终需按课程核价' },
   ];
 
   readonly courses: CourseItem[] = [
@@ -65,7 +60,7 @@ export class AmericanEnglishSchoolComponent {
     },
     {
       title: 'Group English Class',
-      lessons: '官网列出40小时课程，2小时/次，周一至周五',
+      lessons: '40小时课程，2小时/次，周一至周五',
       text: '适合想用固定节奏训练口语、语法、词汇和沟通策略的学生，具体开课日需确认。',
     },
     {
@@ -89,12 +84,12 @@ export class AmericanEnglishSchoolComponent {
     {
       item: 'One-on-One / 专项课程',
       amount: '约₱24,000-₱98,000',
-      note: '官网课程页可见多个项目在此区间；最终按课程、课时、线上/面授和排课确认。',
+      note: '多个项目在此区间；最终按课程、课时、线上/面授和排课确认。',
     },
     {
       item: 'Group English Class',
       amount: '需当期确认',
-      note: '官网说明为40小时、2小时/次，价格和开班日期需以报名页或学校回函为准。',
+      note: '40小时、2小时/次，价格和开班日期以学校回函为准。',
     },
     {
       item: 'Corporate Training',
@@ -104,7 +99,7 @@ export class AmericanEnglishSchoolComponent {
     {
       item: '优惠 / 折扣码',
       amount: '需当期确认',
-      note: '官网可能出现限时优惠，报名时需确认优惠是否仍有效，不能按旧活动自动计算。',
+      note: '学校可能推出限时优惠，报名时需确认优惠是否仍有效，不能按旧活动自动计算。',
     },
   ];
 
@@ -136,9 +131,9 @@ export class AmericanEnglishSchoolComponent {
 
   readonly pros = [
     '课程形式灵活，可选线上、面授、一对一、团体或企业培训',
-    '官网强调真实沟通、职场表达和成人学习场景，适合商务目标',
+    '课程强调真实沟通、职场表达和成人学习场景，适合商务目标',
     'Makati位置适合与商务行程、短住或城市生活体验结合',
-    '公开页面能看到部分课程价位区间，预算初筛比完全无价学校更清晰',
+    '部分课程有明确价位区间，方便做预算初筛',
   ];
 
   readonly cons = [
@@ -157,7 +152,7 @@ export class AmericanEnglishSchoolComponent {
     {
       question: '费用可以直接按₱24,000起计算吗？',
       answer:
-        '只能作为初筛参考。官网课程页可见部分项目约₱24,000-₱98,000，但最终要按课程类型、课时、线上/面授、是否一对一和当期优惠重新核价。',
+        '只能作为初筛参考。部分项目约24,000-98,000比索，最终要按课程类型、课时、线上/面授、是否一对一和当期优惠重新核价。',
     },
     {
       question: '它适合IELTS备考吗？',
@@ -168,17 +163,6 @@ export class AmericanEnglishSchoolComponent {
       question: '住宿怎么安排？',
       answer:
         '住宿通常需要学生自行安排酒店、公寓或亲友住宿。顾问会把住宿点、通勤时间、课程时间和预算放在一起核算。',
-    },
-  ];
-
-  readonly sources: SourceLink[] = [
-    { label: 'American English 官方网站', url: 'https://americanenglish.ph/' },
-    { label: 'American English Group Class', url: 'https://americanenglish.ph/english-class/' },
-    { label: 'American English One-on-One Training', url: 'https://americanenglish.ph/private-and-personalize-english-training/' },
-    { label: 'American English Corporate Training', url: 'https://americanenglish.ph/corporate-training/' },
-    {
-      label: 'One-on-One Business English课程页',
-      url: 'https://americanenglish.ph/program/one-on-one/one-on-one-business-english-and-communication-skills/',
     },
   ];
 }

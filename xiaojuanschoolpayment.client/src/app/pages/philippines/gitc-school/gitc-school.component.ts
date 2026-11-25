@@ -85,11 +85,6 @@ interface SideNavItem {
   icon: string;
 }
 
-interface SourceLink {
-  label: string;
-  url: string;
-}
-
 interface SpecialCourseFee {
   label: string;
   lessons: string;
@@ -135,9 +130,9 @@ export class GitcSchoolComponent {
   readonly quickInfo: QuickInfo[] = [
     {
       icon: 'location_on',
-      label: '城市校正',
-      value: 'Iloilo / Cebu，不是Clark',
-      note: '官方学校概要列Iloilo校址；官网首页另写明2025年7月开放Cebu Mactan新校区。',
+      label: '校区位置',
+      value: 'Iloilo / Cebu Mactan',
+      note: '主校区在Iloilo；2025年7月开设Cebu Mactan新校区。',
     },
     {
       icon: 'account_balance',
@@ -149,25 +144,25 @@ export class GitcSchoolComponent {
       icon: 'assignment',
       label: '课程重点',
       value: 'ESL / TOEIC / IELTS / Junior',
-      note: '官方费用页列Basic、Regular、Power Speaking、Junior、TOEIC/IELTS入门和点数保证课程。',
+      note: '开设Basic、Regular、Power Speaking、Junior、TOEIC/IELTS入门和点数保证课程。',
     },
     {
       icon: 'groups',
       label: '国际交流',
       value: '大学课程 / SDGs / 文化交流',
-      note: '官方介绍强调可与当地大学生交流，并有英语结合SDGs/NGO学习内容。',
+      note: '可与当地大学生交流，并有英语结合SDGs/NGO学习内容。',
     },
     {
       icon: 'hotel',
       label: '住宿',
       value: 'One Spatial Iloilo公寓宿舍',
-      note: '官方学校概要列学生寮地址为One Spatial Iloilo，房型为1人、2人、3人房。',
+      note: '学生宿舍位于One Spatial Iloilo，房型为1人、2人、3人房。',
     },
     {
       icon: 'payments',
       label: '4周参考',
       value: 'USD 930起 + 注册费',
-      note: '官方费用页Basic + 学生寮3人房4周USD930；当地PHP费用另算。',
+      note: 'Basic + 学生寮3人房4周USD930；当地PHP费用另算。',
     },
   ];
 
@@ -176,14 +171,14 @@ export class GitcSchoolComponent {
       category: '校园',
       title: 'GITC Iloilo校舍入口',
       description:
-        '官方图库中的Green International Technological College校舍入口，可用于核对学校品牌和校园外观。',
+        'Green International Technological College校舍入口与校园外观。',
       src: 'https://gitc-jp.com/wp-content/uploads/2018/06/Schoolbuilding1-e1529989504687.jpg',
     },
     {
       category: '校园',
       title: 'GITC新校园建筑',
       description:
-        '公开视察资料显示GITC在疫情后迁至Iloilo新校园，并恢复接收学生。',
+        'GITC在疫情后迁至Iloilo新校园，并恢复接收学生。',
       src: 'https://www.fujiyama-international.com/archives/006/202303/ab2ba3580eeabd921f353e254be53993.jpg',
     },
     {
@@ -204,29 +199,29 @@ export class GitcSchoolComponent {
       category: '教室',
       title: '大学附属学习环境',
       description:
-        '官方资料强调语言中心位于大学体系内，适合想结合ESL、考试和大学交流体验的学生。',
+        '语言中心位于大学体系内，适合想结合ESL、考试和大学交流体验的学生。',
       src: 'https://gitc-jp.com/wp-content/uploads/2018/06/Schoolbuilding1-e1529989504687.jpg',
     },
     {
       category: '住宿',
-      title: 'One Spatial Iloilo住宿口径',
+      title: 'One Spatial Iloilo住宿',
       description:
-        '官方学校概要列学生宿舍位于One Spatial Iloilo，实际房间照片、床型和空房需报名时确认。',
+        '学生宿舍位于One Spatial Iloilo，实际房间、床型和空房需报名时确认。',
       src: 'https://www.fujiyama-international.com/archives/006/202303/ab2ba3580eeabd921f353e254be53993.jpg',
     },
   ];
 
   readonly basicInfo: BasicInfoRow[] = [
-    { label: '页面名称', value: '菲律宾怡朗GITC College International Language Center' },
+    { label: '学校名称', value: '菲律宾怡朗GITC College International Language Center' },
     { label: '英文名称', value: 'Green International Technological College Language Center' },
-    { label: '城市校正', value: '公开资料显示GITC位于Iloilo，并有Cebu Mactan新校区；未找到Clark校区公开资料' },
+    { label: '校区', value: 'Iloilo主校区；2025年7月开设Cebu Mactan新校区' },
     { label: '学校地址', value: 'Green International Technological College BLD, St. Clement Church, Luna St. La Paz, Iloilo City' },
     { label: '学生寮地址', value: 'One Spatial Iloilo, Mandurriao, Iloilo' },
     { label: '设立年度', value: '2003年C&C Language Academy起源；2017年更名为GITC Language Center' },
     { label: '课程', value: 'Basic、Regular、Power Speaking、Junior、TOEIC/IELTS入门、TOEIC/IELTS点数保证' },
     { label: '住宿房型', value: '通学、学生寮1人房、2人房、3人房' },
-    { label: '课堂长度', value: '官方费用页列1课时45分钟' },
-    { label: '本页费用口径', value: '按GITC官方费用页美元表整理；注册费和当地PHP费用另计' },
+    { label: '课堂长度', value: '1课时45分钟' },
+    { label: '费用说明', value: '价格以美元计；注册费和当地比索费用另计' },
   ];
 
   readonly highlights: Highlight[] = [
@@ -238,7 +233,7 @@ export class GitcSchoolComponent {
     {
       image: 'https://www.global-study.jp/philippines/image/iloilo_gitc_img14.jpg',
       title: 'TOEIC / IELTS方向清楚',
-      text: '官方费用页列TOEIC/IELTS入门和点数保证课程，适合想在安静城市备考的人。',
+      text: '开设TOEIC/IELTS入门和点数保证课程，适合想在安静城市备考的人。',
     },
     {
       image: 'https://www.fujiyama-international.com/archives/006/202303/ab2ba3580eeabd921f353e254be53993.jpg',
@@ -250,7 +245,7 @@ export class GitcSchoolComponent {
   readonly suitableFor: FitItem[] = [
     {
       title: '想要大学附属和当地学生交流',
-      text: '官方资料强调可参与当地大学生课程、文化交流和校内活动，适合想要英语之外体验的人。',
+      text: '可参与当地大学生课程、文化交流和校内活动，适合想要英语之外体验的人。',
     },
     {
       title: '想在Iloilo安静学习',
@@ -258,18 +253,18 @@ export class GitcSchoolComponent {
     },
     {
       title: 'TOEIC / IELTS目标明确',
-      text: 'GITC公开课程包含TOEIC/IELTS入门和点数保证方向，报价时要同步确认入学程度和目标分数。',
+      text: 'GITC课程包含TOEIC/IELTS入门和点数保证方向，报价时要同步确认入学程度和目标分数。',
     },
     {
       title: '亲子或Junior方向',
-      text: '官方价格表列Junior课程，低龄和亲子学生需要额外确认监护、房型和陪读规则。',
+      text: '开设Junior课程，低龄和亲子学生需要额外确认监护、房型和陪读规则。',
     },
   ];
 
   readonly notSuitableFor: FitItem[] = [
     {
-      title: '只想找Clark学校',
-      text: '公开资料未显示GITC在Clark运营。如果目标是Clark，应优先看CIP、EG、WE、TALK、HELP、HANA等学校。',
+      title: '想在Clark学习',
+      text: 'GITC校区在Iloilo和Cebu Mactan，不在Clark。想去Clark可以比较CIP、EG、WE、TALK、HELP、HANA等学校。',
     },
     {
       title: '想要海边度假型校区',
@@ -277,7 +272,7 @@ export class GitcSchoolComponent {
     },
     {
       title: '不想坐校车通勤',
-      text: '官方资料列学校和One Spatial Iloilo学生寮为不同地址，实际通勤、接驳和餐食需先确认。',
+      text: '学校和One Spatial Iloilo学生寮不在同一地点，实际通勤、接驳和餐食需先确认。',
     },
   ];
 
@@ -285,7 +280,7 @@ export class GitcSchoolComponent {
     { id: 'commute', name: '通学', shortName: '通学', note: '适合自行安排住宿或团体项目，住宿不包含在报价中。' },
     { id: 'single', name: '学生寮1人房', shortName: '1人房', note: '适合重视隐私和长期住宿舒适度的成人学生。' },
     { id: 'double', name: '学生寮2人房', shortName: '2人房', note: '适合朋友同行、亲子或愿意合住的人。' },
-    { id: 'triple', name: '学生寮3人房', shortName: '3人房', note: '4周主费最低的宿舍房型口径，空房和组合需确认。' },
+    { id: 'triple', name: '学生寮3人房', shortName: '3人房', note: '4周主费最低的宿舍房型，空房和组合需确认。' },
   ];
 
   readonly courseOptions: CourseOption[] = [
@@ -301,7 +296,7 @@ export class GitcSchoolComponent {
         double: { 1: 635, 2: 845, 3: 950, 4: 1020, 8: 2040, 12: 3060 },
         triple: { 1: 545, 2: 755, 3: 860, 4: 930, 8: 1860, 12: 2790 },
       },
-      note: '官方费用页列Basic为1:1三节+小组两节。',
+      note: 'Basic为1:1三节+小组两节。',
     },
     {
       id: 'regular',
@@ -315,7 +310,7 @@ export class GitcSchoolComponent {
         double: { 1: 680, 2: 920, 3: 1040, 4: 1120, 8: 2240, 12: 3360 },
         triple: { 1: 590, 2: 830, 3: 950, 4: 1030, 8: 2060, 12: 3090 },
       },
-      note: '本页报价器默认Regular + 3人房。',
+      note: '报价器默认Regular + 3人房。',
     },
     {
       id: 'power-speaking',
@@ -329,7 +324,7 @@ export class GitcSchoolComponent {
         double: { 1: 725, 2: 995, 3: 1130, 4: 1220, 8: 2440, 12: 3660 },
         triple: { 1: 635, 2: 905, 3: 1040, 4: 1130, 8: 2260, 12: 3390 },
       },
-      note: '官方费用页列Power Speaking为一对一7节。',
+      note: 'Power Speaking为一对一7节。',
     },
     {
       id: 'junior',
@@ -380,7 +375,7 @@ export class GitcSchoolComponent {
       label: '额外一对一',
       lessons: '平日每日1节',
       reference: 'USD 250 / 4周',
-      note: '官方费用页列可追加一对一课程，需按老师和课表确认。',
+      note: '可追加一对一课程，需按老师和课表确认。',
     },
     {
       label: 'Babysitter',
@@ -392,13 +387,13 @@ export class GitcSchoolComponent {
       label: 'Guardian',
       lessons: '高中以下单独渡航',
       reference: 'USD 200 / 周',
-      note: '官方费用页列高中生以下单独渡航时Guardian同房滞在。',
+      note: '高中以下学生单独前往时，需Guardian同房陪住。',
     },
     {
       label: 'Cebu新校区',
       lessons: '2025年7月开放',
       reference: '需另行核价',
-      note: '官网首页写明Cebu Mactan新校区开放，本页主要按Iloilo官方费用页整理。',
+      note: '以上价格为Iloilo校区价格，Cebu Mactan新校区需另行核价。',
     },
   ];
 
@@ -411,22 +406,22 @@ export class GitcSchoolComponent {
   ];
 
   readonly localFees: LocalFee[] = [
-    { item: '入学金', amount: 'USD 100', note: '官方费用页列不包含在Program费用内，本页报价器已计入。' },
-    { item: 'Iloilo机场接送', amount: '免费参考', note: '官方费用页列Iloilo机场往返免费，团体研修可能另算。' },
+    { item: '入学金', amount: 'USD 100', note: '不包含在Program费用内，报价已计入。' },
+    { item: 'Iloilo机场接送', amount: '免费参考', note: 'Iloilo机场往返免费，团体研修可能另算。' },
     { item: 'Kalibo机场接送', amount: 'PHP 2,500 / 单程', note: '按抵达机场和航班确认。' },
     { item: 'SSP', amount: 'PHP 7,000', note: '特别学习许可，金额以学校最新账单为准。' },
-    { item: 'SSP I-Card', amount: 'PHP 4,000', note: '官方费用页列当地支付项目。' },
+    { item: 'SSP I-Card', amount: 'PHP 4,000', note: '到校当地支付。' },
     { item: 'ACR I-Card', amount: 'PHP 4,000', note: '60天以上停留通常需要办理。' },
     { item: '设施管理费', amount: 'PHP 2,000 / 4周', note: '按周数累加，最终以学校账单为准。' },
     { item: '教材费', amount: 'PHP 300起 / 册', note: '按课程、等级和实际教材使用计算。' },
     { item: '学生证', amount: 'PHP 500', note: '到校后办理。' },
-    { item: '综合管理费/光热费', amount: 'PHP 1,500起', note: '官方费用页写明依使用量。' },
+    { item: '综合管理费/光热费', amount: 'PHP 1,500起', note: '按实际使用量计算。' },
     { item: '宿舍押金', amount: 'PHP 2,000', note: '遵守学校规则并无扣款时毕业返还。' },
     { item: '洗衣/清扫', amount: 'PHP 180 / 次；PHP 300 / 次', note: '外部洗衣和清扫服务按次计算。' },
   ];
 
   readonly serviceSteps: ProcessStep[] = [
-    { icon: 'location_on', title: '先校正城市', text: '确认学生是否要GITC的Iloilo/Cebu路线，还是其实想找Clark学校。' },
+    { icon: 'location_on', title: '先确认城市', text: '确认学生想去GITC的Iloilo还是Cebu校区，或其他城市的学校更合适。' },
     { icon: 'menu_book', title: '匹配课程', text: '按ESL、Power Speaking、Junior、TOEIC或IELTS目标选择课程强度。' },
     { icon: 'hotel', title: '确认住宿', text: '核对One Spatial Iloilo房型、校车、餐食、自炊、同行人和空房。' },
     { icon: 'payments', title: '拆清费用', text: '把Program主费、入学金、当地PHP费用、监护和额外课程分开列预算。' },
@@ -435,8 +430,8 @@ export class GitcSchoolComponent {
   ];
 
   readonly trustBadges = [
-    { icon: 'verified_user', label: '城市资料先校正' },
-    { icon: 'payments', label: '官方费用页整理' },
+    { icon: 'verified_user', label: '校区城市先确认' },
+    { icon: 'payments', label: '费用分项列明' },
     { icon: 'school', label: '大学附属路线' },
     { icon: 'apartment', label: '深圳总部 + 菲律宾支持' },
   ];
@@ -460,18 +455,18 @@ export class GitcSchoolComponent {
   readonly campusActivities = ['大学交流', '文化交流', 'SDGs学习', '自习', '考试备考', '校内活动'];
   readonly weekendActivities = ['Iloilo Museum', 'Iloilo River', 'SM City Iloilo', '咖啡厅', '城市散步', 'Boracay延伸行程'];
   readonly notes = [
-    'GITC公开资料显示校区在Iloilo，并有Cebu Mactan新校区；未找到GITC Clark校区资料，因此本页放在Iloilo而不是Clark。',
-    '官方Program费用包含授课费、住宿费、车⇆学校移动费用、宿舍泳池和健身房使用费；入学金和当地费用另计。',
+    'GITC主校区在Iloilo，2025年7月另开设Cebu Mactan新校区。',
+    'Program费用包含授课费、住宿费、车⇆学校移动费用、宿舍泳池和健身房使用费；入学金和当地费用另计。',
     'Junior、低龄、亲子和高中以下单独渡航涉及Guardian、Babysitter、房型和监护规则，不能只按成人ESL费用判断。',
     'TOEIC/IELTS保证课程需确认入学分数、目标分数、模考、出勤要求和未达标规则。',
-    'Cebu新校区价格、住宿和活动可能采用不同资料，需另行确认。',
+    'Cebu新校区价格、住宿和活动可能与Iloilo不同，需另行确认。',
   ];
 
   readonly faqs: FaqItem[] = [
     {
-      question: 'GITC College International Language Center是在Clark吗？',
+      question: 'GITC College International Language Center在哪里？',
       answer:
-        '公开资料没有显示GITC在Clark运营。GITC官方学校概要列Iloilo校址和One Spatial Iloilo宿舍；官网首页另写明2025年7月开放Cebu Mactan新校区。因此本页按Iloilo学校整理。',
+        'GITC主校区在Iloilo（怡朗），学生宿舍在One Spatial Iloilo；2025年7月另开设Cebu Mactan新校区。GITC不在Clark。',
     },
     {
       question: '页面上的费用包含全部费用吗？',
@@ -481,10 +476,10 @@ export class GitcSchoolComponent {
     {
       question: 'GITC适合考试备考吗？',
       answer:
-        '适合列入候选。官方费用页列TOEIC/IELTS入门和点数保证课程，但最终要按当前分数、目标分数、周数和保证班规则确认。',
+        '适合列入候选。GITC开设TOEIC/IELTS入门和点数保证课程，但最终要按当前分数、目标分数、周数和保证班规则确认。',
     },
     {
-      question: '如果我真的想选Clark学校，应该看什么？',
+      question: '如果我更想去Clark，应该看什么？',
       answer:
         '可以优先比较CIP、EG、WE Academy、TALK Academy、HELP Clark和HANA Academy，再按外教比例、考试路线、住宿和亲子需求筛选。',
     },
@@ -505,15 +500,6 @@ export class GitcSchoolComponent {
     { label: '费用', target: 'quote', icon: 'calculate' },
     { label: '服务', target: 'service-process', icon: 'support_agent' },
     { label: 'FAQ', target: 'faq', icon: 'help' },
-  ];
-
-  readonly sources: SourceLink[] = [
-    { label: 'GITC官方首页', url: 'https://gitc-jp.com/' },
-    { label: 'GITC官方学校概要', url: 'https://gitc-jp.com/schooldetail/' },
-    { label: 'GITC官方费用表', url: 'https://gitc-jp.com/cost/' },
-    { label: 'TESDA Green International Technological College登记资料', url: 'https://www.tesda.gov.ph/Tvi/Result?currentFilter=English+Language&page=1' },
-    { label: 'DEOW GITC College城市与4周参考', url: 'https://philippines-study.tw/features/one-on-one/' },
-    { label: 'Fujiyama GITC复课与新校园资讯', url: 'https://www.fujiyama-international.com/blog/entry-3052.html' },
   ];
 
   setGalleryCategory(category: GalleryCategory): void {
@@ -592,10 +578,6 @@ export class GitcSchoolComponent {
     const rounded = Math.round((this.quoteUsd * this.usdToCny) / 100) * 100;
 
     return `约 ${rounded.toLocaleString('zh-CN')} 元起`;
-  }
-
-  get cityNote(): string {
-    return '城市校正：GITC官方资料列Iloilo校址，并提到Cebu新校区；未找到Clark校区公开资料。';
   }
 
   formatUsd(amount: number): string {

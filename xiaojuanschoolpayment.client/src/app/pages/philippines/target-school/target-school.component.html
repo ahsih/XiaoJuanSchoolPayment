@@ -18,7 +18,7 @@
               <span><mat-icon>record_voice_over</mat-icon>1:1课量清楚</span>
               <span><mat-icon>location_city</mat-icon>Talamban安静校区</span>
               <span><mat-icon>pool</mat-icon>泳池与校内住宿</span>
-              <span><mat-icon>paid</mat-icon>美元公开价格</span>
+              <span><mat-icon>paid</mat-icon>美元套餐价格</span>
             </div>
             <div class="hero-actions">
               <a class="primary-action" href="#quote" (click)="scrollToSection('quote', $event)">
@@ -26,7 +26,7 @@
                 <mat-icon>calculate</mat-icon>
               </a>
               <a class="secondary-action" href="#courses" (click)="scrollToSection('courses', $event)">
-                查看公开价格
+                查看套餐价格
                 <mat-icon>menu_book</mat-icon>
               </a>
               <a class="secondary-action" routerLink="/about-sida/contact">
@@ -36,7 +36,7 @@
             </div>
             <p class="trust-note">
               <mat-icon>verified</mat-icon>
-              费用按TARGET官方2026年7月10日后价格页整理；课程、校区、设施和当地费用参考TARGET官方页面。
+              费用为TARGET 2026年7月10日起适用的价格。
               正式报名仍需按开课日、房型空位、活动折扣和学校当期invoice确认。
             </p>
           </div>
@@ -67,7 +67,7 @@
                 </li>
               </ul>
             </aside>
-            <p class="photo-source">图片来自TARGET官方与公开学校图库；正式环境以学校当期实景和空房资料为准。</p>
+            <p class="photo-source">图片仅供参考，具体以学校实际安排为准。</p>
           </div>
         </section>
 
@@ -199,7 +199,7 @@
         <section class="section-block" id="courses">
           <div class="section-heading">
             <span>学校课程＋住宿套餐价</span>
-            <h2>TARGET 2026年7月10日起适用价目表</h2>
+            <h2>TARGET 2026年7月10日起适用价格</h2>
             <p>
               金额为每位学生的课程＋校内住宿套餐，不拆分学费和住宿费；不含150美元注册费及菲律宾当地学杂费。
               同价课程仍分开展示和选择，避免把课程分类混在一起。
@@ -241,7 +241,7 @@
             <mat-icon>calculate</mat-icon>
             <div>
               <strong>未列周数与换课／换房计价</strong>
-              <p>超过4周但价目表未列出的周数，按4周套餐价÷4×所需周数计算。住宿期间更换课程或房型时，按总学习时长对应的1周、2周、3周或4周价格档位折算每段套餐后合并。</p>
+              <p>超过4周但未单独列价的周数，按4周套餐价÷4×所需周数计算。住宿期间更换课程或房型时，按总学习时长对应的1周、2周、3周或4周价格档位折算每段套餐后合并。</p>
             </div>
           </aside>
         </section>
@@ -368,20 +368,6 @@
               <ol><li>{{ quoteGeneralNotes[0] }}</li><li>{{ quoteGeneralNotes[1] }}</li></ol>
             </div>
           </section>
-        </section>
-
-        <section class="section-block source-panel" id="sources">
-          <div class="section-heading">
-            <span>公开资料来源</span>
-            <h2>TARGET页面公开资料来源</h2>
-            <p>学校定位、校区、课程、设施、公开费用和当地费用参考TARGET官方页面与近期公开费用资料。</p>
-          </div>
-          <nav class="section-nav target-source-grid" aria-label="TARGET公开资料来源">
-            <a *ngFor="let source of sourceLinks" [href]="source.url" target="_blank" rel="noopener">
-              <mat-icon>open_in_new</mat-icon>
-              {{ source.label }}
-            </a>
-          </nav>
         </section>
 
         <app-sida-why-section

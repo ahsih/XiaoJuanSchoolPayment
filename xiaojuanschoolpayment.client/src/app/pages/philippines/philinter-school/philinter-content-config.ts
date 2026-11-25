@@ -89,7 +89,7 @@ export const createDefaultPhilinterContentConfig = (): CiaContentConfig => ({
       'philinter-low-season': '活动日期：2026/08/16–2026/12/25；指定课程及房型每满8周减300美元。',
     },
     localFeeSectionTitle: '到校后学杂费明细',
-    localFeeIntro: '学杂费由学校及相关部门到校收取；页面按当前选择预估，最终以学校现场实收为准。',
+    localFeeIntro: '学杂费由学校及相关部门到校收取；这里按当前选择预估，最终以学校现场实收为准。',
     localFeeNotes: {},
     supplementalFeeNotes: {
       'extra-night-0': '3,000比索／晚参考；按实际额外入住晚数另付，须确认空房及入住安排，不自动乘人数。',

@@ -32,11 +32,6 @@ interface FaqItem {
   answer: string;
 }
 
-interface SourceLink {
-  label: string;
-  url: string;
-}
-
 @Component({
   selector: 'app-eg-school',
   standalone: true,
@@ -93,7 +88,7 @@ export class EgSchoolComponent {
       oneWeek: '约 USD 556 起',
       fourWeeks: '约 USD 1,390 起',
       twelveWeeks: '约 USD 4,170 起',
-      note: '页面起价参考，按房型、周数和优惠确认',
+      note: '起价参考，按房型、周数和优惠确认',
     },
     {
       room: 'ESL Intensive 共享宿舍',
@@ -134,7 +129,7 @@ export class EgSchoolComponent {
     'EG Golf相关资源',
     '学生餐厅与生活支持',
     '周边生活环境和交通便利度适合家庭复核',
-    '学校规则、日程和费用资料可按当期文件确认',
+    '学校规则、日程和费用可按当期安排确认',
     'Clark机场和Angeles生活圈衔接方便',
   ];
 
@@ -172,22 +167,14 @@ export class EgSchoolComponent {
         '如果重点是Native一对一和外教口语，可以优先比较CIP；如果想要ESL、考试、Native和Golf组合，同时看生活便利度，可以把EG放进重点候选。',
     },
     {
-      question: '页面费用是最终报价吗？',
+      question: '这里的费用是最终报价吗？',
       answer:
-        '不是。这里是页面起价参考，最终要按入学日、周数、课程、房型、汇率、优惠、当地费用和学校当期回函重新计算。',
+        '不是。这里是起价参考，最终要按入学日、周数、课程、房型、汇率、优惠、当地费用和学校当期报价重新计算。',
     },
     {
       question: 'EG适合雅思冲刺吗？',
       answer:
         '可以看考试+ESL方向，但如果目标是短期高压冲分，要同步比较更偏考试和Sparta管理的学校，并确认模考、保证班和老师配置。',
     },
-  ];
-
-  readonly sources: SourceLink[] = [
-    { label: 'EG Academy 官方网站', url: 'https://egesl.com/' },
-    { label: 'EG Academy 课程页面', url: 'https://egesl.com/curriculum/course/' },
-    { label: 'iOutback 菲律宾游学资料参考', url: 'https://www.ioutback.com/' },
-    { label: 'StudyTourA 菲律宾学校分类参考', url: 'https://www.studytoura.com/cebu-schools/' },
-    { label: '格仲游学菲律宾学校比较参考', url: 'https://gezhong.com.tw/' },
   ];
 }

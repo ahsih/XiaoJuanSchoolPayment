@@ -103,11 +103,6 @@ interface SideNavItem {
   icon: string;
 }
 
-interface SourceLink {
-  label: string;
-  url: string;
-}
-
 @Component({
   selector: 'app-eroom-school',
   standalone: true,
@@ -141,31 +136,31 @@ export class EroomSchoolComponent implements OnInit {
       icon: 'location_on',
       label: '城市',
       value: 'Bacolod / Magsaysay Ave',
-      note: '官方地址位于Bacolod, Negros Occidental的Magsaysay Ave一带，城市节奏比宿务更安静。',
+      note: '学校位于Bacolod, Negros Occidental的Magsaysay Ave一带，城市节奏比宿务更安静。',
     },
     {
       icon: 'school',
       label: '学习模式',
       value: 'Classic 或 Semi-Sparta',
-      note: '官方费用表把Classic和Semi-Sparta列为同价，学生报名时需确认管理模式。',
+      note: 'Classic和Semi-Sparta同价，学生报名时需确认管理模式。',
     },
     {
       icon: 'menu_book',
       label: '课程方向',
       value: 'ESL / 青少年 / IELTS / TOEIC / 商务 / 幼儿园',
-      note: '2024费用表列出ESL/青少年A-C、考试/商务A-C、监护人和幼儿园课程。',
+      note: '课程包括ESL/青少年A-C、考试/商务A-C、监护人和幼儿园课程。',
     },
     {
       icon: 'home_work',
       label: '住宿餐食',
       value: '校内住宿 + 三餐',
-      note: '官方费用说明列住宿含平日和周末三餐、每周3次清洁与洗衣服务。',
+      note: '住宿含平日和周末三餐、每周3次清洁与洗衣服务。',
     },
     {
       icon: 'sports_basketball',
       label: '校园设施',
       value: '泳池 / 篮球场 / 24小时警卫',
-      note: '学校介绍提到宿舍型校园、活动设施、校内管理和24小时警卫。',
+      note: '宿舍型校园，有活动设施、校内管理和24小时警卫。',
     },
     {
       icon: 'payments',
@@ -191,7 +186,7 @@ export class EroomSchoolComponent implements OnInit {
     {
       category: '住宿',
       title: '单人房住宿参考',
-      description: '公开住宿图片用于初步判断房间氛围，实际楼栋和房型以学校确认空房为准。',
+      description: '住宿图片仅供参考，实际楼栋和房型以学校确认空房为准。',
       src: 'https://www.eslpass.com/userfiles/images/Bacolod/E-ROOM/single.jpg',
     },
     {
@@ -212,11 +207,10 @@ export class EroomSchoolComponent implements OnInit {
     { label: '学校名称', value: '菲律宾巴科洛德E-Room Language Center' },
     { label: '英文名称', value: 'E-Room Language Center / EROOM / 이룸어학원' },
     { label: '城市区域', value: 'Bacolod City, Negros Occidental' },
-    { label: '官方地址', value: 'Lot 1, Block 3 Magsaysay Ave, Bacolod, 6100 Negros Occidental, Philippines' },
-    { label: '联系方式参考', value: 'Tel: +63-34-703-1377 / Email: malkim78@gmail.com' },
-    { label: '学校历史', value: '公开历史页显示学校2005年开办，2022年完成专用校舍。' },
+    { label: '位置', value: 'Bacolod市区Magsaysay Ave一带' },
+    { label: '学校历史', value: '学校2005年开办，2022年完成专用校舍。' },
     { label: '课程方向', value: 'ESL/青少年、IELTS/TOEIC/商务英语、监护人和幼儿园课程。' },
-    { label: '费用币种', value: '所附2024费用表以USD列课程、住宿和注册费；SSP、I-Card、电水、押金、教材和签证等当地费用另行确认。' },
+    { label: '费用币种', value: '课程、住宿和注册费以美元计价；SSP、I-Card、电水、押金、教材和签证等当地费用另行确认。' },
   ];
 
   readonly highlights: Highlight[] = [
@@ -228,7 +222,7 @@ export class EroomSchoolComponent implements OnInit {
     {
       image: this.galleryImages[1].src,
       title: 'Classic与Semi-Sparta可选',
-      text: '官方费用表把两种管理模式放在同一价格体系，适合先按学习自律度选择强度。',
+      text: '两种管理模式价格相同，适合先按学习自律度选择强度。',
     },
     {
       image: this.galleryImages[4].src,
@@ -238,7 +232,7 @@ export class EroomSchoolComponent implements OnInit {
     {
       image: this.galleryImages[3].src,
       title: '成人、家庭、青少年都能选',
-      text: '除成人ESL和考试课程外，2024费用表也列出青少年、监护人和幼儿园课程，适合家庭一起比较。',
+      text: '除成人ESL和考试课程外，学校也开设青少年、监护人和幼儿园课程，适合家庭一起比较。',
     },
   ];
 
@@ -246,13 +240,13 @@ export class EroomSchoolComponent implements OnInit {
     { title: '想控制预算读ESL', text: 'Bacolod生活成本通常更温和，E-Room三人间和ESL Course A适合先做预算。' },
     { title: '想在安静城市长期学习', text: '不追求海边度假或大城市夜生活，更适合8到24周稳定打基础。' },
     { title: '需要一点管理推动', text: 'Semi-Sparta、门禁、测试和出勤规则适合需要学校帮忙维持节奏的学生。' },
-    { title: '家庭或青少年路线比较', text: '青少年、监护人和幼儿园课程在2024费用表中单独列出，适合亲子或未成年路线初筛。' },
+    { title: '家庭或青少年路线比较', text: '青少年、监护人和幼儿园课程单独设置，适合亲子或未成年路线初筛。' },
   ];
 
   readonly notSuitableFor: FitItem[] = [
     { title: '想要海岛度假感', text: 'E-Room是Bacolod市区学习型校园，不是宿务Mactan或长滩岛的海边体验。' },
     { title: '只看USD学费和住宿', text: 'SSP、签证、电水、押金和教材等当地费用仍需另外核对。' },
-    { title: '希望全外教或美式小班', text: '这页重点不是Native-only路线，外教比例和老师安排需当期确认。' },
+    { title: '希望全外教或美式小班', text: 'E-Room不是Native-only路线，外教比例和老师安排需当期确认。' },
     { title: '不想遵守门禁和测试', text: '学校规则列出门禁、出勤和测试要求，不适合完全自由型学习期待。' },
   ];
 
@@ -324,7 +318,7 @@ export class EroomSchoolComponent implements OnInit {
   ];
 
   roomOptions: RoomOption[] = [
-    { id: 'triple', name: '三人间 / Triple', fee4w: 550, note: '2024费用表中价格最低的房型。' },
+    { id: 'triple', name: '三人间 / Triple', fee4w: 550, note: '价格最低的房型。' },
     { id: 'double', name: '双人间 / Double', fee4w: 600, note: '适合朋友同行、亲子或希望兼顾预算与空间的学生。' },
     { id: 'single', name: '单人间 / Single', fee4w: 750, note: '监护人课程不能选择单人间。' },
   ];
@@ -339,15 +333,15 @@ export class EroomSchoolComponent implements OnInit {
   ];
 
   readonly localFees: LocalFee[] = [
-    { item: 'Registration', amount: 'USD 100', note: '所附2024费用表列示的注册费。' },
-    { item: 'SSP', amount: 'PHP 7,200', note: 'Special Study Permit，官方列6个月有效。' },
-    { item: 'ACR I-Card', amount: 'PHP 4,060', note: '官方列1年有效，通常长期学习需确认。' },
+    { item: 'Registration', amount: 'USD 100', note: '2024年注册费标准。' },
+    { item: 'SSP', amount: 'PHP 7,200', note: 'Special Study Permit，有效期6个月。' },
+    { item: 'ACR I-Card', amount: 'PHP 4,060', note: '有效期1年，通常长期学习需确认。' },
     { item: 'Student ID', amount: 'PHP 200', note: '学生证发行费。' },
-    { item: 'Electricity', amount: '约PHP 500-1,000 / 4周', note: '按实际用量收取，官方列PHP20/kW参考。' },
+    { item: 'Electricity', amount: '约PHP 500-1,000 / 4周', note: '按实际用量收取，参考20比索/kW。' },
     { item: 'Water & Management', amount: 'PHP 500 / 周', note: '水费及管理费按周计算。' },
     { item: 'Books', amount: 'PHP 250-450 / 本', note: '按课程实际教材购买。' },
     { item: 'Dorm Deposit', amount: 'PHP 3,000', note: '宿舍押金，退房检查后按规则退还。' },
-    { item: 'Visa Extension', amount: 'PHP 4,360起', note: '官方列4周后4,360，8周后5,630，后续每阶段3,660。' },
+    { item: 'Visa Extension', amount: 'PHP 4,360起', note: '4周后4,360，8周后5,630，后续每阶段3,660。' },
   ];
 
   readonly schedule: ScheduleItem[] = [
@@ -355,24 +349,24 @@ export class EroomSchoolComponent implements OnInit {
     { time: '08:00 - 12:00', title: '上午一对一 / 小组课', text: '按ESL、Business、IELTS或TOEIC安排口语、语法、听力、阅读和考试技巧。' },
     { time: '12:00 - 13:00', title: '午餐与休息', text: '住宿费包含平日和周末三餐，适合想省去通勤和餐食安排的学生。' },
     { time: '13:00 - 17:00', title: '下午课程与补强', text: 'Course B和Course C会增加一对一课时，适合加强输出和老师反馈。' },
-    { time: '晚上', title: '免费夜间选修课', text: '公开教育系统资料提到周一到周五可选TOEIC/IELTS、发音、语法、会话等夜间课。' },
+    { time: '晚上', title: '免费夜间选修课', text: '周一到周五可选TOEIC/IELTS、发音、语法、会话等夜间课。' },
     { time: '周末', title: 'Bacolod生活与活动', text: '青少年和家庭的周末安排需逐项确认；成人外出仍需遵守门禁和校规。' },
   ];
 
   readonly serviceSteps: ProcessStep[] = [
     { icon: 'location_city', title: '先确认是否适合Bacolod', text: '如果你想低预算、安静、长期学习，E-Room更对题；想海岛和大城市则同步比较宿务。' },
-    { icon: 'rule', title: '选择Classic或Semi-Sparta', text: '先判断自律度和门禁接受度，再决定管理模式，费用表目前列为同价。' },
+    { icon: 'rule', title: '选择Classic或Semi-Sparta', text: '先判断自律度和门禁接受度，再决定管理模式，两种模式目前同价。' },
     { icon: 'menu_book', title: '按课量选课程', text: 'Course A、B、C主要差在每天的一对一课时；考试和商务课程价格另列。' },
     { icon: 'hotel', title: '锁定房型与周数', text: '三人间到单人间价格差明显；监护人课程不能选择单人间。' },
-    { icon: 'receipt_long', title: '拆分USD和PHP', text: '所附2024表中的课程、住宿和注册费按USD看；SSP、签证、电水、押金和教材等当地费用另行确认。' },
+    { icon: 'receipt_long', title: '拆分USD和PHP', text: '课程、住宿和注册费以美元计价；SSP、签证、电水、押金和教材等当地费用另行确认。' },
     { icon: 'verified', title: '核对正式Invoice', text: '报名前确认当期费用、优惠、空房、接机、门禁、测试和退费规则。' },
   ];
 
   readonly notes = [
-    '官方规则说明在线或线下申请后，注册费需在3天内缴纳，课程费用需至少在入境菲律宾4周前付清。',
-    '家庭课程学生官方费用页注明只能申请Classic过程，不能默认套用Semi-Sparta。',
-    '官方规则列每周二申请换课或换老师，周四生效；结课前2周通常不可更换。',
-    '官方规则列证书最低出勤率75%，缺勤、迟到、门禁和测试违反可能影响证书或押金。',
+    '在线或线下申请后，注册费需在3天内缴纳，课程费用需至少在入境菲律宾4周前付清。',
+    '家庭课程学生只能申请Classic模式，不能默认套用Semi-Sparta。',
+    '每周二可申请换课或换老师，周四生效；结课前2周通常不可更换。',
+    '证书要求最低出勤率75%，缺勤、迟到、门禁和测试违反可能影响证书或押金。',
     '宿舍规则列洗衣和清洁每周3次，床单每2周更换，安静时间为22:00到07:00。',
     '费用、校规、假期无课和签证政策可能变化，正式报名要以学校当期invoice和学生手册为准。',
   ];
@@ -381,27 +375,27 @@ export class EroomSchoolComponent implements OnInit {
     {
       question: 'E-Room Language Center在哪里？',
       answer:
-        '官方地址是Lot 1, Block 3 Magsaysay Ave, Bacolod, 6100 Negros Occidental, Philippines，属于巴科洛德市区学习型校园。',
+        '学校位于巴科洛德市Magsaysay Ave一带，属于巴科洛德市区学习型校园。',
     },
     {
       question: 'E-Room 4周大概多少钱？',
       answer:
-        '按所附2024费用表，ESL/青少年Course A为USD600，三人间USD550，注册费USD100，4周常见起步参考为USD1,250，另有当地费用。',
+        '按2024年费用，ESL/青少年Course A为USD600，三人间USD550，注册费USD100，4周常见起步参考为USD1,250，另有当地费用。',
     },
     {
       question: 'Classic和Semi-Sparta费用一样吗？',
       answer:
-        '学校公开资料曾把Classic与Semi-Sparta列在同一价格体系；所附2024费用表提醒两者每天日程安排不同，报名时仍要确认当期管理规则和可选模式。',
+        'Classic与Semi-Sparta价格相同，但两者每天的日程安排不同，报名时仍要确认当期管理规则和可选模式。',
     },
     {
       question: 'E-Room适合亲子或青少年吗？',
       answer:
-        '可以作为候选。所附2024费用表列出ESL/青少年、监护人和幼儿园课程。监护人必须与青少年学生一起报名且不能选择单人间；幼儿园课程的休息时段需由家长自行接送。',
+        '可以作为候选。学校开设ESL/青少年、监护人和幼儿园课程。监护人必须与青少年学生一起报名且不能选择单人间；幼儿园课程的休息时段需由家长自行接送。',
     },
     {
       question: '为什么费用同时有USD和PHP？',
       answer:
-        '所附2024费用表以USD列课程费、住宿费和注册费；SSP、I-Card、签证、电水、教材、押金等当地费用通常以PHP确认。',
+        '课程费、住宿费和注册费以美元计价；SSP、I-Card、签证、电水、教材、押金等当地费用通常以比索确认。',
     },
   ];
 
@@ -411,7 +405,6 @@ export class EroomSchoolComponent implements OnInit {
     { label: '费用估算', target: 'quote', icon: 'calculate' },
     { label: '当地费用', target: 'local-fees', icon: 'payments' },
     { label: '服务流程', target: 'service-process', icon: 'task_alt' },
-    { label: '资料来源', target: 'sources', icon: 'link' },
     { label: 'FAQ', target: 'faq', icon: 'help' },
   ];
 
@@ -422,16 +415,6 @@ export class EroomSchoolComponent implements OnInit {
     { label: '报价', target: 'quote', icon: 'calculate' },
     { label: '费用', target: 'local-fees', icon: 'receipt_long' },
     { label: 'FAQ', target: 'faq', icon: 'help' },
-  ];
-
-  readonly sources: SourceLink[] = [
-    { label: 'E-Room官方首页', url: 'https://www.e-room.org/' },
-    { label: 'E-Room官方课程与费用页', url: 'https://www.e-room.org/theme/sample135/html/sub05.php' },
-    { label: 'E-Room官方位置页', url: 'https://www.e-room.org/theme/sample135/html/location.php' },
-    { label: 'E-Room官方校规页', url: 'https://www.e-room.org/theme/sample135/html/law.php' },
-    { label: 'E-Room官方优势介绍', url: 'https://www.e-room.org/theme/sample135/html/company_intro.php' },
-    { label: 'E-Room官方教育系统', url: 'https://www.e-room.org/theme/sample135/html/sub01.php' },
-    { label: 'E-Room官方历史页', url: 'https://www.e-room.org/theme/sample135/html/history.php' },
   ];
 
   ngOnInit(): void {
@@ -528,7 +511,7 @@ export class EroomSchoolComponent implements OnInit {
 
     const priceFaq = this.faqs.find((item) => item.question === 'E-Room 4周大概多少钱？');
     if (priceFaq) {
-      priceFaq.answer = `按数据库中的2024费用，${startingCourse.name}为${this.formatUsd(startingCourse.fee4w)}，${startingRoom.name}为${this.formatUsd(startingRoom.fee4w)}，注册费${this.formatUsd(this.registrationFeeUsd)}，4周常见起步参考为${this.formatUsd(startingPrice)}，另有当地费用。`;
+      priceFaq.answer = `按2024年费用，${startingCourse.name}为${this.formatUsd(startingCourse.fee4w)}，${startingRoom.name}为${this.formatUsd(startingRoom.fee4w)}，注册费${this.formatUsd(this.registrationFeeUsd)}，4周常见起步参考为${this.formatUsd(startingPrice)}，另有当地费用。`;
     }
   }
 

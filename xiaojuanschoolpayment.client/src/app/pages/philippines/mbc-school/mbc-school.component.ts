@@ -30,11 +30,6 @@ interface FaqItem {
   answer: string;
 }
 
-interface SourceLink {
-  label: string;
-  url: string;
-}
-
 @Component({
   selector: 'app-mbc-school',
   standalone: true,
@@ -47,9 +42,9 @@ export class MbcSchoolComponent {
     { label: '学校名称', value: 'Manila Business College' },
     { label: '城市', value: 'Sta. Cruz, Manila / Metro Manila' },
     { label: '学校定位', value: '商科、酒店管理、信息系统与国际学生衔接型学院' },
-    { label: '官方状态', value: '官网显示Enrollment On-Going SY 2026 - 2027' },
-    { label: '认证线索', value: '官网说明获CHED、DepEd、TESDA相关认可' },
-    { label: '住宿', value: '官网提到dormitories，但房型、费用和空位需当期确认' },
+    { label: '招生状态', value: 'SY 2026-2027 正在招生' },
+    { label: '办学认可', value: '获CHED、DepEd、TESDA相关认可' },
+    { label: '住宿', value: '设有宿舍（dormitories），房型、费用和空位需当期确认' },
   ];
 
   readonly courses: CourseItem[] = [
@@ -69,7 +64,7 @@ export class MbcSchoolComponent {
       title: 'B.S. Business Administration - Management',
       lessons: '管理、会计、财务、市场等商科基础组合',
       text:
-        '官网介绍Management方向覆盖多个传统商业领域，也列出夜间班安排，适合需要灵活上课节奏的学生进一步核对。',
+        'Management方向覆盖多个传统商业领域，另设夜间班，适合需要灵活上课节奏的学生进一步了解。',
     },
     {
       title: 'B.S. Accountancy',
@@ -81,7 +76,7 @@ export class MbcSchoolComponent {
       title: 'B.S. Hospitality Management',
       lessons: '酒店、旅游、餐饮和服务业管理',
       text:
-        '适合想结合马尼拉城市资源、酒店餐饮实践和服务业管理方向的学生；官网也列出周末班安排。',
+        '适合想结合马尼拉城市资源、酒店餐饮实践和服务业管理方向的学生；另设周末班。',
     },
     {
       title: 'B.S. Information Systems',
@@ -91,15 +86,15 @@ export class MbcSchoolComponent {
     },
     {
       title: 'Night Class',
-      lessons: '官网列出BSBA Management夜间班',
+      lessons: 'BSBA Management夜间班',
       text:
-        '适合需要兼顾工作、实习或其他日程的人。页面显示周二至周五6-9pm，但报名时应确认是否仍按该时段执行。',
+        '适合需要兼顾工作、实习或其他日程的人。上课时间为周二至周五6-9pm，报名时应确认是否仍按该时段执行。',
     },
     {
       title: 'Weekend Class / TESDA Courses',
       lessons: '周末班与技能课程需按当期开放状态确认',
       text:
-        '官网列出Hospitality Management周末班和TESDA Courses入口。学生应确认课程、名额、费用、证书和实习安排。',
+        '开设Hospitality Management周末班和TESDA Courses。学生应确认课程、名额、费用、证书和实习安排。',
     },
   ];
 
@@ -108,7 +103,7 @@ export class MbcSchoolComponent {
       item: '学费与杂费',
       amount: '需当期确认',
       note:
-        '官网未公开完整国际学生价目表。正式预算需按学年、课程、学制、杂费和付款节点向学校确认。',
+        '国际学生费用需按学年、课程、学制、杂费和付款节点向学校确认。',
     },
     {
       item: '注册 / 申请费用',
@@ -118,21 +113,21 @@ export class MbcSchoolComponent {
     },
     {
       item: '奖学金项目',
-      amount: '部分本地奖学金有公开金额',
+      amount: '部分本地奖学金有固定金额',
       note:
-        '官网奖学金说明包含菲律宾公民等条件，不应自动套用给国际学生；需逐项确认资格。',
+        '奖学金条件包含菲律宾公民等要求，国际学生不能自动套用；需逐项确认资格。',
     },
     {
       item: '夜间班 / 周末班',
       amount: '需按课程确认',
       note:
-        '官网列出夜间班和周末班安排，但当前开放课程、学费和名额需以学校招生回复为准。',
+        '学校设有夜间班和周末班，当前开放课程、学费和名额以学校招生回复为准。',
     },
     {
       item: '住宿 / Dormitory',
       amount: '需当期确认',
       note:
-        '官网简介提到dormitories，但房型、费用、餐食、门禁、押金和空位都需要单独核对。',
+        '学校设有宿舍，房型、费用、餐食、门禁、押金和空位都需要单独确认。',
     },
     {
       item: '教材 / 制服 / 实验室',
@@ -160,8 +155,8 @@ export class MbcSchoolComponent {
   ];
 
   readonly accommodation = [
-    'MBC官网介绍中提到classrooms、laboratories、canteens和dormitories，说明学校至少把住宿作为设施线索展示。',
-    '详情页不直接承诺宿舍，因为官网未在公开文字中列出房型、费用、性别安排、餐食、门禁和空位。',
+    'MBC校内设有classrooms、laboratories、canteens和dormitories等设施。',
+    '宿舍的房型、费用、性别安排、餐食、门禁和空位需在申请前向学校确认。',
     '国际学生应在申请前确认宿舍是否开放给外国学生，以及是否需要提前缴纳押金或长期住宿费用。',
     '若学生只是想要传统菲律宾ESL宿舍、三餐和每日管理，应同时比较宿务、碧瑶或Clark语言学校。',
   ];
@@ -177,7 +172,7 @@ export class MbcSchoolComponent {
     'Mock Hotel',
     'Laboratories',
     'Canteen',
-    'Dormitories线索',
+    'Dormitories',
     'International student admission support',
   ];
 
@@ -190,18 +185,18 @@ export class MbcSchoolComponent {
   ];
 
   readonly pros = [
-    '官网信息可读，且显示SY 2026-2027招生中',
+    'SY 2026-2027 正在招生',
     '学校定位清楚，集中在商业、管理、酒店和信息系统方向',
-    '官网说明面向本地和外国学生，并列出国际学生申请材料',
-    '设施公开列出课堂、厨房、健身房、学生休息室、电脑实验室、图书馆、礼堂和模拟酒店',
+    '招收本地和外国学生，国际学生申请材料要求明确',
+    '设施包括课堂、厨房、健身房、学生休息室、电脑实验室、图书馆、礼堂和模拟酒店',
     '夜间班和周末班给需要灵活学习节奏的学生提供核对方向',
   ];
 
   readonly cons = [
     '不是传统ESL语言学校，不适合只想读短期口语和住宿制课程的人',
-    '公开页面没有完整国际学生学费表，预算必须向学校当期核价',
-    '宿舍信息不够细，不能只凭官网提到dormitories就承诺房型和费用',
-    '奖学金页面部分条件面向菲律宾公民，国际学生不能自动适用',
+    '国际学生学费需向学校当期核价',
+    '宿舍房型和费用需单独向学校确认',
+    '部分奖学金条件面向菲律宾公民，国际学生不能自动适用',
     'Sta. Cruz / Manila City交通、住宿区域和安全感需结合实际地址评估',
   ];
 
@@ -214,29 +209,22 @@ export class MbcSchoolComponent {
     {
       question: '国际学生可以申请吗？',
       answer:
-        '官网Admission页面列出International / Foreign Students材料，包括认证学历记录、无犯罪证明、个人历史陈述、护照/签证、资金证明等。正式申请仍需学校确认资格和签证流程。',
+        '可以。国际学生需准备认证学历记录、无犯罪证明、个人历史陈述、护照/签证、资金证明等材料，正式申请仍需学校确认资格和签证流程。',
     },
     {
       question: 'MBC有住宿吗？',
       answer:
-        '官网简介提到dormitories，但没有公开完整房型和费用表。顾问需要先确认宿舍是否开放、房型、押金、餐食、门禁和空位。',
+        '学校设有宿舍（dormitories）。顾问需要先确认宿舍是否开放、房型、费用、押金、餐食、门禁和空位。',
     },
     {
-      question: '费用可以直接按官网奖学金页面计算吗？',
+      question: '费用可以直接按奖学金金额计算吗？',
       answer:
-        '不建议。奖学金页面含本地学生条件，例如菲律宾公民要求。国际学生应以学校当期学费、杂费和申请回复为准。',
+        '不建议。奖学金含本地学生条件，例如菲律宾公民要求。国际学生应以学校当期学费、杂费和申请回复为准。',
     },
     {
       question: '什么学生更适合MBC？',
       answer:
         '适合想在马尼拉读商科、管理、会计、酒店或信息系统，并愿意按学院申请流程准备材料的人。若目标是密集英语口语，应优先比较语言学校。',
     },
-  ];
-
-  readonly sources: SourceLink[] = [
-    { label: 'Manila Business College官方网站', url: 'https://www.mbc.edu.ph/' },
-    { label: 'MBC Admission Requirements', url: 'https://www.mbc.edu.ph/admission.php' },
-    { label: 'MBC Contact / Location', url: 'https://www.mbc.edu.ph/' },
-    { label: 'MBC Facilities section', url: 'https://www.mbc.edu.ph/' },
   ];
 }

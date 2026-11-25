@@ -1,0 +1,117 @@
+<article class="sp-page" aria-labelledby="sp-title">
+  <header class="sp-hero">
+    <div class="sp-hero__inner">
+      <p class="sp-eyebrow">
+        <span>{{ c.eyebrow }}</span>
+        <span class="sp-eyebrow__dot" aria-hidden="true">·</span>
+        <span class="sp-eyebrow__en" lang="en">{{ c.eyebrowEnglish }}</span>
+      </p>
+      <h1 id="sp-title"><span class="sp-accent">{{ c.titleAccent }}</span>{{ c.titleRest }}</h1>
+      <ul class="sp-promises" aria-label="思达启航服务承诺">
+        @for (promise of c.promises; track promise) {
+          <li><mat-icon aria-hidden="true">check</mat-icon>{{ promise }}</li>
+        }
+      </ul>
+    </div>
+  </header>
+
+  <div class="sp-body">
+    <ol class="sp-stages">
+      @for (stage of c.stages; track stage.number; let last = $last) {
+        <li class="sp-stage" [id]="'stage-' + stage.number">
+          <div class="sp-stage__head">
+            <span class="sp-stage__no">{{ stage.number }}</span>
+            <div class="sp-stage__name">
+              <h2>{{ stage.title }}</h2>
+              <span class="sp-stage__range" lang="en">{{ stage.range }}</span>
+            </div>
+            <span class="sp-stage__icon" aria-hidden="true"><mat-icon>{{ stage.icon }}</mat-icon></span>
+          </div>
+
+          <ol class="sp-steps" [attr.start]="stage.steps[0].number">
+            @for (step of stage.steps; track step.number) {
+              <li class="sp-step" [id]="'step-' + step.number">
+                <span class="sp-step__no">{{ step.number }}</span>
+                <div class="sp-step__body">
+                  <h3>{{ step.title }}</h3>
+                  <p>{{ step.text }}</p>
+                  @if (step.time) {
+                    <p class="sp-time"><mat-icon aria-hidden="true">schedule</mat-icon>{{ step.time }}</p>
+                  }
+                </div>
+              </li>
+            }
+          </ol>
+
+          @if (!last) {
+            <span class="sp-stage__arrow" aria-hidden="true"><mat-icon>chevron_right</mat-icon></span>
+          }
+        </li>
+      }
+    </ol>
+
+    <section class="sp-timeline" aria-labelledby="sp-timeline-title">
+      <div class="sp-timeline__head">
+        <span class="sp-timeline__icon" aria-hidden="true"><mat-icon>schedule</mat-icon></span>
+        <h2 id="sp-timeline-title">{{ c.timelineTitle }}</h2>
+        <span class="sp-timeline__sub">{{ c.timelineSubtitle }}</span>
+        <p class="sp-timeline__note">{{ c.timelineNote }}</p>
+      </div>
+
+      <ol class="sp-nodes">
+        @for (node of c.timeline; track node.label; let last = $last) {
+          <li class="sp-node" [class.sp-node--final]="last">
+            <strong class="sp-node__label">{{ node.label }}</strong>
+            <span class="sp-node__track" aria-hidden="true"><span class="sp-node__dot"></span></span>
+            <span class="sp-node__text">{{ node.text }}</span>
+          </li>
+        }
+      </ol>
+    </section>
+
+    <aside class="sp-closing">
+      <img src="/assets/sida-qihang-favicon.png" alt="" width="44" height="44" loading="lazy" />
+      <strong>{{ c.closingTitle }}</strong>
+      <span class="sp-closing__divider" aria-hidden="true"></span>
+      <p>{{ c.closingText }}</p>
+    </aside>
+
+    <section class="sp-contact" aria-labelledby="sp-contact-title">
+      <h2 id="sp-contact-title" class="sp-visually-hidden">{{ c.contactHeading }}</h2>
+
+      <div class="sp-contact__brand">
+        <p class="sp-slogan">{{ c.slogan }}</p>
+        <ul class="sp-channels">
+          @for (channel of c.channels; track channel.value) {
+            <li>
+              <mat-icon aria-hidden="true">{{ channel.icon }}</mat-icon>
+              @if (channel.label) {
+                <span class="sp-channels__label">{{ channel.label }}</span>
+              }
+              <strong>{{ channel.value }}</strong>
+            </li>
+          }
+        </ul>
+      </div>
+
+      <div class="sp-contact__people">
+        <h3>{{ c.consultantsHeading }}</h3>
+        <ul class="sp-consultants">
+          @for (person of c.consultants; track person.phone) {
+            <li>
+              <a [href]="'tel:' + person.phone">
+                <span class="sp-consultant__top">
+                  <strong>{{ person.name }}</strong>
+                  <span class="sp-consultant__focus">{{ person.focus }}</span>
+                </span>
+                <span class="sp-consultant__phone">
+                  <mat-icon aria-hidden="true">call</mat-icon>{{ person.phoneDisplay }}
+                </span>
+              </a>
+            </li>
+          }
+        </ul>
+      </div>
+    </section>
+  </div>
+</article>

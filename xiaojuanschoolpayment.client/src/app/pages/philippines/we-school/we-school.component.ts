@@ -30,11 +30,6 @@ interface FaqItem {
   answer: string;
 }
 
-interface SourceLink {
-  label: string;
-  url: string;
-}
-
 @Component({
   selector: 'app-we-school',
   standalone: true,
@@ -49,7 +44,7 @@ export class WeSchoolComponent {
     { label: '地址', value: 'Block 7 Lot 8 Fil-Am Friendship Highway, Angeles City' },
     { label: '创校与重启', value: '2016年创校，2022年6月新管理团队重启' },
     { label: '学校定位', value: 'Farm resort式校园、亲子友好、Native Mix、Golf / Swimming' },
-    { label: '机场距离', value: '官网说明从Clark International Airport到学校约25分钟' },
+    { label: '机场距离', value: '从Clark International Airport到学校约25分钟' },
   ];
 
   readonly courses: CourseItem[] = [
@@ -61,7 +56,7 @@ export class WeSchoolComponent {
     {
       title: 'Native Mix',
       lessons: '每日1-3节Native一对一，可搭配菲律宾老师课程',
-      text: '官网强调由美国、加拿大等Native老师帮助发音、语调和自然表达，适合想学真实沟通英语的人。',
+      text: '由美国、加拿大等Native老师帮助练习发音、语调和自然表达，适合想学真实沟通英语的人。',
     },
     {
       title: 'Junior ESL',
@@ -75,7 +70,7 @@ export class WeSchoolComponent {
     },
     {
       title: 'Guardian ESL',
-      lessons: '陪读家长课程，官网说明每日3节菲律宾老师一对一',
+      lessons: '陪读家长课程，每日3节菲律宾老师一对一',
       text: '适合家长陪同孩子学习，同时希望自己也保持英语输入和练习。',
     },
     {
@@ -99,7 +94,7 @@ export class WeSchoolComponent {
     {
       item: '托业 / 托福 / 雅思',
       amount: 'USD 1,050 / 4周',
-      note: '2026年价目表课程费，住宿和注册费另计。',
+      note: '2026年课程费，住宿和注册费另计。',
     },
     {
       item: 'Junior / Kinder ESL',
@@ -124,12 +119,12 @@ export class WeSchoolComponent {
     {
       item: 'Golf私教课',
       amount: 'PHP 750 / session',
-      note: '官网Golf页面列出Private Class价格；果岭费、球童费、球车费等现场另付。',
+      note: '一对一私教课；果岭费、球童费、球车费等现场另付。',
     },
     {
       item: 'Swimming私教课',
       amount: 'PHP 700 / session',
-      note: '官网Swimming页面列出Private Class价格。',
+      note: '一对一游泳私教课。',
     },
     {
       item: 'Swimming小组课',
@@ -167,15 +162,15 @@ export class WeSchoolComponent {
   ];
 
   readonly pros = [
-    '官网明确强调自由舒适、校园空间大、住宿和活动资源集中',
+    '生活自由舒适，校园空间大，住宿和活动资源集中',
     'Native Mix可提供每日1-3节Native一对一课程',
-    '亲子与低龄课程资料较完整，含校内Kindergarten和陪读家长课程',
+    '亲子与低龄课程选择较完整，含校内Kindergarten和陪读家长课程',
     'Clark机场到校约25分钟，家庭和短期行程更方便',
-    'Golf和Swimming附加项目价格在官网有公开参考',
+    'Golf和Swimming附加项目按次计价，方便提前预算',
   ];
 
   readonly cons = [
-    '2026年价目表仅列出4周课程与住宿费，其他周数和到校费用需确认',
+    '2026年价格只列4周课程与住宿费，其他周数和到校费用需确认',
     '成人自由度较高，不适合需要强制门禁和高压自习管理的学生',
     '亲子课程要逐项确认年龄、监护、房型、餐食、接送和医疗支持',
     'Golf和Swimming等活动费用需单独列预算，不能只看英语课程价',
@@ -185,7 +180,7 @@ export class WeSchoolComponent {
     {
       question: '菲律宾克拉克WE Academy语言学校适合亲子吗？',
       answer:
-        '适合列入重点候选。官网特别强调Family Program、校内Kindergarten、家长课程和儿童安全支持，适合希望学习与生活体验结合的家庭。',
+        '适合列入重点候选。学校有Family Program、校内Kindergarten、家长课程和儿童安全支持，适合希望学习与生活体验结合的家庭。',
     },
     {
       question: 'Clark WE和EG、CIP怎么选？',
@@ -202,15 +197,5 @@ export class WeSchoolComponent {
       answer:
         '用选定的4周课程费加4周住宿费，再加一次性注册费USD100。SSP、教材、押金、水电、接机和活动费用另计。',
     },
-  ];
-
-  readonly sources: SourceLink[] = [
-    { label: '菲律宾克拉克WE Academy语言学校 官方网站', url: 'https://clarkweacademy.com/' },
-    { label: '菲律宾克拉克WE Academy语言学校 Program', url: 'https://clarkweacademy.com/program.php' },
-    { label: '菲律宾克拉克WE Academy语言学校 Curriculum', url: 'https://clarkweacademy.com/curriculum.php' },
-    { label: '菲律宾克拉克WE Academy语言学校 Golf', url: 'https://clarkweacademy.com/golf.php' },
-    { label: '菲律宾克拉克WE Academy语言学校 Swimming', url: 'https://clarkweacademy.com/swimming.php' },
-    { label: 'iOutback 菲律宾游学资料参考', url: 'https://www.ioutback.com/' },
-    { label: 'StudyTourA 菲律宾学校分类参考', url: 'https://www.studytoura.com/cebu-schools/' },
   ];
 }

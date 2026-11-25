@@ -26,7 +26,7 @@
                 <mat-icon>calculate</mat-icon>
               </a>
               <a class="secondary-action" href="#courses" (click)="scrollToSection('courses', $event)">
-                查看公开价格
+                查看课程价格
                 <mat-icon>menu_book</mat-icon>
               </a>
               <a class="secondary-action" routerLink="/about-sida/contact">
@@ -36,7 +36,7 @@
             </div>
             <p class="trust-note">
               <mat-icon>verified</mat-icon>
-              费用按ETHOS官方公开价格页、课程页、住宿页、移民费用页和付款政策整理。正式报名仍需按开课日、空位、住宿类型、家庭人数和学校当期报价确认。
+              这里列出ETHOS课程、住宿、移民费用和付款规则。正式报名仍需按开课日、空位、住宿类型、家庭人数和学校当期报价确认。
             </p>
           </div>
 
@@ -66,7 +66,7 @@
                 </li>
               </ul>
             </aside>
-            <p class="photo-source">图片与费用参考自ETHOS官方页面；公开价格标注为COVID SALE，最终以学校正式报价为准。</p>
+            <p class="photo-source">图片仅供参考，具体以学校实际安排为准。</p>
           </div>
         </section>
 
@@ -197,10 +197,10 @@
 
         <section class="section-block" id="courses">
           <div class="section-heading">
-            <span>课程 / 公开参考费用</span>
-            <h2>ETHOS公开Group课程与4周套餐价</h2>
+            <span>课程 / 参考费用</span>
+            <h2>ETHOS Group课程与4周套餐价</h2>
             <p>
-              ETHOS公开价格表按1-20周、4小时/天或5小时/天、Tuition only、Dormitory、Home Stay和Outside Stay区分。
+              ETHOS价格按1-20周、4小时/天或5小时/天、Tuition only、Dormitory、Home Stay和Outside Stay区分。
               下表先列4周参考价；更长或更短周数可用下面的报价器估算。
             </p>
           </div>
@@ -222,11 +222,11 @@
               <span>Kids Camp</span>
               <h3>English Kids Camp</h3>
               <p class="course-lessons">Group only / 4或5小时/天 / 每班最多6人</p>
-              <p>适合团体营队，官方FAQ说明至少6名学生、至少1周起。</p>
+              <p>适合团体营队，至少6名学生、至少1周起。</p>
             </article>
           </div>
 
-          <div class="data-table ethos-course-table" role="table" aria-label="ETHOS 4周套餐公开价格">
+          <div class="data-table ethos-course-table" role="table" aria-label="ETHOS 4周套餐价格">
             <div class="table-row table-head" role="row">
               <span role="columnheader">套餐</span>
               <span role="columnheader">4小时/天Group</span>
@@ -276,9 +276,9 @@
         <section class="quote-panel" id="quote">
           <div class="section-heading">
             <span>费用快速报价</span>
-            <h2>用公开价格表先估算ETHOS套餐价</h2>
+            <h2>先估算ETHOS套餐价</h2>
             <p>
-              这个计算器按ETHOS公开COVID SALE价格表估算Group课程套餐。Man-to-Man、Family、Kids Camp、私密房和特殊日期需另行确认。
+              这个计算器按ETHOS COVID SALE优惠价估算Group课程套餐。Man-to-Man、Family、Kids Camp、私密房和特殊日期需另行确认。
             </p>
           </div>
           <div class="quote-form" aria-label="ETHOS费用快速报价选项">
@@ -345,7 +345,7 @@
           <div class="section-heading">
             <span>菲律宾当地费用</span>
             <h2>ETHOS报价外还要准备的费用</h2>
-            <p>以下按ETHOS移民费用页、课程页和付款政策整理。菲律宾政府费用与学校规则可能调整，报名时需再次确认。</p>
+            <p>以下为移民费用、餐食加购和付款规则参考。菲律宾政府费用与学校规则可能调整，报名时需再次确认。</p>
           </div>
           <div class="local-fee-grid ethos-local-grid desktop-local-fees">
             <article *ngFor="let fee of localFees">
@@ -360,20 +360,6 @@
               <strong>{{ fee.amount }}</strong>
               <p>{{ fee.note }}</p>
             </article>
-          </div>
-        </section>
-
-        <section class="section-block source-panel" id="sources">
-          <div class="section-heading">
-            <span>公开资料来源</span>
-            <h2>ETHOS页面公开资料来源</h2>
-            <p>课程、住宿、地址、公开价格、移民费用和付款政策均参考ETHOS官方页面。</p>
-          </div>
-          <div class="source-grid">
-            <a *ngFor="let source of sourceLinks" [href]="source.url" target="_blank" rel="noopener">
-              <mat-icon>open_in_new</mat-icon>
-              {{ source.label }}
-            </a>
           </div>
         </section>
 

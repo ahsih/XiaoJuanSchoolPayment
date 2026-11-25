@@ -85,11 +85,6 @@ interface SideNavItem {
   icon: string;
 }
 
-interface SourceLink {
-  label: string;
-  url: string;
-}
-
 interface SpecialCourseFee {
   label: string;
   lessons: string;
@@ -143,7 +138,7 @@ export class WinningSchoolComponent {
       icon: 'location_city',
       label: '学校类型',
       value: '台资多校区 / City + Ocean',
-      note: 'Winning在宿务公开运营City、Ocean和Lyf等校区，本页费用以Ocean Campus 2026公开表为参考。',
+      note: 'Winning在宿务有City、Ocean和Lyf等校区，这里的费用为Ocean Campus 2026价格。',
     },
     {
       icon: 'record_voice_over',
@@ -155,19 +150,19 @@ export class WinningSchoolComponent {
       icon: 'groups',
       label: '学生类型',
       value: '成人 / 家庭 / 青少年',
-      note: '公开资料列Family、Kids、Junior和菲律宾营队，也有Business、TOEIC、IELTS等成人方向。',
+      note: '有Family、Kids、Junior和菲律宾营队，也有Business、TOEIC、IELTS等成人方向。',
     },
     {
       icon: 'hotel',
       label: '住宿',
       value: 'Standard Hotel / Backpacker / Family',
-      note: 'Ocean公开房型包括Standard Hotel 1/2人房、Backpacker 4/8人房和Family 3人房。',
+      note: 'Ocean房型包括Standard Hotel 1/2人房、Backpacker 4/8人房和Family 3人房。',
     },
     {
       icon: 'restaurant',
       label: '餐食',
       value: '平日3餐为主',
-      note: '公开资料对周末餐食口径略有差异，报名时需确认当前校区、周数和营队安排。',
+      note: '周末餐食安排可能不同，报名时需确认当前校区、周数和营队安排。',
     },
     {
       icon: 'pool',
@@ -189,7 +184,7 @@ export class WinningSchoolComponent {
       category: '设施',
       title: 'Ocean Campus泳池',
       description:
-        '公开资料显示Ocean Campus有度假型公共设施，适合家庭和短中期学生比较。',
+        'Ocean Campus有度假型公共设施，适合家庭和短中期学生比较。',
       src: 'https://estatic.languagecourse.net/images/schools/thumbs_school_page_slider/winning-english-academy-ocean-campus-cebu-city_1711989939336.jpg',
     },
     {
@@ -203,14 +198,14 @@ export class WinningSchoolComponent {
       category: '住宿',
       title: 'Ocean宿舍双人房参考',
       description:
-        'Standard Hotel 2人房是本页默认报价房型之一，正式安排需按性别和空房确认。',
+        'Standard Hotel 2人房是默认报价房型之一，正式安排需按性别和空房确认。',
       src: 'https://cebu21.jp/include/schoolno2/winningocean/Domitory/IMG_20241211_111245.jpg',
     },
     {
       category: '餐厅',
       title: 'Ocean校内餐厅',
       description:
-        '公开资料列课程费用通常含餐食，周末和节假日餐食规则需按当期校区说明确认。',
+        '课程费用通常含餐食，周末和节假日餐食规则需按当期校区说明确认。',
       src: 'https://cebu21.jp/include/schoolno2/winningocean/Cafeteria/Cafeteria_%287%29.jpg',
     },
     {
@@ -229,7 +224,7 @@ export class WinningSchoolComponent {
     { label: '学校定位', value: '台资多校区、多国籍、EOP、非斯巴达到营队型弹性学习' },
     { label: 'Ocean住宿', value: 'Standard Hotel 1/2人房、Backpacker 4/8人房、Family 3人房' },
     { label: '主要课程', value: 'Cambridge ESL、Power Speaking、Speaking Focus、Travel English、Business、TOEIC、IELTS、Family/Kids/Junior' },
-    { label: '本页费用口径', value: '2026 Ocean Campus公开美元表；入学金和当地费用另列' },
+    { label: '费用说明', value: '2026 Ocean Campus美元价格；入学金和当地费用另列' },
     { label: '适合人群', value: '想在City市区便利和Ocean海岛舒适之间选择的成人、家庭和青少年学生' },
   ];
 
@@ -242,12 +237,12 @@ export class WinningSchoolComponent {
     {
       image: 'https://estatic.languagecourse.net/images/schools/thumbs_school_page_slider/winning-english-academy-ocean-campus-cebu-city_1711989939336.jpg',
       title: 'ESL、旅行英语和亲子路线清楚',
-      text: 'Ocean公开课程从Cambridge ESL2/4到Power Speaking、Speaking Focus、Travel English和Family/Kids/Junior都有。',
+      text: 'Ocean课程从Cambridge ESL2/4到Power Speaking、Speaking Focus、Travel English和Family/Kids/Junior都有。',
     },
     {
       image: 'https://englishincebu.ru/wp-content/uploads/2023/06/WEA-Building-1-scaled.jpg',
       title: '台资多语支持和多国籍环境',
-      text: 'Winning官方强调全球学生社群和多语言站点，适合希望降低沟通压力但仍接触国际环境的学生。',
+      text: 'Winning学生社群国际化，并提供多语言站点，适合希望降低沟通压力但仍接触国际环境的学生。',
     },
   ];
 
@@ -262,7 +257,7 @@ export class WinningSchoolComponent {
     },
     {
       title: '亲子、儿童或青少年短期体验',
-      text: '公开资料列Guardian、Kids、Junior、Family和菲律宾营队方向，可按年龄和季节确认。',
+      text: '有Guardian、Kids、Junior、Family和菲律宾营队方向，可按年龄和季节确认。',
     },
     {
       title: '想要台资学校的沟通支持',
@@ -277,11 +272,11 @@ export class WinningSchoolComponent {
     },
     {
       title: '需要成人完全安静型校区',
-      text: 'Ocean Campus公开资料强调儿童、家庭和营队，若排斥低龄学生环境，要先确认入学季和校区安排。',
+      text: 'Ocean Campus主打儿童、家庭和营队，若排斥低龄学生环境，要先确认入学季和校区安排。',
     },
     {
       title: '不想处理校区差异',
-      text: 'Winning有City、Ocean、Lyf等校区，不同课程、住宿、餐食和费用口径不同，报名前必须逐项核对。',
+      text: 'Winning有City、Ocean、Lyf等校区，各校区的课程、住宿、餐食和费用都不同，报名前必须逐项核对。',
     },
   ];
 
@@ -289,12 +284,12 @@ export class WinningSchoolComponent {
     {
       id: 'standard-single',
       name: 'Ocean Standard Hotel 1人房',
-      note: '适合成人个人住宿；公开2026 Cambridge ESL4 4周USD 1,977。',
+      note: '适合成人个人住宿；2026 Cambridge ESL4 4周1,977美元。',
     },
     {
       id: 'standard-double',
       name: 'Ocean Standard Hotel 2人房',
-      note: '本页默认参考房型，适合同行或愿意合住房的成人学生。',
+      note: '默认参考房型，适合同行或愿意合住房的成人学生。',
     },
     {
       id: 'backpacker-four',
@@ -304,7 +299,7 @@ export class WinningSchoolComponent {
     {
       id: 'backpacker-eight',
       name: 'Ocean Backpacker 8人房（男性）',
-      note: '男性预算房型，公开Cambridge ESL2 4周约USD 1,095起。',
+      note: '男性预算房型，Cambridge ESL2 4周约1,095美元起。',
     },
     {
       id: 'family-three',
@@ -391,7 +386,7 @@ export class WinningSchoolComponent {
       label: 'Business English',
       lessons: '1:1四节 + 小组两节 + Option两节',
       four: '需按City / Ocean校区核价',
-      note: '官方课程页列商务英语方向，通常建议18岁以上且按英语程度确认。',
+      note: '商务英语方向，通常建议18岁以上且按英语程度确认。',
     },
     {
       label: 'TOEIC / IELTS',
@@ -409,7 +404,7 @@ export class WinningSchoolComponent {
       label: 'Peak Season Surcharge',
       lessons: '2026-07-05至2026-08-29',
       four: 'USD 40 / 周',
-      note: '2027/07/04–08/28暑期旺季附加费为60美元／周，本页报价器按实际重叠学习周自动加总。',
+      note: '2027/07/04–08/28暑期旺季附加费为60美元／周，报价按实际重叠学习周自动加总。',
     },
     {
       label: 'Daycare',
@@ -453,11 +448,11 @@ export class WinningSchoolComponent {
   ];
 
   readonly localFees: LocalFee[] = [
-    { item: '入学金', amount: 'USD 100', note: '本页报价器已计入；官方费用计算页列Registration Fee 100 USD' },
+    { item: '入学金', amount: 'USD 100', note: '报价已计入' },
     { item: 'SSP', amount: 'PHP 7,800', note: '特别学习许可，通常所有线下学生需办理' },
     { item: 'SSP E-Card', amount: 'PHP 4,500', note: '按菲律宾当地政策和学校代办规则确认' },
     { item: 'ACR I-Card', amount: 'PHP 4,500', note: '通常59天以上学生需办理，短期学生以学校说明为准' },
-    { item: '水电费', amount: 'PHP 900 / 周', note: '2026公开表常见口径；实际按校区和房型确认' },
+    { item: '水电费', amount: 'PHP 900 / 周', note: '2026年常见金额；实际按校区和房型确认' },
     { item: '管理费', amount: 'PHP 500 / 周', note: '学校设备和管理相关费用，需按周数计入当地费' },
     { item: '学生证', amount: 'PHP 200', note: '到校后办理，金额以学校最新账单为准' },
     { item: '教材费', amount: 'PHP 1,000-3,000', note: '按课程、等级和实际教材使用计算' },
@@ -501,7 +496,7 @@ export class WinningSchoolComponent {
   ];
 
   readonly trustBadges = [
-    { icon: 'description', label: '2026 Ocean费用整理' },
+    { icon: 'description', label: '2026费用分项列明' },
     { icon: 'verified_user', label: '校区与房型先确认' },
     { icon: 'payments', label: '主费与当地费分开算' },
     { icon: 'apartment', label: '深圳总部 + 宿务驻点' },
@@ -541,11 +536,11 @@ export class WinningSchoolComponent {
     '薄荷岛短途',
   ];
   readonly notes = [
-    '本页课程费用按公开2026 Ocean Campus美元表整理，主要用于初步估算课程、住宿和餐食主费。',
-    'City Campus、Lyf Family Campus、商务、TOEIC、IELTS和营队项目可能采用不同费用表，需逐项确认。',
+    '课程费用为2026 Ocean Campus美元价格，主要用于初步估算课程、住宿和餐食主费。',
+    'City Campus、Lyf Family Campus、商务、TOEIC、IELTS和营队项目价格可能不同，需逐项确认。',
     'Family 3人房、Guardian、Kids和Junior涉及年龄、监护、房型和季节名额，不能只按成人ESL价格判断。',
     'SSP、SSP E-Card、签证、ACR、押金、水电、教材、管理费、接机、旺季费和洗衣通常另计。',
-    '公开资料对周末餐食和部分当地费口径可能随年份更新，报名前以学校正式报价单和确认书为准。',
+    '周末餐食和部分当地费可能随年份调整，报名前以学校正式报价单和确认书为准。',
   ];
   readonly faqs: FaqItem[] = [
     {
@@ -561,12 +556,12 @@ export class WinningSchoolComponent {
     {
       question: 'Winning适合亲子游学吗？',
       answer:
-        '适合列入候选。公开资料列Guardian、Kids、Junior、Family和营队路线，但需要按孩子年龄、家长是否同行、校区、季节和空房确认。',
+        '适合列入候选。有Guardian、Kids、Junior、Family和营队路线，但需要按孩子年龄、家长是否同行、校区、季节和空房确认。',
     },
     {
       question: '想备考IELTS或TOEIC可以选Winning吗？',
       answer:
-        '可以咨询，但要先确认校区和当期开课。Winning官方有TOEIC和IELTS课程信息，City Campus通常更适合成人考试或商务需求。',
+        '可以咨询，但要先确认校区和当期开课。Winning有TOEIC和IELTS课程，City Campus通常更适合成人考试或商务需求。',
     },
     {
       question: '应该选City Campus还是Ocean Campus？',
@@ -589,17 +584,6 @@ export class WinningSchoolComponent {
     { label: '费用', target: 'quote', icon: 'calculate' },
     { label: '服务', target: 'service-process', icon: 'support_agent' },
     { label: 'FAQ', target: 'faq', icon: 'help' },
-  ];
-
-  readonly sources: SourceLink[] = [
-    { label: 'Winning English Academy官方网站', url: 'https://winningenglishschool.com/' },
-    { label: 'Winning官方费用计算页', url: 'https://winningenglishschool.com/school-fee/' },
-    { label: 'Winning Ocean Campus官方介绍', url: 'https://winningenglishschool.com/campuses/ocean-campus/' },
-    { label: 'Winning City Campus官方介绍', url: 'https://winningenglishschool.com/campuses/city-campus/' },
-    { label: 'Winning Cambridge ESL官方课程', url: 'https://winningenglishschool.com/courses/cambridge-esl/' },
-    { label: 'Winning FAQ官方费用与校规', url: 'https://winningenglishschool.com/faq/' },
-    { label: 'Winning Ocean Campus 2026费用参考', url: 'https://www.pro-japan.jp/school/138/course/' },
-    { label: 'Winning Ocean Campus公开学校资料', url: 'https://global-click.jp/contents/school/winning-english-academy-ocean-campus/' },
   ];
 
   setGalleryCategory(category: GalleryCategory): void {

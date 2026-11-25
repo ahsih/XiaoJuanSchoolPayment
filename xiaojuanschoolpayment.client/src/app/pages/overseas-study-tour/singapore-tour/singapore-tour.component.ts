@@ -51,6 +51,16 @@ export class SingaporeTourComponent {
       '比较课程时间和观光时间比例，避免只有旅游没有学习。',
       '根据学生年龄确认签证、保险和监护要求。',
     ],
+    schools: [
+      {
+        name: '加拿大教育学院（Canadian Education College）',
+        route: '/overseas-study-tour/singapore/canadian-education-college',
+        image: '/assets/canadian-education-sg/adult-class-flag.webp',
+        text: '新加坡乌节一带的英语学校，有全日制英语证书课程、雅思预备课程，以及2026年12月21日至2027年2月26日的儿童冬季营。',
+        tags: ['成人英语证书', '雅思预备', '儿童冬季营6–13岁', '可协助学生签证'],
+        cta: '查看课程、学费和开课日期',
+      },
+    ],
     sources: [
       { label: 'Singapore Ministry of Education', url: 'https://www.moe.gov.sg/' },
       { label: 'Visit Singapore', url: 'https://www.visitsingapore.com/' },
