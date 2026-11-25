@@ -1231,7 +1231,7 @@
               <label class="cq-field-wide" *ngIf="student.selectedRegistrationDate !== undefined"><span>报名注册日</span><input type="date" [(ngModel)]="student.selectedRegistrationDate" /></label>
               <label *ngIf="!student.hideAgeGroup"><span>抵达时年龄段</span><select [(ngModel)]="student.selectedAgeGroup"><option value="adult">18岁及以上</option><option value="minor">未满18岁</option></select></label>
               <label><span>签证类型</span><select [(ngModel)]="student.visaType"><option *ngFor="let option of student.visaOptions" [ngValue]="option.value">{{ option.label }}</option></select></label>
-              <label class="cq-field-wide"><span>新学员／老学员</span><select [(ngModel)]="student.returningStudent"><option [ngValue]="false">新学员</option><option [ngValue]="true">老学员返校（免注册费）</option></select></label>
+              <label class="cq-field-wide" *ngIf="!student.hideReturning"><span>新学员／老学员</span><select [(ngModel)]="student.returningStudent"><option [ngValue]="false">新学员</option><option [ngValue]="true">老学员返校（免注册费）</option></select></label>
               <ng-container *ngFor="let choice of student.extraChoices ?? []">
                 <label class="cq-field-wide" *ngIf="choice.visible && (quoteView !== 'compare' || choice.inComparison !== false)"><span>{{ choice.label }}</span><select [(ngModel)]="choice.value"><option *ngFor="let option of choice.options" [ngValue]="option.value">{{ option.label }}</option></select></label>
               </ng-container>
@@ -1254,7 +1254,7 @@
                 <label *ngIf="choice.visible && (quoteView !== 'compare' || choice.inComparison !== false)">{{ choice.label }}<select [(ngModel)]="choice.value"><option *ngFor="let option of choice.options" [ngValue]="option.value">{{ option.label }}</option></select></label>
               </ng-container>
             </div>
-            <label class="option-check"><input type="checkbox" [(ngModel)]="student.returningStudent" />老学员返校（免注册费）</label>
+            <label class="option-check" *ngIf="!student.hideReturning"><input type="checkbox" [(ngModel)]="student.returningStudent" />老学员返校（免注册费）</label>
             <p class="group-hint" *ngIf="student.selectedAgeGroup === 'minor' && !student.hideAgeGroup">{{ student.minorNote }}</p>
           </details>
           </ng-template>
