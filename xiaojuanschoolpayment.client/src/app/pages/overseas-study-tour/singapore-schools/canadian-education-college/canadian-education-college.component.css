@@ -1,0 +1,114 @@
+/* Canadian Education College additions on top of the shared CIA/CIEC school-detail layout. */
+.cec-page .hero-copy h1 { font-size: clamp(32px, 3.4vw, 50px); line-height: 1.15; }
+.cec-page .cec-en { display: block; margin-top: 6px; color: #0f4a2f; font-size: 0.48em; font-weight: 800; letter-spacing: 0.5px; }
+
+.cec-page .cec-subheading { display: flex; align-items: center; gap: 6px; margin: 28px 0 12px; color: #102033; font-size: 18px; font-weight: 900; }
+.cec-page .cec-subheading mat-icon { color: #ee7d1a; }
+.cec-page .cec-note { margin: 10px 0 0; color: #64748b; font-size: 13px; line-height: 1.7; }
+.cec-page .cec-reference { color: #8a6d3b; }
+
+/* Photos */
+.cec-page .cec-gallery { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
+.cec-page .cec-gallery figure { margin: 0; overflow: hidden; border: 1px solid #dce8ee; border-radius: 8px; background: #fff; }
+.cec-page .cec-gallery img { display: block; width: 100%; aspect-ratio: 4 / 3; object-fit: cover; }
+.cec-page .cec-gallery figcaption { padding: 8px 10px 10px; }
+.cec-page .cec-gallery strong { display: block; color: #102033; font-size: 14px; }
+.cec-page .cec-gallery span { display: block; margin-top: 2px; color: #526176; font-size: 12.5px; line-height: 1.5; }
+
+/* Videos: the vertical clip is as tall as the landscape one (width ratio 256:81 = 16:9 against 9:16). */
+.cec-page .cec-video-row { display: grid; grid-template-columns: minmax(0, 256fr) minmax(0, 81fr); gap: 14px; align-items: start; }
+.cec-page .cec-video-row figure { margin: 0; overflow: hidden; border: 1px solid #dce8ee; border-radius: 8px; background: #fff; }
+.cec-page .cec-video-row video { display: block; width: 100%; background: #0f1d16; }
+.cec-page .cec-video-wide video { aspect-ratio: 16 / 9; }
+.cec-page .cec-video-tall video { aspect-ratio: 9 / 16; }
+.cec-page .cec-video-row figcaption { padding: 10px 12px; }
+.cec-page .cec-video-row strong { display: flex; justify-content: space-between; gap: 8px; color: #102033; font-size: 15px; }
+.cec-page .cec-video-row em { font-style: normal; color: #64748b; font-weight: 400; font-size: 12px; }
+.cec-page .cec-video-row span { display: block; margin-top: 4px; color: #526176; font-size: 13px; line-height: 1.5; }
+
+/* Programme zones: adults green, children orange, so junior rules are never read as adult rules. */
+.cec-page .cec-zone { border-top: 5px solid #0f4a2f; }
+.cec-page .cec-zone--adult { background: #f4f9f5; }
+.cec-page .cec-zone--kids { border-top-color: #ee7d1a; background: #fff8f0; }
+.cec-page .cec-zone--kids .section-heading > span { color: #c2410c; }
+.cec-page .cec-course-grid, .cec-page .cec-camp-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+.cec-page .cec-course { padding: 18px; border: 1px solid #dce8ee; border-radius: 8px; background: #fff; }
+.cec-page .cec-badge { display: inline-block; padding: 3px 10px; border-radius: 999px; background: #eaf3ec; color: #0f4a2f; font-size: 12.5px; font-weight: 800; }
+.cec-page .cec-course h3 { margin: 10px 0 12px; color: #102033; font-size: 20px; }
+.cec-page .cec-course h3 small { display: block; margin-top: 2px; color: #64748b; font-size: 13px; font-weight: 700; }
+.cec-page .cec-course h4 { margin: 16px 0 8px; color: #0f4a2f; font-size: 15px; }
+.cec-page .cec-zone--kids .cec-course h4 { color: #c2410c; }
+.cec-page .cec-course h4.cec-fee-title { margin-top: 0; }
+.cec-page .cec-facts { display: grid; gap: 0; margin: 0; }
+.cec-page .cec-facts div { display: grid; grid-template-columns: 76px minmax(0, 1fr); gap: 10px; padding: 8px 0; border-top: 1px solid #eef2f5; }
+.cec-page .cec-facts div:first-child { border-top: 0; padding-top: 0; }
+.cec-page .cec-facts dt { color: #64748b; font-size: 13px; font-weight: 700; }
+.cec-page .cec-facts dd { margin: 0; color: #102033; font-size: 14px; line-height: 1.6; }
+.cec-page .cec-check-list { margin: 0; padding-left: 18px; color: #40506a; font-size: 14px; line-height: 1.75; }
+.cec-page .cec-callout { margin-top: 14px; padding: 12px 14px; border-left: 4px solid #ee7d1a; border-radius: 6px; background: #fff4ea; }
+.cec-page .cec-callout strong { display: flex; align-items: center; gap: 6px; color: #9a3412; font-size: 15px; }
+.cec-page .cec-callout mat-icon { font-size: 20px; width: 20px; height: 20px; }
+.cec-page .cec-callout ul { margin: 6px 0 0; padding-left: 18px; color: #40506a; font-size: 14px; line-height: 1.7; }
+.cec-page .cec-callout p { margin: 6px 0 0; color: #40506a; font-size: 14px; line-height: 1.7; }
+
+.cec-page .cec-fee-list { margin: 0; padding: 0; list-style: none; }
+.cec-page .cec-fee-list li { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; padding: 10px 0; border-top: 1px solid #eef2f5; color: #40506a; font-size: 14px; }
+.cec-page .cec-fee-list li:first-child { border-top: 0; padding-top: 0; }
+.cec-page .cec-fee-list small { margin-left: 6px; padding: 1px 6px; border-radius: 4px; background: #f1f5f9; color: #64748b; font-size: 12px; }
+.cec-page .cec-fee-list b { color: #102033; text-align: right; white-space: nowrap; }
+.cec-page .cec-fee-list em { display: block; margin-top: 2px; color: #64748b; font-style: normal; font-weight: 400; font-size: 12px; }
+.cec-page .cec-family { display: flex; gap: 6px; align-items: flex-start; margin: 12px 0 0; color: #40506a; font-size: 14px; line-height: 1.6; }
+.cec-page .cec-family mat-icon { flex: none; color: #ee7d1a; font-size: 20px; width: 20px; height: 20px; }
+
+.cec-page .cec-table-wrap { overflow-x: auto; border: 1px solid #dce8ee; border-radius: 8px; background: #fff; -webkit-overflow-scrolling: touch; }
+.cec-page .cec-table { width: 100%; border-collapse: collapse; font-size: 14px; }
+.cec-page .cec-table th, .cec-page .cec-table td { padding: 11px 14px; border-top: 1px solid #e8eef3; text-align: left; color: #40506a; line-height: 1.5; }
+.cec-page .cec-table thead th { border-top: 0; background: #0f4a2f; color: #fff; font-weight: 800; }
+.cec-page .cec-table tbody th { color: #102033; font-weight: 800; white-space: nowrap; }
+.cec-page .cec-table tr.cec-break th, .cec-page .cec-table tr.cec-break td { background: #f1f5f9; color: #64748b; }
+
+/* Other courses and Sida service */
+.cec-page .cec-other-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+.cec-page .cec-service-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
+.cec-page .cec-other-grid article, .cec-page .cec-service-grid article { padding: 14px; border: 1px solid #dce8ee; border-radius: 8px; background: #fff; }
+.cec-page .cec-other-grid mat-icon, .cec-page .cec-service-grid mat-icon { color: #ee7d1a; }
+.cec-page .cec-other-grid strong, .cec-page .cec-service-grid strong { display: block; margin-top: 4px; color: #102033; }
+.cec-page .cec-other-grid p, .cec-page .cec-service-grid p { margin: 6px 0 0; color: #40506a; font-size: 13px; line-height: 1.6; }
+
+/* Consultant cards: avatar, name, title, description, WeChat QR, contact line. */
+.cec-page .cec-team { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+.cec-page .cec-team article { display: flex; flex-direction: column; align-items: center; padding: 18px 14px; border: 1px solid #dce8ee; border-radius: 10px; background: #fff; text-align: center; }
+.cec-page .cec-team-avatar { width: 84px; height: 84px; border-radius: 50%; object-fit: cover; background: #f3f4f6; }
+.cec-page .cec-team strong { margin-top: 10px; color: #102033; font-size: 18px; }
+.cec-page .cec-team span { margin-top: 2px; color: #ee7d1a; font-size: 13px; font-weight: 800; }
+.cec-page .cec-team p { flex: 1; margin: 8px 0 10px; color: #40506a; font-size: 13px; line-height: 1.6; }
+.cec-page .cec-team-qr { width: 132px; height: 132px; border-radius: 8px; background: #fff; }
+.cec-page .cec-team a, .cec-page .cec-team em { display: inline-flex; align-items: center; gap: 4px; margin-top: 8px; color: #0f4a2f; font-style: normal; font-size: 14px; font-weight: 800; text-decoration: none; }
+.cec-page .cec-team a mat-icon, .cec-page .cec-team em mat-icon { font-size: 18px; width: 18px; height: 18px; }
+
+@media (max-width: 980px) {
+  .cec-page .cec-gallery { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .cec-page .cec-service-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+@media (max-width: 640px) {
+  .cec-page .cec-gallery { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+  .cec-page .cec-gallery figcaption { padding: 6px 8px 8px; }
+  .cec-page .cec-gallery strong { font-size: 13px; }
+  .cec-page .cec-video-row { grid-template-columns: 1fr; }
+  .cec-page .cec-video-tall { justify-self: center; width: min(240px, 70%); }
+  .cec-page .cec-course-grid, .cec-page .cec-camp-grid, .cec-page .cec-other-grid, .cec-page .cec-service-grid { grid-template-columns: 1fr; }
+  .cec-page .cec-course { padding: 14px; }
+  .cec-page .cec-facts div { grid-template-columns: 64px minmax(0, 1fr); }
+  .cec-page .cec-table th, .cec-page .cec-table td { padding: 10px; font-size: 13px; }
+  .cec-page .cec-table tbody th { white-space: normal; }
+  /* Phones: one row per consultant, avatar beside the name, QR on the right, description below. */
+  .cec-page .cec-team { grid-template-columns: 1fr; gap: 10px; }
+  .cec-page .cec-team article { display: grid; grid-template-columns: 56px minmax(0, 1fr) 88px; grid-template-areas: 'avatar name qr' 'avatar title qr' 'desc desc desc' 'contact contact contact'; column-gap: 12px; align-items: center; padding: 12px; text-align: left; }
+  .cec-page .cec-team-avatar { grid-area: avatar; width: 56px; height: 56px; }
+  .cec-page .cec-team strong { grid-area: name; margin-top: 0; align-self: end; }
+  .cec-page .cec-team span { grid-area: title; align-self: start; }
+  .cec-page .cec-team-qr { grid-area: qr; width: 88px; height: 88px; }
+  .cec-page .cec-team p { grid-area: desc; margin: 8px 0 0; }
+  .cec-page .cec-team a, .cec-page .cec-team em { grid-area: contact; }
+}

@@ -63,6 +63,12 @@ export const SEO_PAGES: Record<string, SeoPage> = {
     keywords: 'Burlington School, 伦敦语言学校, 英国游学, 英国暑期游学, 伦敦青少年夏校, 英国语言学校费用, Burlington报价',
     image: '/assets/burlington/campus-courtyard.jpg',
   },
+  '/overseas-study-tour/singapore/canadian-education-college': {
+    title: '新加坡加拿大教育学院Canadian Education College｜课程学费与开课日期',
+    description: '新加坡加拿大教育学院（Canadian Education College）介绍：全日制英语证书课程（零基础初级班2026年12月14日开课）、雅思预备课程、2026–2027儿童冬季营（6–13岁）学费、学期日历和课堂照片视频；思达启航提供新加坡游学报名咨询。',
+    keywords: '新加坡游学, 新加坡语言学校, Canadian Education College, 新加坡加拿大教育学院, 新加坡冬令营, 新加坡儿童英语营, 新加坡雅思课程',
+    image: '/assets/canadian-education-sg/adult-class-flag.webp',
+  },
   '/philippines-study/cebu/ev-la-mer': {
     title: 'EV Academy La Mer校区 | 成人亲子课程、住宿与费用报价',
     description: '了解宿务麦克坦EV La Mer独立校区，查看ESL、Senior、强化口语及亲子课程、泳池校园实景、住宿费用与优惠，计算单人、多人或亲子家庭报价并保存图片。',

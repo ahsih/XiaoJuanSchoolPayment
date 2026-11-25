@@ -820,6 +820,18 @@ export const mainNavigation: NavigationItem[] = [
         label: '新加坡游学',
         route: '/overseas-study-tour/singapore',
         type: '国家页',
+        children: [
+          {
+            id: 'singapore-tour-overview',
+            label: '新加坡游学总览',
+            route: '/overseas-study-tour/singapore',
+          },
+          {
+            id: 'canadian-education-college',
+            label: '加拿大教育学院（新加坡）',
+            route: '/overseas-study-tour/singapore/canadian-education-college',
+          },
+        ],
       },
       {
         id: 'malaysia-tour',
