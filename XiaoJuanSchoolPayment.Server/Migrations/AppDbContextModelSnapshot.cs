@@ -703,6 +703,10 @@ namespace XiaoJuanSchoolPayment.Server.Migrations
                         .HasMaxLength(256)
                         .HasColumnType("varchar(256)");
 
+                    b.Property<string>("WeChatOpenId")
+                        .HasMaxLength(64)
+                        .HasColumnType("varchar(64)");
+
                     b.HasKey("Id");
 
                     b.HasIndex("NormalizedEmail")
@@ -735,6 +739,10 @@ namespace XiaoJuanSchoolPayment.Server.Migrations
                         .HasMaxLength(500)
                         .HasColumnType("varchar(500)");
 
+                    b.Property<string>("ConsultantName")
+                        .HasMaxLength(50)
+                        .HasColumnType("varchar(50)");
+
                     b.Property<string>("CourseName")
                         .HasMaxLength(200)
                         .HasColumnType("varchar(200)");
@@ -755,6 +763,9 @@ namespace XiaoJuanSchoolPayment.Server.Migrations
                         .IsRequired()
                         .HasMaxLength(20)
                         .HasColumnType("varchar(20)");
+
+                    b.Property<string>("FeeItemsJson")
+                        .HasColumnType("longtext");
 
                     b.Property<string>("InternalNotes")
                         .HasMaxLength(2000)
@@ -778,6 +789,9 @@ namespace XiaoJuanSchoolPayment.Server.Migrations
                         .HasColumnType("varchar(450)");
 
                     b.Property<string>("PublishedSnapshotJson")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("RequestedDocumentsJson")
                         .HasColumnType("longtext");
 
                     b.Property<string>("ReviewStatus")
@@ -1022,6 +1036,113 @@ namespace XiaoJuanSchoolPayment.Server.Migrations
                     b.ToTable("StudentPayments");
                 });
 
+            modelBuilder.Entity("XiaoJuanSchoolPayment.Server.Data.Models.StudentReminderLog", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("char(36)");
+
+                    b.Property<string>("Kind")
+                        .IsRequired()
+                        .HasMaxLength(30)
+                        .HasColumnType("varchar(30)");
+
+                    b.Property<string>("ReminderKey")
+                        .IsRequired()
+                        .HasMaxLength(120)
+                        .HasColumnType("varchar(120)");
+
+                    b.Property<DateTime>("SentAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<Guid>("StudentApplicationId")
+                        .HasColumnType("char(36)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("StudentApplicationId", "Kind", "ReminderKey")
+                        .IsUnique();
+
+                    b.ToTable("StudentReminderLogs");
+                });
+
+            modelBuilder.Entity("XiaoJuanSchoolPayment.Server.Data.Models.StudentSubmission", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("char(36)");
+
+                    b.Property<string>("ContentType")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("varchar(100)");
+
+                    b.Property<string>("DocumentType")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("varchar(50)");
+
+                    b.Property<string>("FilePath")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("varchar(500)");
+
+                    b.Property<string>("OriginalFileName")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("varchar(255)");
+
+                    b.Property<string>("ReviewNote")
+                        .HasMaxLength(500)
+                        .HasColumnType("varchar(500)");
+
+                    b.Property<string>("ReviewStatus")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("varchar(20)");
+
+                    b.Property<DateTime?>("ReviewedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("ReviewedByName")
+                        .HasMaxLength(256)
+                        .HasColumnType("varchar(256)");
+
+                    b.Property<string>("ReviewedByUserId")
+                        .HasMaxLength(450)
+                        .HasColumnType("varchar(450)");
+
+                    b.Property<long>("SizeBytes")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("StoredFileName")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("varchar(255)");
+
+                    b.Property<Guid>("StudentApplicationId")
+                        .HasColumnType("char(36)");
+
+                    b.Property<string>("StudentNote")
+                        .HasMaxLength(300)
+                        .HasColumnType("varchar(300)");
+
+                    b.Property<DateTime>("SubmittedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("SubmittedByUserId")
+                        .HasMaxLength(450)
+                        .HasColumnType("varchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("StudentApplicationId");
+
+                    b.HasIndex("ReviewStatus", "SubmittedAt");
+
+                    b.ToTable("StudentSubmissions");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -1225,6 +1346,28 @@ namespace XiaoJuanSchoolPayment.Server.Migrations
                     b.Navigation("StudentApplication");
                 });
 
+            modelBuilder.Entity("XiaoJuanSchoolPayment.Server.Data.Models.StudentReminderLog", b =>
+                {
+                    b.HasOne("XiaoJuanSchoolPayment.Server.Data.Models.StudentApplication", "StudentApplication")
+                        .WithMany()
+                        .HasForeignKey("StudentApplicationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("StudentApplication");
+                });
+
+            modelBuilder.Entity("XiaoJuanSchoolPayment.Server.Data.Models.StudentSubmission", b =>
+                {
+                    b.HasOne("XiaoJuanSchoolPayment.Server.Data.Models.StudentApplication", "StudentApplication")
+                        .WithMany("Submissions")
+                        .HasForeignKey("StudentApplicationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("StudentApplication");
+                });
+
             modelBuilder.Entity("XiaoJuanSchoolPayment.Server.Data.Models.School", b =>
                 {
                     b.Navigation("SchoolFees");
@@ -1248,6 +1391,8 @@ namespace XiaoJuanSchoolPayment.Server.Migrations
                     b.Navigation("Documents");
 
                     b.Navigation("Payments");
+
+                    b.Navigation("Submissions");
                 });
 #pragma warning restore 612, 618
         }

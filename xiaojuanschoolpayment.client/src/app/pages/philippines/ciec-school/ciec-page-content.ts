@@ -6,13 +6,15 @@ import type {
   BasicInfoRow,
   CampusBuildingCard,
   CampusPracticalGuide,
+  CiaShortVideo,
+  CiaVideoCard,
   CourseDetailGuide,
   DailyScheduleRow,
   FaqItem,
   GalleryImage,
   HolidayCalendar,
 } from '../cia-school/cia-page-content';
-import type { PhRoomProfile } from '../school-page/ph-school-profile';
+import type { PhRoomProfile, PhVideoItem, PhVideoTab } from '../school-page/ph-school-profile';
 import { SCHOOL_REFERENCE_NOTE } from '../school-page/school-reference-note';
 import {
   CIEC_CIDEC_ID,
@@ -129,6 +131,95 @@ export const CIEC_ALBUM_DESCRIPTIONS = {
   餐厅: '学生餐厅、茶水间与小卖部',
   设施: '游泳池与篮球场',
 } as const;
+
+/** One video in public/assets/ciec/videos/: <name>.mp4 with its poster-<name>.jpg. */
+export interface CiecVideo {
+  name: string;
+  title: string;
+  description: string;
+  duration: string;
+  orientation: 'landscape' | 'portrait';
+  label?: string;
+  details?: string[];
+}
+
+export const ciecVideoSrc = (video: CiecVideo) => `/assets/ciec/videos/${video.name}.mp4`;
+export const ciecVideoPoster = (video: CiecVideo) => `/assets/ciec/videos/poster-${video.name}.jpg`;
+
+/**
+ * Clips from CIEC's own YouTube channels (CIEC GLOBAL and the Korean CIDEC CIEC channel), checked frame by frame on
+ * 2026-11-25. The tour lost its logo cards (they carry a “best junior school” slogan) and the STEAM class its stock
+ * footage and subscribe card. Left out: talks in Vietnamese only (parent interviews, a seminar, a graduate), clips
+ * that show only the airport, and 2018–2019 footage of the campus before it was repainted.
+ */
+export const CIEC_VIDEOS: CiecVideo[] = [
+  {
+    name: 'ciec-school-tour-2022', title: '校园导览（2022年）', duration: '3:18', orientation: 'landscape', label: 'SCHOOL TOUR',
+    description: '学校2022年拍的校园导览：庭院、户外用餐区、餐厅、游泳池、自习室、大厅、幼儿园教室、AVR教室，以及双人间、三人间和卫生间。',
+    details: ['庭院、餐厅与游泳池', '幼儿园与AVR教室', '双人间和三人间'],
+  },
+  {
+    name: 'ciec-pronunciation-class', title: '发音课实拍', duration: '2:25', orientation: 'portrait',
+    description: '老师全程用英语上发音课，边写白板边讲解单词的读法。',
+  },
+  {
+    name: 'ciec-steam-class-2020', title: 'STEAM体验课（2020年）', duration: '2:22', orientation: 'landscape', label: 'STEAM CLASS',
+    description: '2020年学校STEAM营的一节课：老师用英语讲结构工程和桁架桥，学生分组搭桥，再放砖块做承重测试。',
+    details: ['老师用英语讲解', '学生分组动手搭桥', '承重测试'],
+  },
+  {
+    name: 'ciec-summer-camp-2026', title: '一位学员的夏令营（2026年）', duration: '3:19', orientation: 'portrait',
+    description: '学校跟拍一位学员的2026年夏令营：欢迎会、一对一和小组课、自助餐、和老师一起吃饭、出海游玩、毕业典礼。字幕是越南语。',
+  },
+  {
+    name: 'ciec-student-teachers', title: '学生说：最喜欢的老师（一）', duration: '0:36', orientation: 'portrait',
+    description: '学生用英语讲自己最喜欢的CIEC老师，以及喜欢的原因。',
+  },
+  {
+    name: 'ciec-favourite-teacher', title: '学生说：最喜欢的老师（二）', duration: '0:35', orientation: 'portrait',
+    description: '另一位学生用英语讲自己最喜欢的CIEC老师。',
+  },
+];
+
+const ciecVideo = (name: string) => CIEC_VIDEOS.find(video => video.name === name) as CiecVideo;
+const albumVideo = (name: string): PhVideoItem => {
+  const video = ciecVideo(name);
+  return {
+    title: video.title,
+    text: video.description,
+    src: ciecVideoSrc(video),
+    poster: ciecVideoPoster(video),
+    duration: video.duration,
+    shape: video.orientation === 'landscape' ? 'wide' : 'tall',
+  };
+};
+
+export const CIEC_VIDEO_CARDS: CiaVideoCard[] = CIEC_VIDEOS.filter(video => video.orientation === 'landscape').map(video => ({
+  code: 'CIEC',
+  label: video.label ?? 'CIEC',
+  title: video.title,
+  text: video.description,
+  poster: ciecVideoPoster(video),
+  videoSrc: ciecVideoSrc(video),
+  contentType: 'video/mp4',
+  details: [...(video.details ?? []), `时长 ${video.duration}`],
+}));
+
+export const CIEC_LIFE_VIDEOS: CiaShortVideo[] = CIEC_VIDEOS.filter(video => video.orientation === 'portrait').map(video => ({
+  title: video.title,
+  text: video.description,
+  src: ciecVideoSrc(video),
+  poster: ciecVideoPoster(video),
+  duration: video.duration,
+}));
+
+/** Videos of the hero album (compact layout), one chip per topic; the campus tour opens it. */
+export const CIEC_VIDEO_TABS: PhVideoTab[] = [
+  { label: '校园视频', icon: 'videocam', items: ['ciec-school-tour-2022'].map(albumVideo) },
+  { label: '课堂视频', icon: 'videocam', items: ['ciec-pronunciation-class', 'ciec-steam-class-2020'].map(albumVideo) },
+  { label: '夏令营视频', icon: 'videocam', items: ['ciec-summer-camp-2026'].map(albumVideo) },
+  { label: '学员访谈', icon: 'videocam', items: ['ciec-student-teachers', 'ciec-favourite-teacher'].map(albumVideo) },
+];
 
 const ROOM_SERVICE = '每周打扫2次、洗衣2次，床单每两周换一次';
 const ROOM_HIGHLIGHTS = ['床、衣柜、书桌、冰箱', '变频静音空调'];

@@ -7,6 +7,7 @@ import {
   StudentApplicationDocumentDTO,
   StudentPaymentDTO,
   StudentPaymentSubmissionDTO,
+  StudentSubmissionDTO,
   UpdateStudentApplicationDTO,
 } from '../interfaces/student-application.dto';
 
@@ -148,6 +149,56 @@ export class StudentApplicationService {
         const link = window.document.createElement('a');
         link.href = url;
         link.download = payment.originalFileName || `${payment.paymentType}-付款凭证`;
+        link.click();
+        window.setTimeout(() => URL.revokeObjectURL(url), 60_000);
+      });
+  }
+
+  /** Student: upload a file the consultant asked for (or any allowed type). */
+  uploadSubmission(applicationId: string, file: File, documentType: string, note: string): Observable<StudentSubmissionDTO> {
+    const body = new FormData();
+    body.append('file', file);
+    body.append('documentType', documentType);
+    body.append('note', note);
+    return this.http.post<StudentSubmissionDTO>(`${this.apiUrl}/${applicationId}/submissions`, body, {
+      headers: this.authHeaders(),
+    });
+  }
+
+  /** Student: remove an own upload that the consultant has not accepted yet. */
+  deleteSubmission(applicationId: string, submissionId: string): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/${applicationId}/submissions/${submissionId}`, {
+      headers: this.authHeaders(),
+    });
+  }
+
+  acceptSubmission(applicationId: string, submissionId: string): Observable<StudentSubmissionDTO> {
+    return this.http.post<StudentSubmissionDTO>(
+      `${this.apiUrl}/${applicationId}/submissions/${submissionId}/accept`,
+      {},
+      { headers: this.authHeaders() },
+    );
+  }
+
+  returnSubmission(applicationId: string, submissionId: string, reason: string): Observable<StudentSubmissionDTO> {
+    return this.http.post<StudentSubmissionDTO>(
+      `${this.apiUrl}/${applicationId}/submissions/${submissionId}/return`,
+      { reason },
+      { headers: this.authHeaders() },
+    );
+  }
+
+  downloadSubmission(applicationId: string, submission: StudentSubmissionDTO): void {
+    this.http
+      .get(`${this.apiUrl}/${applicationId}/submissions/${submission.id}/file`, {
+        headers: this.authHeaders(),
+        responseType: 'blob',
+      })
+      .subscribe((blob) => {
+        const url = URL.createObjectURL(blob);
+        const link = window.document.createElement('a');
+        link.href = url;
+        link.download = submission.originalFileName || submission.documentType;
         link.click();
         window.setTimeout(() => URL.revokeObjectURL(url), 60_000);
       });
