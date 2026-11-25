@@ -7,7 +7,7 @@ The Clark HANA Academy page (`/philippines-study/clark/hana-academy`) moved onto
 - `hana-school/hana-page-quote.ts`: per-student calculation (`HanaPageStudent`), `HanaQuote`, `HanaPlanComparison`.
 - `hana-school/hana-page-content.ts`: all page text and data (pure, mini-program-ready).
 - `hana-school/hana-page-profile.ts`, `hana-school/hana-school-page.component.ts`: template wiring.
-- Media: `public/assets/hana/` (17 campus and 8 room WebP photos, 2 videos with posters, about 30 MB).
+- Media: `public/assets/hana/` (17 campus and 13 room WebP photos, 10 videos with posters, about 100 MB).
 
 ## Sources used
 
@@ -46,10 +46,11 @@ The Clark HANA Academy page (`/philippines-study/clark/hana-academy`) moved onto
   (2026-11-24): one extension per extra 30 days, from week 5 on a 30-day visa and from week 9 on a 59-day visa;
   the 59-day sequence is estimated at 5,900 then 4,130 each.
 - Whether a winter-peak camp shorter or longer than the listed lengths is allowed.
-- Single and family room photos. The triple room uses the school's 2019 facility photos of a room with a single bed
-  and a bunk bed (the 2023 brochure lists 1-, 2- and 3-bed rooms and family rooms, so this is the 3-bed room).
+- Original single and family room photos. The single and family photos on the page are stills from the school's 2026
+  dormitory tour (720 px wide, 4:3 crops). The triple room also uses the school's 2019 facility photos of a room with a
+  single bed and a bunk bed, while the 2026 tour shows three single beds, so the page says the school assigns the beds.
   The 2026 family brochure's 家庭房 photo carries Google Gemini's sparkle watermark (AI-made or AI-edited), so it is
-  not used; no single-room photo is certain (the one-bed shots also show two desk chairs).
+  not used.
 - The partner hotel dormitories and the early-study-abroad programs are not quoted online (adviser quote).
 - The school film's narration was not checked word by word; its first seconds showed another company's logo and were cut.
 
@@ -76,3 +77,28 @@ The Clark HANA Academy page (`/philippines-study/clark/hana-academy`) moved onto
 - `PhSchoolProfile.peakSeasonsWithoutSurcharge`: marks peak months on the compact calendar with a 旺季不加价 line.
 - `PhSchoolProfile.textReviews` and `copy.reviews.textNote`: short written reviews as cards (styles in
   `ph-school-page-options.css`).
+
+## Official videos (2026-11-25)
+
+User request: more of the school's own videos from its YouTube and Facebook accounts, to build trust. All new clips
+are the school's own 2026 Facebook reels (720×1280), re-encoded to H.264 CRF 26 with a poster each. The hero album
+groups the videos as 校园／宿舍／外教／活动／访谈.
+
+- `campus-tour.mp4` (1:30): campus walk. A door sign with a staff name (63.2–65.4 s) is covered by the frame at 63.0 s,
+  audio kept. The preschool room shows only the Korean flag.
+- `dorm-tour.mp4` (0:55): the school's four room types, each labelled by the school. Cut from it, each opening its
+  room's album: `room-single` (4.0–12.4 s), `room-twin` (12.4–26.0 s, the 双人间 album), `room-triple` (26.0–39.5 s)
+  and `room-family` (39.5–52.3 s). The single and family room photos are stills from it.
+- `cooking-class.mp4` (0:50): the Wednesday cooking class for children.
+- `family-interview.mp4` (0:47): a student from China who came with her husband. A backdrop with the school website and
+  certificates with full names (43.1–44.5 s) are covered by the frame at 43.0 s. The page text does not name her.
+
+Not used:
+
+- Other companies on screen: outings to water parks, a zoo, malls, cafés, a gym, a pickleball and skating venue, and
+  both partner-hotel videos.
+- Flags or wording on Taiwan: a native-teacher interview whose sleeve patch carries the flag of the Taiwan authorities
+  for the whole clip, Montessori and kindergarten clips with that flag, a teacher video listing Taiwan among countries on
+  a map, and a trip video naming "Taiwanese and Chinese students".
+- Test-company logos (IELTS, TOEIC) in teacher videos, low-resolution or 2019 clips, a kindergarten reading clip whose
+  teacher could not be identified, and YouTube copies of the reels above.

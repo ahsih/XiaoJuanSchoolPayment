@@ -26,7 +26,7 @@ export const HANA_PAGE_TEXT = {
   campusIntro: '教学楼、宿舍、餐厅、泳池和花园都在同一个校园里，宿舍每间都有空调。',
   galleryIntro: '按区域查看校园、教室和住宿；相册内用左右箭头或缩略图切换，点击主图可放大。',
   coursesIntro: '按学习对象分组，每门课下面是每天的课时；点开可看适合人群和说明。每节课45分钟。',
-  roomsPhotoIntro: '点选房型查看实景；目前有双人间的照片，其他房型照片学校补充后再放上来。',
+  roomsPhotoIntro: '点选房型查看学校实拍视频和照片。',
   finalCtaTitle: '想确认 HANA 的空房和淡季优惠？',
   finalCtaText: '告诉顾问你的入学日期、周数、同行人数和想住的房型，我们帮你确认房间并做一份完整报价。',
 };
@@ -99,9 +99,13 @@ export const HANA_GALLERY_IMAGES: GalleryImage[] = [
   { category: '教室', title: '自习室座位', description: '有隔板的自习座位。', src: campus('study-hall-02') },
   { category: '教室', title: '幼儿园教室', description: '3–6岁幼儿园孩子上课的教室。', src: campus('kindergarten') },
   { category: '教室', title: '幼儿园小教室', description: '铺着软垫的小教室。', src: campus('kindergarten-02') },
+  { category: '住宿', title: '单人间', description: '一人一间，有书桌和衣柜。', src: rooms('single-01') },
   { category: '住宿', title: '双人间', description: '两张单人床，有空调。', src: rooms('double-01') },
   { category: '住宿', title: '双人间（另一间）', description: '两张单人床，房间整洁明亮。', src: rooms('double-02') },
   { category: '住宿', title: '双人间书桌和衣柜', description: '两人共用的书桌和衣柜。', src: rooms('double-desk') },
+  { category: '住宿', title: '家庭房', description: '一家人同住，这间是一张双人床加一张单人床。', src: rooms('family-01') },
+  { category: '住宿', title: '家庭房餐桌', description: '家庭房里的餐桌。', src: rooms('family-02') },
+  { category: '住宿', title: '家庭房厨房', description: '家庭房自带的厨房和冰箱。', src: rooms('family-03') },
   { category: '住宿', title: '宿舍卫浴', description: '房间内的独立卫浴。', src: rooms('bathroom') },
   { category: '住宿', title: '宿舍走廊', description: '宿舍楼的走廊。', src: rooms('corridor') },
   { category: '设施', title: '泳池', description: '泳池和拱桥。', src: campus('pool-02') },
@@ -114,14 +118,19 @@ export const HANA_GALLERY_IMAGES: GalleryImage[] = [
 export const HANA_ALBUM_DESCRIPTIONS = {
   校园: '花园、泳池与校园环境',
   教室: '一对一、小班、自习室与幼儿园',
-  住宿: '双人间与宿舍',
+  住宿: '单人间、双人间与家庭房',
   餐厅: '学生餐厅',
   设施: '泳池、竹凉亭与公共休息区',
 };
 
+/** Hero album chips, in this order; the template drops the 视频 suffix on phones. */
+export type HanaVideoTopic = '校园' | '宿舍' | '外教' | '活动' | '访谈';
+export const HANA_VIDEO_TOPICS: readonly HanaVideoTopic[] = ['校园', '宿舍', '外教', '活动', '访谈'];
+
 /**
  * A video from HANA's own material, never from an agency. The school film's first seconds showed an agency logo
- * and were cut out; check every frame of a new clip for other companies or contact details.
+ * and were cut out; check every frame of a new clip for other companies, flags or contact details.
+ * The 2026 vertical clips (portrait) are the school's own Facebook reels; see docs/hana-source-audit-2026-11-23.md.
  */
 export interface HanaVideo {
   name: string;
@@ -130,26 +139,77 @@ export interface HanaVideo {
   duration: string;
   label: string;
   details: string[];
+  topic: HanaVideoTopic;
+  portrait?: boolean;
 }
 
-export const hanaVideoSrc = (video: HanaVideo) => `/assets/hana/videos/${video.name}.mp4`;
-export const hanaVideoPoster = (video: HanaVideo) => `/assets/hana/videos/poster-${video.name}.jpg`;
+/** A part of the school's dormitory tour that shows only one room type; it opens that room's photos. */
+export type HanaRoomVideo = Pick<HanaVideo, 'name' | 'title' | 'description' | 'duration'>;
+
+export const hanaVideoSrc = (video: Pick<HanaVideo, 'name'>) => `/assets/hana/videos/${video.name}.mp4`;
+export const hanaVideoPoster = (video: Pick<HanaVideo, 'name'>) => `/assets/hana/videos/poster-${video.name}.jpg`;
 
 export const HANA_VIDEOS: HanaVideo[] = [
   {
-    name: 'school-film', title: 'HANA 学校介绍片', duration: '1:43', label: 'SCHOOL FILM',
+    name: 'school-film', title: 'HANA 学校介绍片', duration: '1:43', label: 'SCHOOL FILM', topic: '校园',
     description: '学校老师带你走一圈：厨房、幼儿园、教室、宿舍、泳池和花园凉亭。',
     details: ['幼儿园与教室', '宿舍、泳池与花园'],
   },
   {
-    name: 'teacher-interview', title: '美国外教采访', duration: '0:35', label: 'NATIVE TEACHER',
+    name: 'campus-tour', title: '2026 校园导览', duration: '1:30', label: 'CAMPUS TOUR', topic: '校园', portrait: true,
+    description: '从花园泳池和竹凉亭走到宿舍、自助小卖部、幼儿园教室、自习室、一对一教室和餐厅。',
+    details: ['泳池、花园与宿舍', '教室、自习室与餐厅'],
+  },
+  {
+    name: 'dorm-tour', title: '宿舍房型导览', duration: '0:55', label: 'DORMITORY', topic: '宿舍', portrait: true,
+    description: '单人间、双人间、三人间和家庭房依次看，每间都有独立卫浴和窗户；家庭房带厨房和冰箱。',
+    details: ['单人间、双人间、三人间', '家庭房带厨房'],
+  },
+  {
+    name: 'teacher-interview', title: '美国外教采访', duration: '0:35', label: 'NATIVE TEACHER', topic: '外教',
     description: '学校的美国外教在泳池边介绍自己和上课方式，英文原声。',
     details: ['外教一对一和小班课', '英文原声'],
   },
+  {
+    name: 'cooking-class', title: '孩子的烹饪课', duration: '0:50', label: 'COOKING CLASS', topic: '活动', portrait: true,
+    description: '每周三的动手课：孩子们分工调面糊、煎松饼，全程用英语交流。',
+    details: ['每周三', '全英语动手课'],
+  },
+  {
+    name: 'family-interview', title: '学员访谈：和先生一起来学英语', duration: '0:47', label: 'STUDENT STORY', topic: '访谈', portrait: true,
+    description: '来自中国的学员第二次来菲律宾、第一次来 HANA，聊老师、灵活的学习方式和认识各国朋友的感受（英文字幕）。',
+    details: ['夫妻同来', '英文字幕'],
+  },
 ];
 
-/** Photos come only from HANA's own material and match the labelled room. */
+/** Keyed by room profile id; each clip shows only that room type. */
+export const HANA_ROOM_VIDEOS: Readonly<Record<string, HanaRoomVideo>> = {
+  single: { name: 'room-single', title: '单人间实拍', duration: '0:08', description: '一人一间：床、书桌、衣柜和独立卫浴。' },
+  double: { name: 'room-twin', title: '双人间实拍', duration: '0:14', description: '两张单人床、书桌、衣柜和独立卫浴。' },
+  triple: { name: 'room-triple', title: '三人间实拍', duration: '0:14', description: '三张单人床、书桌、衣柜和独立卫浴。' },
+  family: { name: 'room-family', title: '家庭房实拍', duration: '0:13', description: '一张双人床加一张单人床，带餐桌、厨房、冰箱和独立卫浴。' },
+};
+
+/**
+ * Photos come only from HANA's own material and match the labelled room. The single and family photos are stills
+ * from the school's 2026 dormitory tour, at the video's own size.
+ */
 export const HANA_ROOM_PROFILES: PhRoomProfile[] = [
+  {
+    id: 'single',
+    label: '单人间',
+    englishName: 'SINGLE ROOM',
+    location: '校内',
+    bed: '一张床',
+    service: '每周2次清洁和洗衣',
+    suitable: '想要自己空间的成人学员',
+    note: '一人一间，成人可选。',
+    highlights: ['空调、WiFi、独立卫浴、书桌和衣柜', '含餐'],
+    image: rooms('single-01'),
+    gallery: [rooms('single-01'), rooms('single-02')],
+    imageAlt: 'HANA单人间实景',
+    rateIds: ['single'],
+  },
   {
     id: 'double',
     label: '双人间',
@@ -166,12 +226,12 @@ export const HANA_ROOM_PROFILES: PhRoomProfile[] = [
     rateIds: ['double'],
   },
   {
-    // A single bed plus a bunk bed: HANA's dormitory has only 1-, 2- and 3-bed rooms besides family rooms.
+    // The 2026 dormitory tour shows three single beds; the older photos show a single bed plus a bunk bed.
     id: 'triple',
     label: '三人间',
     englishName: 'TRIPLE ROOM',
     location: '校内',
-    bed: '一张单人床 + 一张上下铺',
+    bed: '三张单人床，或一张单人床＋一张上下铺，以学校安排为准',
     service: '每周2次清洁和洗衣',
     suitable: '家长带孩子、青少年学员',
     note: '供家长和孩子或青少年入住；成人学员住单人间或双人间。',
@@ -180,6 +240,21 @@ export const HANA_ROOM_PROFILES: PhRoomProfile[] = [
     gallery: [rooms('triple-01'), rooms('triple-02'), rooms('triple-03'), rooms('bathroom'), rooms('corridor')],
     imageAlt: 'HANA三人间实景',
     rateIds: ['triple'],
+  },
+  {
+    id: 'family',
+    label: '家庭房',
+    englishName: 'FAMILY ROOM',
+    location: '校内',
+    bed: '双人床＋单人床（视频中的房间）',
+    service: '每周2次清洁和洗衣',
+    suitable: '2–5人的家庭',
+    note: '一家人同住一间，带厨房、冰箱和餐桌；床位和房间大小按人数由学校安排。2人家庭房只在3–6月、9–12月开放。',
+    highlights: ['空调、WiFi、独立卫浴', '厨房、冰箱和餐桌', '含餐'],
+    image: rooms('family-01'),
+    gallery: [rooms('family-01'), rooms('family-02'), rooms('family-03')],
+    imageAlt: 'HANA家庭房实景',
+    rateIds: ['family-2', 'family-3', 'family-4', 'family-5'],
   },
 ];
 
