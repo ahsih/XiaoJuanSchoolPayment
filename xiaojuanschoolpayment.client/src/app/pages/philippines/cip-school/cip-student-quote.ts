@@ -31,7 +31,7 @@ export class CipStudentQuote {
   get visaNote(): string {
     return this.isLongTermVisa
       ? `${this.visaLabel}：SSP、SSP I-Card、ACR I-Card及续签暂按免收预估；是否适用须由顾问向学校核实。`
-      : `${this.visaLabel}：学习超过${this.visaType === 'tourist30' ? 4 : 8}周计续签，并计收一次ACR I-Card；金额按CIP费用资料预估。`;
+      : `${this.visaLabel}：学习超过${this.visaType === 'tourist30' ? 4 : 8}周计续签，并计收一次ACR I-Card；金额为预估，以学校实际收取为准。`;
   }
   get registration(): number { return this.returningStudent ? 0 : CIP_REGISTRATION; }
   get registrationNote(): string { return this.returningStudent ? '老学员返校，免注册费。' : '新学员一次性注册费600元，每位只收一次。'; }

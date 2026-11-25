@@ -1,0 +1,221 @@
+<app-cia-school>
+<div class="cia-page cec-page">
+  <div class="page-grid">
+    <main class="page-main">
+      <section class="hero-section" id="top">
+        <div class="hero-copy">
+          <a class="back-link" routerLink="/overseas-study-tour/singapore">
+            <mat-icon>arrow_back</mat-icon>
+            返回新加坡游学
+          </a>
+          <p class="breadcrumb">{{ copy.breadcrumb }}</p>
+          <h1>{{ copy.title }}<span class="cec-en">{{ copy.englishName }}</span></h1>
+          <p class="hero-lead">{{ copy.lead }}</p>
+          <div class="hero-tags" aria-label="加拿大教育学院特点">
+            <span *ngFor="let tag of copy.tags"><mat-icon>{{ tag.icon }}</mat-icon>{{ tag.text }}</span>
+          </div>
+          <div class="hero-actions">
+            <a class="primary-action" href="#adult-courses" (click)="scrollToSection('adult-courses', $event)">
+              查看课程和开课日期
+              <mat-icon>menu_book</mat-icon>
+            </a>
+            <a class="secondary-action" href="#winter-camp" (click)="scrollToSection('winter-camp', $event)">
+              儿童冬季营学费
+              <mat-icon>child_care</mat-icon>
+            </a>
+            <a class="secondary-action" href="#consultants" (click)="scrollToSection('consultants', $event)">
+              联系顾问
+              <mat-icon>support_agent</mat-icon>
+            </a>
+          </div>
+          <p class="trust-note"><mat-icon>verified</mat-icon>{{ copy.trustNote }}</p>
+        </div>
+
+        <div class="hero-media" aria-label="加拿大教育学院图片展示">
+          <figure class="feature-photo">
+            <img [src]="heroImage.src" alt="新加坡加拿大教育学院成人英语课堂" />
+            <figcaption>{{ heroImage.title }}：{{ heroImage.description }}</figcaption>
+          </figure>
+          <div class="media-strip" aria-label="加拿大教育学院缩略图">
+            <figure *ngFor="let image of heroStrip">
+              <img [src]="image.src" [alt]="image.title" loading="lazy" />
+              <figcaption>{{ image.title }}</figcaption>
+            </figure>
+          </div>
+        </div>
+      </section>
+
+      <nav class="mobile-anchor-nav" aria-label="手机端快捷导航">
+        <a *ngFor="let item of mobileAnchors" [href]="'#' + item.target" (click)="scrollToSection(item.target, $event)">
+          <mat-icon>{{ item.icon }}</mat-icon>{{ item.label }}
+        </a>
+      </nav>
+
+      <section class="section-block" id="gallery">
+        <div class="section-heading">
+          <span>照片 / 课堂和活动</span>
+          <h2>先看看教室、课堂和学生活动</h2>
+          <p>成人课堂、儿童课堂、夏令营和校外活动的照片。</p>
+        </div>
+        <div class="cec-gallery">
+          <figure *ngFor="let image of gallery">
+            <img [src]="image.src" [alt]="image.title" [style.object-position]="image.position || null" loading="lazy" />
+            <figcaption><strong>{{ image.title }}</strong><span>{{ image.description }}</span></figcaption>
+          </figure>
+        </div>
+
+        <div class="cec-videos" id="videos">
+          <h3 class="cec-subheading"><mat-icon>smart_display</mat-icon>视频</h3>
+          <div class="cec-video-row">
+            <figure *ngFor="let item of featuredVideos" class="cec-video-wide">
+              <video controls preload="none" playsinline [poster]="item.poster" [src]="item.src"></video>
+              <figcaption><strong>{{ item.title }}<em>{{ item.duration }}</em></strong><span>{{ item.description }}</span></figcaption>
+            </figure>
+            <figure *ngFor="let item of shortVideos" class="cec-video-tall">
+              <video controls preload="none" playsinline [poster]="item.poster" [src]="item.src"></video>
+              <figcaption><strong>{{ item.title }}<em>{{ item.duration }}</em></strong><span>{{ item.description }}</span></figcaption>
+            </figure>
+          </div>
+        </div>
+        <p class="cec-note cec-reference">{{ copy.photoNote }}</p>
+      </section>
+
+      <section class="section-block cec-zone cec-zone--adult" id="adult-courses">
+        <div class="section-heading">
+          <span>成人课程</span>
+          <h2>英语证书课程和雅思预备课程</h2>
+          <p>两门都是全日制课程，周一至周五上课，每周15小时。</p>
+        </div>
+
+        <div class="cec-course-grid">
+          <article class="cec-course">
+            <span class="cec-badge">{{ certificate.badge }}</span>
+            <h3>{{ certificate.name }}<small>{{ certificate.englishName }}</small></h3>
+            <dl class="cec-facts">
+              <div *ngFor="let fact of certificate.facts"><dt>{{ fact.label }}</dt><dd>{{ fact.value }}</dd></div>
+            </dl>
+            <div class="cec-callout">
+              <strong><mat-icon>campaign</mat-icon>{{ certificate.beginner.title }}</strong>
+              <ul><li *ngFor="let point of certificate.beginner.points">{{ point }}</li></ul>
+            </div>
+          </article>
+
+          <article class="cec-course">
+            <span class="cec-badge">{{ ielts.badge }}</span>
+            <h3>{{ ielts.name }}<small>{{ ielts.englishName }}</small></h3>
+            <dl class="cec-facts">
+              <div *ngFor="let fact of ielts.facts"><dt>{{ fact.label }}</dt><dd>{{ fact.value }}</dd></div>
+            </dl>
+            <h4>课程内容</h4>
+            <ul class="cec-check-list"><li *ngFor="let item of ielts.content">{{ item }}</li></ul>
+          </article>
+        </div>
+
+        <div id="terms" *ngIf="terms.length">
+          <h3 class="cec-subheading"><mat-icon>event</mat-icon>英语证书课程学期日历（全日制）</h3>
+          <div class="cec-table-wrap">
+            <table class="cec-table">
+              <thead><tr><th>学期</th><th>日期</th><th>进度测试</th></tr></thead>
+              <tbody>
+                <tr *ngFor="let term of terms" [class.cec-break]="term.isBreak">
+                  <th scope="row">{{ term.name }}</th><td>{{ term.dates }}</td><td>{{ term.test }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <p class="cec-note cec-reference">{{ referenceNote }}</p>
+      </section>
+
+      <section class="section-block cec-zone cec-zone--kids" id="winter-camp">
+        <div class="section-heading">
+          <span>儿童课程 · 6–13岁</span>
+          <h2>{{ camp.name }}</h2>
+          <p>{{ camp.dates }}，可选全天或半天。</p>
+        </div>
+
+        <div class="cec-camp-grid">
+          <article class="cec-course">
+            <dl class="cec-facts">
+              <div><dt>日期</dt><dd>{{ camp.dates }}</dd></div>
+              <div><dt>年龄</dt><dd>{{ camp.age }}</dd></div>
+              <div *ngFor="let session of camp.sessions"><dt>{{ session.label }}</dt><dd>{{ session.time }}（{{ session.hours }}）</dd></div>
+            </dl>
+            <h4>课程亮点</h4>
+            <ul class="cec-check-list"><li *ngFor="let item of camp.highlights">{{ item }}</li></ul>
+          </article>
+
+          <article class="cec-course">
+            <h4 class="cec-fee-title">学费</h4>
+            <ul class="cec-fee-list">
+              <li *ngFor="let fee of camp.fees">
+                <span>{{ fee.label }}<small *ngIf="fee.note">{{ fee.note }}</small></span>
+                <b>{{ fee.unit }}{{ fee.amount | number }}新加坡元<em *ngIf="cny(fee.amount)">{{ cny(fee.amount) }}</em></b>
+              </li>
+            </ul>
+            <p class="cec-note" *ngIf="rateDateText">人民币按{{ rateDateText }}欧洲央行参考汇率估算，实际以付款时汇率为准。</p>
+            <div class="cec-callout">
+              <strong><mat-icon>local_offer</mat-icon>早鸟优惠</strong>
+              <p>{{ camp.earlyBird }}</p>
+            </div>
+            <p class="cec-family"><mat-icon>family_restroom</mat-icon>{{ camp.family }}</p>
+          </article>
+        </div>
+        <p class="cec-note cec-reference">{{ referenceNote }}</p>
+      </section>
+
+      <section class="section-block" id="other-courses">
+        <div class="section-heading">
+          <span>其他课程</span>
+          <h2>TESOL、兼读英语和儿童英语课程</h2>
+          <p>上课时间和学费请咨询思达启航顾问。</p>
+        </div>
+        <div class="cec-other-grid">
+          <article *ngFor="let item of otherCourses"><mat-icon>{{ item.icon }}</mat-icon><strong>{{ item.title }}</strong><p>{{ item.text }}</p></article>
+        </div>
+        <p class="cec-note cec-reference">{{ referenceNote }}</p>
+      </section>
+
+      <section class="section-block" id="consultants">
+        <div class="section-heading"><span>思达启航</span><h2>报名加拿大教育学院，思达启航可以帮你做什么</h2></div>
+        <div class="cec-service-grid">
+          <article *ngFor="let item of service"><mat-icon>{{ item.icon }}</mat-icon><strong>{{ item.title }}</strong><p>{{ item.text }}</p></article>
+        </div>
+
+        <h3 class="cec-subheading"><mat-icon>support_agent</mat-icon>新加坡游学顾问</h3>
+        <div class="cec-team">
+          <article *ngFor="let person of consultants">
+            <img class="cec-team-avatar" [src]="person.avatarSrc" [alt]="person.name + ' 头像'" loading="lazy" />
+            <strong>{{ person.name }}</strong>
+            <span>{{ person.title }}</span>
+            <p>{{ person.description }}</p>
+            <img class="cec-team-qr" [src]="person.qrSrc" [alt]="person.name + ' 微信二维码'" loading="lazy" />
+            <a *ngIf="person.phone; else wechatOnly" [href]="person.phoneHref"><mat-icon>call</mat-icon>{{ person.phone }}</a>
+            <ng-template #wechatOnly><em><mat-icon>chat</mat-icon>扫码加微信咨询</em></ng-template>
+          </article>
+        </div>
+      </section>
+
+      <section class="bottom-cta">
+        <div>
+          <span>获取正式报价</span>
+          <h2>把学生年龄、英语基础、想上的课程和出发时间告诉思达启航</h2>
+          <p>顾问会跟学校确认开课日期、分班测试和当期学费，并提醒学生签证、机票和保险安排。</p>
+        </div>
+        <ul>
+          <li><mat-icon>check_circle</mat-icon>成人课程和儿童营分开说明</li>
+          <li><mat-icon>check_circle</mat-icon>开课日期提前确认</li>
+          <li><mat-icon>check_circle</mat-icon>学费和杂费逐项列清</li>
+          <li><mat-icon>check_circle</mat-icon>出发前逐项提醒</li>
+        </ul>
+        <a class="primary-action" href="#consultants" (click)="scrollToSection('consultants', $event)">联系思达启航顾问<mat-icon>support_agent</mat-icon></a>
+      </section>
+    </main>
+  </div>
+
+  <div class="mobile-bottom-actions" aria-label="手机端固定操作">
+    <a href="#adult-courses" (click)="scrollToSection('adult-courses', $event)"><mat-icon>menu_book</mat-icon>查看课程</a>
+    <a href="#consultants" (click)="scrollToSection('consultants', $event)"><mat-icon>support_agent</mat-icon>联系顾问</a>
+  </div>
+</div>
+</app-cia-school>

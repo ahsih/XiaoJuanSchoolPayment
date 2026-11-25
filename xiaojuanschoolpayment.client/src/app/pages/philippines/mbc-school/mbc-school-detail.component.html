@@ -11,8 +11,8 @@
             <p class="breadcrumb">菲律宾游学 / 马尼拉学校 / 菲律宾马尼拉Business College学校</p>
             <h1><span>菲律宾马尼拉</span><span>Business College学校</span></h1>
             <p class="hero-lead">
-              <span>Manila Business College 是位于 Sta. Cruz, Manila 的学院型学校，官网显示 SY 2026-2027 招生中。</span>
-              <span>页面重点整理商科、会计、酒店管理、信息系统、高中ABM、夜间班、周末班、TESDA课程和国际学生申请材料。</span>
+              <span>Manila Business College 是位于 Sta. Cruz, Manila 的学院型学校，SY 2026-2027 正在招生。</span>
+              <span>开设商科、会计、酒店管理、信息系统、高中ABM、夜间班、周末班和TESDA课程，并招收国际学生。</span>
               <span>它不是传统寄宿制 ESL 语言学校，费用、宿舍、签证协助和国际学生资格都需要按当期学校回复确认。</span>
             </p>
             <div class="hero-tags" aria-label="MBC特点">
@@ -37,14 +37,14 @@
             </div>
             <p class="trust-note">
               <mat-icon>verified</mat-icon>
-              本页根据 Manila Business College 官网首页、Admission 页、Programs offered、Facilities、Scholarship 和 Contact 信息整理；未公开的费用不做虚构报价。
+              课程、费用和入学批次以学校最新报价为准。
             </p>
           </div>
 
-          <div class="hero-media" aria-label="MBC官方图片展示">
+          <div class="hero-media" aria-label="MBC学校图片展示">
             <figure class="feature-photo">
-              <img src="assets/philippines/mbc-about.webp" alt="菲律宾马尼拉Business College学校官方校舍外观" />
-              <figcaption>MBC 官网图片：Manila Business College 校舍外观</figcaption>
+              <img src="assets/philippines/mbc-about.webp" alt="菲律宾马尼拉Business College学校校舍外观" />
+              <figcaption>Manila Business College 校舍外观</figcaption>
             </figure>
             <div class="media-strip" aria-label="MBC课程和设施图片">
               <figure *ngFor="let image of galleryImages.slice(2, 5)">
@@ -57,12 +57,12 @@
               <strong>{{ quoteText }}</strong>
               <p>{{ selectedProgram.name }}</p>
               <ul>
-                <li><mat-icon>info</mat-icon>官网未公开完整国际学生学费表</li>
-                <li><mat-icon>check_circle</mat-icon>奖学金金额仅作官方公开信息备注</li>
+                <li><mat-icon>info</mat-icon>国际学生学费需向学校确认</li>
+                <li><mat-icon>check_circle</mat-icon>奖学金多有本地资格条件，仅供参考</li>
               </ul>
             </aside>
             <p class="photo-source">
-              图片来源：Manila Business College 官网公开校徽、首页轮播、About、Programs offered 和 Facilities 图片。
+              图片仅供参考，具体以学校实际安排为准。
             </p>
           </div>
         </section>
@@ -87,9 +87,9 @@
 
         <section class="section-block" id="gallery">
           <div class="section-heading">
-            <span>官方图片</span>
-            <h2>使用 MBC 官网图片呈现学院、课程和设施</h2>
-            <p>MBC 页面重点展示校舍、校徽、本科课程、高中ABM、教室、图书馆和酒店管理模拟空间，避免使用通用马尼拉图片。</p>
+            <span>学校图片</span>
+            <h2>MBC 的学院、课程和设施</h2>
+            <p>看看 MBC 的校舍、校徽、本科课程、高中ABM、教室、图书馆和酒店管理模拟空间。</p>
           </div>
           <div class="gallery-tabs" role="tablist" aria-label="MBC图片分类">
             <button type="button" *ngFor="let category of galleryCategories" [class.active]="selectedGalleryCategory === category" (click)="setGalleryCategory(category)">
@@ -155,7 +155,7 @@
           <div class="section-heading">
             <span>课程方向</span>
             <h2>ABM、本科商科、会计、酒店管理、信息系统、夜间班、周末班和TESDA</h2>
-            <p>以下按官网 Programs offered 区块和课程文字整理，正式开放课程、入学批次和国际学生资格以学校回复为准。</p>
+            <p>正式开放课程、入学批次和国际学生资格以学校回复为准。</p>
           </div>
           <div class="course-grid">
             <article class="course-card" *ngFor="let course of courses">
@@ -171,8 +171,8 @@
           <div class="section-block">
             <div class="section-heading">
               <span>费用设置</span>
-              <h2>常规课程保留为需当期确认，奖学金金额仅作公开参考</h2>
-              <p>MBC 官网没有完整国际学生学费表，所以课程数据库不写虚构价格；公开奖学金金额会在额外费用区作为备注展示。</p>
+              <h2>常规课程费用需当期确认，奖学金金额仅供参考</h2>
+              <p>国际学生学费需按学年、课程和学生身份向学校确认；奖学金参考金额列在下方额外费用中。</p>
             </div>
             <div class="data-table mbc-fee-table" role="table" aria-label="MBC课程费用">
               <div class="table-row table-head" role="row">
@@ -200,7 +200,7 @@
             <div class="section-heading">
               <span>MBC费用快速判断</span>
               <h2>默认参考：BSBA Major in Management</h2>
-              <p>此处只提示是否需要核价，不把未公开的国际学生学费写成固定金额。</p>
+              <p>这里提示所选项目是否需要向学校核价。</p>
             </div>
             <div class="quote-form" aria-label="MBC费用确认选项">
               <label>项目<select [(ngModel)]="selectedProgramId"><option *ngFor="let program of programFees" [value]="program.id">{{ program.name }}</option></select></label>
@@ -222,15 +222,15 @@
               <button type="button" class="primary-action" (click)="calculateQuote()">确认核价项目<mat-icon>calculate</mat-icon></button>
               <a class="secondary-action" routerLink="/about-sida/contact">让顾问询价<mat-icon>support_agent</mat-icon></a>
             </div>
-            <p class="fee-alert">官网奖学金金额不等于国际学生学费。页面保留“需当期确认”，是为了避免用本地奖学金或旧资料误导报名预算。</p>
+            <p class="fee-alert">奖学金金额不等于国际学生学费，请以学校当期报价做预算。</p>
           </section>
         </section>
 
         <section class="section-block" id="room-fees">
           <div class="section-heading">
             <span>住宿说明</span>
-            <h2>官网提到 dormitories，但房型和费用必须单独核对</h2>
-            <p>MBC 不是典型ESL寄宿校，页面不会把宿舍、三餐、接送和校内管理自动并入课程报价。</p>
+            <h2>学校设有宿舍，房型和费用需单独确认</h2>
+            <p>MBC 不是典型ESL寄宿校，宿舍、三餐、接送和校内管理不包含在课程费用里。</p>
           </div>
           <div class="local-fee-grid">
             <article *ngFor="let room of roomFees">
@@ -243,9 +243,9 @@
 
         <section class="section-block" id="local-fees">
           <div class="section-heading">
-            <span>额外费用和公开金额</span>
+            <span>额外费用</span>
             <h2>申请前要分开确认的预算项目</h2>
-            <p>以下结合官网 Admission 和 Scholarship 信息整理，最终以 MBC 当期书面回复为准。</p>
+            <p>最终金额以 MBC 当期书面回复为准。</p>
           </div>
           <div class="local-fee-grid desktop-local-fees">
             <article *ngFor="let fee of localFees"><span>{{ fee.item }}</span><strong>{{ fee.amount }}</strong><p>{{ fee.note }}</p></article>
@@ -261,8 +261,8 @@
         <section class="notice-panel" id="price-note">
           <mat-icon>info</mat-icon>
           <div>
-            <h2>价格更新时间与资料说明</h2>
-            <p>本页参考 MBC 官网首页、Admission Requirements、Programs offered、Facilities、Scholarship Programs 和 Contact 信息。官网未公开的国际学生价格、住宿费和签证费用均标记为需确认。</p>
+            <h2>价格说明</h2>
+            <p>国际学生学费、住宿费和签证费用均需向学校确认，以 MBC 当期书面报价为准。</p>
           </div>
         </section>
 
@@ -286,13 +286,6 @@
         <section class="section-block" id="enrollment-notes">
           <div class="section-heading"><span>报名注意事项</span><h2>确认MBC前建议先核对这些信息</h2></div>
           <ul class="note-list"><li *ngFor="let note of notes"><mat-icon>check</mat-icon><span>{{ note }}</span></li></ul>
-        </section>
-
-        <section class="section-block" id="sources">
-          <div class="section-heading"><span>资料来源</span><h2>MBC官方参考链接</h2></div>
-          <div class="source-list">
-            <a *ngFor="let source of sources" [href]="source.url" target="_blank" rel="noopener"><mat-icon>open_in_new</mat-icon>{{ source.label }}</a>
-          </div>
         </section>
 
         <section class="faq-section" id="faq">

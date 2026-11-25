@@ -24,7 +24,7 @@
               <mat-icon>calculate</mat-icon>
             </a>
             <a class="secondary-action" href="#gallery" (click)="scrollToSection('gallery', $event)">
-              查看官方图片
+              查看校园图片
               <mat-icon>photo_library</mat-icon>
             </a>
             <a class="secondary-action" routerLink="/about-sida/contact">
@@ -34,7 +34,7 @@
           </div>
           <p class="trust-note">
             <mat-icon>verified</mat-icon>
-            学校资料与图片来自PIA英文官网；课程、住宿和USD 100注册费继续采用你提供的2024价目表，金额未改动。
+            课程、住宿和注册费为2024年价格，正式报名以学校最新invoice和实际住宿安排为准。
           </p>
         </div>
 
@@ -44,7 +44,7 @@
               src="https://cdn.imweb.me/thumbnail/20230830/164e4d6d64073.jpg"
               alt="PIA所在的Iloilo Business Park与Festive Walk生活圈"
             />
-            <figcaption>PIA官方图片：Iloilo Business Park生活圈</figcaption>
+            <figcaption>PIA所在的Iloilo Business Park生活圈</figcaption>
           </figure>
           <div class="media-strip" aria-label="PIA图片缩略图">
             <figure *ngFor="let image of galleryImages.slice(2, 5)">
@@ -62,7 +62,7 @@
               <li><mat-icon>info</mat-icon>当地费用另计</li>
             </ul>
           </aside>
-          <p class="photo-source">图片来源：PIA英文官网About PIA与Facility页面。</p>
+          <p class="photo-source">图片仅供参考，具体以学校实际安排为准。</p>
         </div>
       </section>
 
@@ -90,10 +90,10 @@
 
       <section class="section-block" id="gallery">
         <div class="section-heading">
-          <span>官方校园图片</span>
+          <span>校园图片</span>
           <h2>先看PIA所在街区、公寓房间与公共设施</h2>
           <p>
-            以下均为PIA英文官网公开图片。住宿照片展示学校当前介绍的Saint Honore公寓环境，不代表你提供价目表中的合作酒店房型。
+            住宿照片为学校介绍的Saint Honore公寓环境，不代表报价中的校外合作酒店房型，实际住宿以学校安排为准。
           </p>
         </div>
         <div class="gallery-tabs" role="tablist" aria-label="PIA图片分类">
@@ -121,7 +121,7 @@
         <section class="panel basic-panel" id="basic-info">
           <div class="compact-heading">
             <span>学校基本信息</span>
-            <h2>PIA官方资料</h2>
+            <h2>PIA基本资料</h2>
           </div>
           <dl class="info-list">
             <div *ngFor="let row of basicInfo">
@@ -198,7 +198,7 @@
           <span>课程类型</span>
           <h2>ESL、考试、Power Speaking与亲子路线</h2>
           <p>
-            PIA英文官网的课程结构与所附价目表一致：ESL / EXAM搭配一对一和小组课，Power ESL只安排一对一课程。
+            ESL / EXAM搭配一对一和小组课，Power ESL只安排一对一课程。
           </p>
         </div>
         <div class="course-grid">
@@ -216,7 +216,7 @@
           <div class="section-heading">
             <span>2024课程费</span>
             <h2>PIA 4周课程费用</h2>
-            <p>价格按你提供的PIA 2024年价目表保留，注册费与住宿费另计。</p>
+            <p>以下为PIA 2024年4周课程费，注册费与住宿费另计。</p>
           </div>
           <div class="data-table course-fee-table" role="table" aria-label="PIA 2024年4周课程费用">
             <div class="table-row table-head" role="row">
@@ -244,7 +244,7 @@
           <div class="section-heading">
             <span>PIA费用报价</span>
             <h2>4周课程 + 住宿 + 注册费</h2>
-            <p>选择课程和合作酒店房型，计算所附价目表明确列出的前期美元费用。</p>
+            <p>选择课程和合作酒店房型，计算4周前期美元费用。</p>
           </div>
           <div class="quote-form" aria-label="PIA费用核价选项">
             <label>
@@ -295,7 +295,7 @@
             </a>
           </div>
           <p class="fee-alert">
-            价目表只提供4周价格，本页不自行推算其他周数；住宿照片与合作酒店价格属于不同资料口径。
+            目前只有4周价格，其他周数需由顾问向学校确认；合作酒店的实际房间可能与上方公寓照片不同。
           </p>
         </section>
       </section>
@@ -305,7 +305,7 @@
           <div class="section-heading">
             <span>2024住宿费</span>
             <h2>校外合作酒店4周住宿费用</h2>
-            <p>以下单、双、三人房名称与金额按你提供的价目表原样保留。</p>
+            <p>以下为校外合作酒店单人、双人、三人房4周价格。</p>
           </div>
           <div class="data-table room-fee-table" role="table" aria-label="PIA 2024年住宿费用">
             <div class="table-row table-head" role="row">
@@ -330,9 +330,9 @@
 
         <section class="section-block accommodation-panel">
           <div class="section-heading">
-            <span>官方住宿设施</span>
-            <h2>PIA官网公开的公寓配置</h2>
-            <p>具体设备可能因房间而异，正式入住地点也需结合价目表与房态确认。</p>
+            <span>住宿设施</span>
+            <h2>Saint Honore公寓配置</h2>
+            <p>具体设备可能因房间而异，正式入住地点以学校确认为准。</p>
           </div>
           <ul class="note-list">
             <li><mat-icon>check</mat-icon><span>空调、个人床位、书桌、座椅、台灯与镜子</span></li>
@@ -346,7 +346,7 @@
       <section class="section-block" id="local-fees">
         <div class="section-heading">
           <span>当地费用</span>
-          <h2>PIA英文官网当前公开的到校费用参考</h2>
+          <h2>到校费用参考</h2>
           <p>以下不加入4周美元计算器，币种为菲律宾比索；正式金额和签证规则请在报名时再次确认。</p>
         </div>
         <div class="local-fee-grid desktop-local-fees">
@@ -371,23 +371,10 @@
       <section class="notice-panel" id="price-note">
         <mat-icon>info</mat-icon>
         <div>
-          <h2>价格与官网资料的口径说明</h2>
+          <h2>价格说明</h2>
           <p>
-            课程费、合作酒店住宿费和USD 100注册费来自你提供的PIA 2024年费用表，保持不变；学校资料、课程结构、当地费用与图片来自PIA英文官网。正式报名以学校最新账单与实际住宿确认书为准。
+            课程费、合作酒店住宿费和注册费为2024年价格，当地费用为比索参考金额。正式报名以学校最新账单与实际住宿确认书为准。
           </p>
-        </div>
-      </section>
-
-      <section class="section-block" id="sources">
-        <div class="section-heading">
-          <span>资料来源</span>
-          <h2>PIA官方参考链接</h2>
-        </div>
-        <div class="source-list">
-          <a *ngFor="let source of sources" [href]="source.url" target="_blank" rel="noopener noreferrer">
-            <mat-icon>open_in_new</mat-icon>
-            {{ source.label }}
-          </a>
         </div>
       </section>
 

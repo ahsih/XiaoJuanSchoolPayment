@@ -154,31 +154,31 @@ export class HowdySchoolComponent {
       icon: 'record_voice_over',
       label: '课程特色',
       value: '一对一课程为主',
-      note: '官方课程列出General 5、General 7、Family、Online和STEP',
+      note: '课程有General 5、General 7、Family、Online和STEP',
     },
     {
       icon: 'verified_user',
       label: '安心程度',
       value: 'TESDA认证 / 24小时安保',
-      note: '官方资料强调4星酒店环境、机场约15分钟和安全社区',
+      note: '4星酒店环境，距机场约15分钟，社区安全',
     },
     {
       icon: 'groups',
       label: '适合人群',
       value: '成人 / 亲子 / 初学者 / 日本学生',
-      note: '官方资料显示12年办学、4,000+日本学生学习记录',
+      note: '办学12年，日本学生较多，初学者友好',
     },
     {
       icon: 'restaurant',
       label: '餐食',
       value: '早餐 + 午餐为主',
-      note: '官方FAQ列出早餐、午餐、住宿、教材、机场接机和Wi-Fi包含在费用中',
+      note: '费用包含早餐、午餐、住宿、教材、机场接机和Wi-Fi',
     },
     {
       icon: 'location_on',
       label: '位置',
       value: 'Mandaue City / 近机场',
-      note: '校区地址：168 Plaridel St, Alang-Alang, Mandaue City',
+      note: '位于Mandaue City Alang-Alang一带',
     },
   ];
 
@@ -201,7 +201,7 @@ export class HowdySchoolComponent {
       category: '餐饮',
       title: 'Maayo Hotel餐厅参考',
       description:
-        'Howdy公开资料强调早餐和午餐安排，晚餐通常需自行安排或使用酒店餐厅。',
+        'Howdy提供早餐和午餐，晚餐通常需自行安排或使用酒店餐厅。',
       src: 'https://pix10.agoda.net/hotelImages/2816781/-1/3fd4427f1b5a55deccf48d4d07e6abd1.jpg?ca=9&ce=1&s=1024x768',
     },
     {
@@ -222,7 +222,7 @@ export class HowdySchoolComponent {
       category: '餐饮',
       title: '学生餐厅参考',
       description:
-        '公开代理资料提到Howdy午餐品质和日式餐食体验是学校卖点之一。',
+        'Howdy的午餐品质和日式餐食体验是学校特色之一。',
       src: 'https://www.ioutback.com/images/school/howdy/copyright/4.jpg',
     },
     {
@@ -246,10 +246,10 @@ export class HowdySchoolComponent {
     { label: '英文名称', value: 'Howdy English Academy' },
     {
       label: '现行校区',
-      value: '168 Plaridel St, Alang-Alang, Mandaue City, 6014 Cebu, Philippines (Maayo Hotel)',
+      value: 'Mandaue City Alang-Alang一带（Maayo Hotel）',
     },
-    { label: '创校时间', value: '公开资料列出为2014年，2023年迁入现行Maayo Hotel/Northpark环境' },
-    { label: '认证与记录', value: '官方资料标注TESDA Certified、12 Years、4,000+ Japanese students' },
+    { label: '创校时间', value: '2014年，2023年迁入现行Maayo Hotel/Northpark环境' },
+    { label: '认证与记录', value: 'TESDA认证，办学12年，日本学生较多' },
     {
       label: '学校定位',
       value: '日系支持强、酒店住宿型、以一对一课程为核心的宿务Mandaue语言学校',
@@ -260,7 +260,7 @@ export class HowdySchoolComponent {
     },
     {
       label: '费用参考',
-      value: '2026公开参考：General 5 Maayo Hotel单人房USD 874/1周起，USD 3,721/4周；入学金USD 120',
+      value: '2026年参考价：General 5 Maayo Hotel单人房874美元/1周起，3,721美元/4周；入学金120美元',
     },
   ];
 
@@ -269,7 +269,7 @@ export class HowdySchoolComponent {
       image:
         'https://www.howdyenglishacademy.com/images/hero/building-exterior.png',
       title: '4星级酒店环境，安全感更强',
-      text: 'Howdy现行资料主打Maayo Hotel环境，适合第一次去菲律宾、亲子、短期成人和重视住宿的人。',
+      text: 'Howdy主打Maayo Hotel环境，适合第一次去菲律宾、亲子、短期成人和重视住宿的人。',
     },
     {
       image:
@@ -281,7 +281,7 @@ export class HowdySchoolComponent {
       image:
         'https://pix10.agoda.net/hotelImages/2816781/-1/3fd4427f1b5a55deccf48d4d07e6abd1.jpg?ca=9&ce=1&s=1024x768',
       title: '生活安排更接近酒店住宿',
-      text: '住宿、早餐、午餐、Wi-Fi、接机等项目在官方FAQ中列入费用包含范围，预算更容易先估算。',
+      text: '住宿、早餐、午餐、Wi-Fi、接机等项目都包含在费用中，预算更容易先估算。',
     },
     {
       image:
@@ -302,11 +302,11 @@ export class HowdySchoolComponent {
     },
     {
       title: '亲子或短期成人学习',
-      text: 'Family Course可按家庭人数确认，短期1-4周也能用官方价格快速估算。',
+      text: 'Family Course可按家庭人数确认，短期1-4周也能快速估算费用。',
     },
     {
       title: '重视日系服务和生活细节',
-      text: '公开资料强调日本学生服务经验、日语支持和适合日本人口味的餐食安排。',
+      text: '学校有多年日本学生服务经验，提供日语支持和适合日本人口味的餐食安排。',
     },
   ];
 
@@ -325,7 +325,7 @@ export class HowdySchoolComponent {
     },
     {
       title: '希望每天三餐都由学校完整提供',
-      text: '官方FAQ列出的标准费用包含早餐和午餐，晚餐通常不含，需提前确认晚餐方案。',
+      text: '标准费用包含早餐和午餐，晚餐通常不含，需提前确认晚餐方案。',
     },
   ];
 
@@ -345,7 +345,7 @@ export class HowdySchoolComponent {
     {
       name: 'Family Course',
       type: '亲子课程',
-      lessons: '官方资料列出每天6节课，父母与孩子可一起学习',
+      lessons: '每天6节课，父母与孩子可一起学习',
       suitable: '适合亲子游学、学校假期和希望住在酒店环境里的家庭。',
     },
     {
@@ -386,7 +386,7 @@ export class HowdySchoolComponent {
     {
       id: 'hotel-twin',
       name: 'Maayo Hotel 2人同室',
-      note: '适合亲友、夫妻或同行者，两人总价口径。',
+      note: '适合亲友、夫妻或同行者，按两人总价计算。',
     },
     {
       id: 'condo-solo',
@@ -396,7 +396,7 @@ export class HowdySchoolComponent {
     {
       id: 'condo-twin',
       name: 'Casa/Amaia公寓2人同室',
-      note: '两人总价口径，适合同步入退房的同行者。',
+      note: '按两人总价计算，适合同步入退房的同行者。',
     },
   ];
 
@@ -459,7 +459,7 @@ export class HowdySchoolComponent {
     {
       time: '08:15',
       title: 'A&AP学习顾问时间',
-      text: '公开资料列出Advisor & Advisee Program，用于学习和生活沟通。',
+      text: 'Advisor & Advisee Program，用于学习和生活沟通。',
     },
     {
       time: '08:30 - 12:20',
@@ -484,16 +484,16 @@ export class HowdySchoolComponent {
   ];
 
   readonly localFees: LocalFee[] = [
-    { item: '入学金', amount: 'USD 120', note: '公开代理资料列出，通常前期支付' },
+    { item: '入学金', amount: 'USD 120', note: '一次性费用，通常前期支付' },
     { item: 'SSP申请费', amount: 'PHP 6,800', note: '特别学习许可，到校后或按学校规则支付' },
     { item: 'ACR I-Card', amount: 'PHP 3,500', note: '60天以上等长周期通常需要确认' },
-    { item: '签证延长', amount: 'PHP 4,000起', note: '5-8周公开参考为PHP 4,000；9-12周参考为PHP 9,000' },
+    { item: '签证延长', amount: 'PHP 4,000起', note: '5-8周参考4,000比索；9-12周参考9,000比索' },
     { item: '晚餐选项', amount: 'PHP 400起', note: 'Maayo Hotel餐厅等自费选择，标准报价通常不含晚餐' },
-    { item: '学生证/证件照', amount: 'PHP 350 / PHP 100', note: '公开代理资料参考，实际按学校现场为准' },
+    { item: '学生证/证件照', amount: 'PHP 350 / PHP 100', note: '以学校现场实际收取为准' },
     { item: '生活用品', amount: 'PHP 1,000起 / 4周', note: '按住宿类型和个人使用情况变化' },
     { item: '活动费用', amount: 'PHP 3,000起', note: '周末活动和个人行程另计' },
     { item: '公寓水电Wi-Fi', amount: 'PHP 1,300 / 周', note: 'Amaia/Casa Mira等公寓住宿需确认是否另计' },
-    { item: '周六追加课', amount: 'USD 45-90', note: '公开资料列出3-6节追加课参考' },
+    { item: '周六追加课', amount: 'USD 45-90', note: '3-6节追加课参考' },
     { item: '前泊/延泊', amount: 'USD 48-66', note: '按1人房或2人房参考，需确认空房' },
     { item: '额外机场接送', amount: 'USD 30-40', note: '非标准接机或额外服务需另行确认' },
   ];
@@ -541,8 +541,8 @@ export class HowdySchoolComponent {
     },
     {
       number: '02',
-      title: '把住宿和费用口径说清',
-      text: 'Maayo Hotel、公寓、单人、双人和Family方案都是不同价格口径，需要逐项核对。',
+      title: '把住宿和费用说清',
+      text: 'Maayo Hotel、公寓、单人、双人和Family方案的计价方式不同，需要逐项核对。',
       image: 'assets/cia/sida-why-action-fees.webp',
       alt: '思达启航顾问为学生核算菲律宾语言学校费用',
     },
@@ -614,8 +614,8 @@ export class HowdySchoolComponent {
     '自费周末活动',
   ];
   readonly notes = [
-    '本页费用使用2026公开参考价，正式报价仍需按入学日期、住宿、人数和空房确认。',
-    '官方FAQ列出标准费用包含课程、教材、酒店住宿、早餐、午餐、机场接机和Wi-Fi；晚餐通常不含。',
+    '这里的费用为2026年参考价，正式报价仍需按入学日期、住宿、人数和空房确认。',
+    '标准费用包含课程、教材、酒店住宿、早餐、午餐、机场接机和Wi-Fi；晚餐通常不含。',
     '双人房和家庭房通常要求同行者同步入退房，单独学生是否可选需提前确认。',
     '亲子、未成年和高中生课程规则不同，年龄、同意书、外出和接送规则需逐项确认。',
     '如果目标是强考试备考或多国籍环境，建议把Howdy与CIA、SMEAG、EV、Genius等学校一起比较。',
@@ -627,14 +627,14 @@ export class HowdySchoolComponent {
         'CIA更像综合型半斯巴达新校区，课程和考试资源覆盖更广；Howdy更偏日系支持、酒店住宿和高比例一对一口语课程。若你重视安全、住宿、日语沟通和短期口语，Howdy值得比较。',
     },
     {
-      question: '页面上的报价包含全部费用吗？',
+      question: '这里的报价包含全部费用吗？',
       answer:
         '不包含全部。报价器主要估算课程住宿套餐和入学金；SSP、ACR I-Card、签证延长、晚餐、活动、公寓水电或额外接送等仍需按学校规则确认。',
     },
     {
       question: 'Howdy适合亲子吗？',
       answer:
-        '适合列入候选。官方课程中有Family Course，公开资料也强调酒店环境和安全性。报名前需确认孩子年龄、家长课程、房型、餐食、接送和外出规则。',
+        '适合列入候选。学校有Family Course，酒店环境也比较安全。报名前需确认孩子年龄、家长课程、房型、餐食、接送和外出规则。',
     },
     {
       question: 'Howdy适合雅思备考吗？',
@@ -644,7 +644,7 @@ export class HowdySchoolComponent {
     {
       question: '为什么不同网站价格有差异？',
       answer:
-        '不同网站会因更新时间、住宿口径、币种、包含项目、旺季和促销不同而出现差异。本页用官方2026起价和公开代理4周价格建立参考，最终以学校确认报价为准。',
+        '价格会因更新时间、住宿类型、币种、包含项目、旺季和促销不同而出现差异。这里的价格为2026年参考价，最终以学校确认报价为准。',
     },
   ];
   readonly sideNav: SideNavItem[] = [
@@ -749,7 +749,7 @@ export class HowdySchoolComponent {
 
   get discountText(): string {
     return this.discount === 1
-      ? '公开参考价，优惠需顾问确认'
+      ? '参考价，优惠需顾问确认'
       : `${Math.round(this.discount * 100)} 折扣范围`;
   }
 

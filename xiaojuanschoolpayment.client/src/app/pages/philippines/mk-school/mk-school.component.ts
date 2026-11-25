@@ -107,11 +107,6 @@ interface SideNavItem {
   icon: string;
 }
 
-interface SourceLink {
-  label: string;
-  url: string;
-}
-
 @Component({
   selector: 'app-mk-school',
   standalone: true,
@@ -148,13 +143,13 @@ export class MkSchoolComponent {
       icon: 'location_on',
       label: '城市',
       value: 'Iloilo / Westwoods',
-      note: '公开资料显示MK位于Iloilo City Mandurriao一带，校区在Westwoods Subdivision内。',
+      note: 'MK位于Iloilo City Mandurriao一带，校区在Westwoods Subdivision内。',
     },
     {
       icon: 'school',
       label: '学校定位',
       value: 'Semi-Sparta + 校内住宿',
-      note: '公开价格表列晚间自习20:00-22:00，Sparta学生需参加；实际管理规则以当期学生手册为准。',
+      note: '晚间自习20:00-22:00，Sparta学生需参加；实际管理规则以当期学生手册为准。',
     },
     {
       icon: 'menu_book',
@@ -166,13 +161,13 @@ export class MkSchoolComponent {
       icon: 'home_work',
       label: '校园生活',
       value: '独立Compound',
-      note: 'CPU 2026年文章提到MK在Westwoods有自己的compound，含宿舍、篮球场、咖啡/餐厅和健身房等设施。',
+      note: 'MK在Westwoods有自己的compound，含宿舍、篮球场、咖啡/餐厅和健身房等设施。',
     },
     {
       icon: 'flight_land',
       label: '交通',
       value: 'Iloilo Airport约20分钟',
-      note: 'Study Philippines公开页面列Iloilo机场车程约20分钟，周末接机费需另算。',
+      note: '到Iloilo机场车程约20分钟，周末接机费需另算。',
     },
     {
       icon: 'payments',
@@ -186,7 +181,7 @@ export class MkSchoolComponent {
     {
       category: '校园',
       title: 'MK Iloilo校园入口',
-      description: '公开学校图片中的MK Academy校区外观，适合先判断Iloilo校区氛围。',
+      description: 'MK校区外观，可先了解Iloilo校区氛围。',
       src: 'https://philenglish.net/upload/product/review-mk-academy-moi-truong-hoc-tap-an-toan-chuan-quoc-te-tai-iloilo-24.jpg',
     },
     {
@@ -198,7 +193,7 @@ export class MkSchoolComponent {
     {
       category: '生活',
       title: '自习与图书空间',
-      description: '公开图片展示MK自习/图书区域；晚间自习规则需按课程和管理模式确认。',
+      description: 'MK自习/图书区域；晚间自习规则需按课程和管理模式确认。',
       src: 'https://www.philippine-ryugaku.com/wp-content/uploads/2023/03/mk-library-1600x1200.jpg',
     },
     {
@@ -210,7 +205,7 @@ export class MkSchoolComponent {
     {
       category: '住宿',
       title: '校内宿舍参考',
-      description: '公开住宿图片用于判断基础房型氛围；实际楼栋、房型和空房以学校回复为准。',
+      description: '基础房型氛围参考；实际楼栋、房型和空房以学校回复为准。',
       src: 'https://www.ceburyugaku-master.com/school/img/mk/dormitory_03.webp',
     },
   ];
@@ -221,9 +216,9 @@ export class MkSchoolComponent {
     { label: '城市区域', value: 'Iloilo City, Mandurriao, Westwoods Subdivision / Barangay Dungon-C一带' },
     { label: '参考地址', value: 'Lot 43, 44, 45 Block 44, Barangay Dungon-C, Mandurriao, Iloilo City, Philippines' },
     { label: '课程方向', value: 'ESL Basic、ESL Standard、ESL Premium、ESL Intensive、IELTS、TESOL、Business、Working Holiday、Guardian、Junior和Internship。' },
-    { label: '学习模式', value: '公开资料以Semi-Sparta、英语环境、晚间自习和校内住宿一体管理为主；具体门禁和处罚规则需当期确认。' },
+    { label: '学习模式', value: '以Semi-Sparta、英语环境、晚间自习和校内住宿一体管理为主；具体门禁和处罚规则需当期确认。' },
     { label: '设施参考', value: '校内宿舍、教室、餐厅/咖啡、篮球场、健身房、自习室、洗衣与清洁服务等。' },
-    { label: '资料提醒', value: '官方域名mk-edu.net在本次整理时无法稳定抓取；页面费用按公开学校资料页汇总，正式报名仍以学校invoice为准。' },
+    { label: '报名提醒', value: '报名前由顾问向学校确认当期价格、空房和优惠，正式以学校invoice为准。' },
   ];
 
   readonly highlights: Highlight[] = [
@@ -240,7 +235,7 @@ export class MkSchoolComponent {
     {
       image: this.galleryImages[2].src,
       title: '晚自习和英语环境推动',
-      text: '公开资料列English Zone Policy和晚间自习安排，适合需要一点外部节奏推动的学生。',
+      text: '学校实行English Zone Policy并安排晚间自习，适合需要一点外部节奏推动的学生。',
     },
     {
       image: this.galleryImages[4].src,
@@ -258,8 +253,8 @@ export class MkSchoolComponent {
 
   readonly notSuitableFor: FitItem[] = [
     { title: '想要海边或大城市热闹生活', text: 'MK在Iloilo住宅/学习区，不是Mactan海边度假型，也不是马尼拉商务城市体验。' },
-    { title: '只接受最新官方网页价格', text: 'mk-edu.net本次抓取不稳定，报名前必须由顾问向学校确认正式invoice。' },
-    { title: '一定要高压Sparta封闭管理', text: '公开资料更适合按Semi-Sparta理解，若要极强管理可同步比较碧瑶Sparta学校。' },
+    { title: '想直接按网上价格报名', text: 'MK当期价格需由顾问向学校确认，报名以学校正式invoice为准。' },
+    { title: '一定要高压Sparta封闭管理', text: 'MK更适合按Semi-Sparta理解，若要极强管理可同步比较碧瑶Sparta学校。' },
     { title: '不想拆分USD和PHP费用', text: 'MK报价需要拆课程、住宿、注册费和当地PHP费用，长期学习还会有签证延期与I-Card。' },
   ];
 
@@ -309,22 +304,22 @@ export class MkSchoolComponent {
     { item: 'Entry / Registration', amount: 'USD 100', note: '报名注册费；前期USD费用中单独计算。' },
     { item: 'SSP', amount: 'PHP 6,000', note: 'Special Study Permit，当地支付，金额以学校和移民局当期为准。' },
     { item: 'Visa Extension', amount: 'PHP 0 - 15,320', note: '按4-24周递增；4周参考无需延期，长期需续签。' },
-    { item: 'I-Card', amount: 'PHP 3,300', note: '公开表列8周以上/长期学习通常需要。' },
+    { item: 'I-Card', amount: 'PHP 3,300', note: '8周以上/长期学习通常需要。' },
     { item: 'Iloilo Pickup', amount: 'PHP 1,000', note: '周末Iloilo接机参考；抵达日期和机场需确认。' },
     { item: 'Electricity', amount: 'PHP 1,000 / 4周', note: '电费参考，超额或政策调整以学校为准。' },
     { item: 'Water', amount: 'PHP 500 / 4周', note: '水费参考。' },
     { item: 'Deposit', amount: 'PHP 5,000', note: '押金，退房检查后按规则退还或抵扣。' },
     { item: 'Management Fee', amount: 'PHP 400 / 4周', note: '校内管理/服务费用参考。' },
-    { item: 'Books', amount: '约PHP 200 / book', note: '教材按实际购买；公开表按约PHP1,000/4周估算。' },
+    { item: 'Books', amount: '约PHP 200 / book', note: '教材按实际购买；4周约1,000比索。' },
     { item: 'Photo / ID', amount: 'PHP 150', note: '照片/学生证参考费用。' },
   ];
 
   readonly schedule: ScheduleItem[] = [
     { time: '07:00 - 08:00', title: '早餐与上课准备', text: '校内住宿和三餐一体，适合规律学习生活。' },
     { time: '08:00 - 12:00', title: '上午一对一 / 小组课', text: '按ESL、IELTS或Family课程安排听说读写、语法、词汇和表达训练。' },
-    { time: '12:00 - 13:00', title: '午餐与休息', text: '公开费用说明列三餐包含在住宿服务中，菜单和餐食规则以学校为准。' },
+    { time: '12:00 - 13:00', title: '午餐与休息', text: '三餐包含在住宿服务中，菜单和餐食规则以学校为准。' },
     { time: '13:00 - 17:00', title: '下午课程与补强', text: 'ESL高阶和IELTS课程会有更高密度一对一或小组课安排。' },
-    { time: '20:00 - 22:00', title: '晚间自习', text: '公开资料列Sparta学生晚间自习为强制，实际适用范围需按课程和校规确认。' },
+    { time: '20:00 - 22:00', title: '晚间自习', text: 'Sparta学生晚间自习为强制，实际适用范围需按课程和校规确认。' },
     { time: '周末', title: 'Iloilo生活与短途旅行', text: '可安排Iloilo市区、Guimaras或周边活动，未成年和门禁规则要提前确认。' },
   ];
 
@@ -333,13 +328,13 @@ export class MkSchoolComponent {
     { icon: 'menu_book', title: '按课量选ESL级别', text: 'ESL Basic、Standard、Premium和Intensive差别主要在一对一、小组课和总课量。' },
     { icon: 'hotel', title: '锁定房型与周数', text: '4人房、3人房、2人房、1人房会明显影响总价和舒适度。' },
     { icon: 'receipt_long', title: '拆分USD和PHP', text: '课程住宿注册费按USD估算，SSP、签证、电水、押金、教材和接机按PHP另列。' },
-    { icon: 'verified', title: '向学校核正式报价', text: 'mk-edu.net抓取不稳定，正式报名必须核对学校当期invoice、空房和优惠。' },
+    { icon: 'verified', title: '向学校核正式报价', text: '正式报名前核对学校当期invoice、空房和优惠。' },
     { icon: 'support_agent', title: '出发前后持续跟进', text: '协助接机、到校费用、教材、换课、住宿问题和续读/转校沟通。' },
   ];
 
   readonly notes = [
-    '本页费用按公开学校资料整理；过去促销有效期已经过期，不纳入当前估算。',
-    '公开资料列宿舍费通常包含三餐、洗衣、房间清洁和校内设施使用，但实际包含项目以学校当期说明为准。',
+    '过去的促销已过期，不计入当前估算。',
+    '宿舍费通常包含三餐、洗衣、房间清洁和校内设施使用，实际包含项目以学校当期说明为准。',
     'TESOL属于USD350附加路线，需叠加任一MK课程，并另付WVSU SSP等学校/大学费用。',
     '短期价格按4周课程费和住宿费换算：1周40%、2周65%、3周85%；注册费不参与换算。',
     'Iloilo机场接机、到校时间、周末入住和退房规则需要随航班确认。',
@@ -350,27 +345,27 @@ export class MkSchoolComponent {
     {
       question: 'MK Language Training Center在哪里？',
       answer:
-        'MK位于菲律宾Iloilo City的Westwoods Subdivision / Mandurriao一带。公开资料列Iloilo机场约20分钟车程，适合想选择安静小众城市的学生。',
+        'MK位于菲律宾Iloilo City的Westwoods Subdivision / Mandurriao一带，到Iloilo机场约20分钟车程，适合想选择安静小众城市的学生。',
     },
     {
       question: 'MK 4周最低大概多少钱？',
       answer:
-        '按2025费用表，ESL Basic课程费USD650，4人亲子房USD520，注册费USD100，4周前期USD参考约USD1,270；4人房仅限亲子或团体，当地PHP费用4周参考约PHP15,050。',
+        '按2025年价格，ESL Basic课程费USD650，4人亲子房USD520，注册费USD100，4周前期USD参考约USD1,270；4人房仅限亲子或团体，当地PHP费用4周参考约PHP15,050。',
     },
     {
       question: 'MK是Sparta学校吗？',
       answer:
-        '更适合先按Semi-Sparta理解。公开资料列English Zone Policy和20:00-22:00晚间自习，且说明Sparta学生强制参加；具体门禁、外出和处罚规则要以当期学生手册为准。',
+        '更适合先按Semi-Sparta理解。学校实行English Zone Policy，20:00-22:00晚间自习Sparta学生须参加；具体门禁、外出和处罚规则要以当期学生手册为准。',
     },
     {
       question: 'MK适合亲子吗？',
       answer:
-        '可以放进亲子候选，因为费用表有Junior Basic/Premium、Guardian和4人亲子房。低龄年龄、监护、房型、活动和陪读规则需要报名时逐项确认。',
+        '可以放进亲子候选，因为有Junior Basic/Premium、Guardian课程和4人亲子房。低龄年龄、监护、房型、活动和陪读规则需要报名时逐项确认。',
     },
     {
-      question: '为什么页面没有直接引用mk-edu.net价格？',
+      question: '这里的MK价格就是最终价格吗？',
       answer:
-        '本次整理时mk-edu.net无法稳定抓取内容，所以页面使用其他公开学校资料页、Iloilo相关公开报道和学校介绍资料交叉整理。正式价格仍需由顾问向学校确认。',
+        '不是。这里的价格用于初步预算，MK当期价格、空房和优惠需由顾问向学校确认，正式以学校invoice为准。',
     },
   ];
 
@@ -380,7 +375,6 @@ export class MkSchoolComponent {
     { label: '费用估算', target: 'quote', icon: 'calculate' },
     { label: '当地费用', target: 'local-fees', icon: 'payments' },
     { label: '服务流程', target: 'service-process', icon: 'task_alt' },
-    { label: '资料来源', target: 'sources', icon: 'link' },
     { label: 'FAQ', target: 'faq', icon: 'help' },
   ];
 
@@ -391,18 +385,6 @@ export class MkSchoolComponent {
     { label: '报价', target: 'quote', icon: 'calculate' },
     { label: '费用', target: 'local-fees', icon: 'receipt_long' },
     { label: 'FAQ', target: 'faq', icon: 'help' },
-  ];
-
-  readonly sources: SourceLink[] = [
-    { label: 'MK官方域名', url: 'http://mk-edu.net/' },
-    { label: 'MK Iloilo公开课程与费用表', url: 'https://tienganhtaiphi.com/truong-anh-ngu-mk-iloilo/' },
-    { label: 'Study Philippines MK学校资料', url: 'https://www.study-philippines.com/school/1.html' },
-    {
-      label: 'Central Philippine University 2026年MK访问报道',
-      url: 'https://cpu.edu.ph/news/cpu-cas-dlmch-visits-mk-language-learning-center-in-preparation-for-practicum-on-the-job-training/',
-    },
-    { label: 'Uhakfinder MK费用与住宿资料', url: 'https://www.uhakfinder.com/bbs/board.php?bo_table=school_fee&wr_id=242' },
-    { label: '菲律宾留学资料站MK页面', url: 'https://www.ph-ryugaku.com/school/mk-education/' },
   ];
 
   get filteredGalleryImages(): GalleryImage[] {

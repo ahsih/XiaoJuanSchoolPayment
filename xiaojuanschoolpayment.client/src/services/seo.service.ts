@@ -63,6 +63,12 @@ export const SEO_PAGES: Record<string, SeoPage> = {
     keywords: 'Burlington School, 伦敦语言学校, 英国游学, 英国暑期游学, 伦敦青少年夏校, 英国语言学校费用, Burlington报价',
     image: '/assets/burlington/campus-courtyard.jpg',
   },
+  '/overseas-study-tour/singapore/canadian-education-college': {
+    title: '新加坡加拿大教育学院Canadian Education College｜课程学费与开课日期',
+    description: '新加坡加拿大教育学院（Canadian Education College）介绍：全日制英语证书课程（零基础初级班2026年12月14日开课）、雅思预备课程、2026–2027儿童冬季营（6–13岁）学费、学期日历和课堂照片视频；思达启航提供新加坡游学报名咨询。',
+    keywords: '新加坡游学, 新加坡语言学校, Canadian Education College, 新加坡加拿大教育学院, 新加坡冬令营, 新加坡儿童英语营, 新加坡雅思课程',
+    image: '/assets/canadian-education-sg/adult-class-flag.webp',
+  },
   '/philippines-study/cebu/ev-la-mer': {
     title: 'EV Academy La Mer校区 | 成人亲子课程、住宿与费用报价',
     description: '了解宿务麦克坦EV La Mer独立校区，查看ESL、Senior、强化口语及亲子课程、泳池校园实景、住宿费用与优惠，计算单人、多人或亲子家庭报价并保存图片。',
@@ -373,6 +379,14 @@ export const SEO_PAGES: Record<string, SeoPage> = {
       '选好学习目标、房型、周数和入学日期，在线对比菲律宾宿务语言学校的课程费、住宿费、优惠和到校学杂费，可保存对比图片。',
     keywords: '菲律宾语言学校价格对比, 菲律宾游学费用对比, 宿务语言学校对比, CIA和EV对比, 菲律宾游学报价',
     image: '/assets/philippines/cebu-city-view.webp',
+  },
+  '/philippines-study/service-process': {
+    title: '菲律宾游学报名及抵达全流程指引｜4阶段15步与关键时间节点',
+    description:
+      '思达启航菲律宾游学标准服务流程：从付定金、注册学位、办理签证与机票、E-travel代填、购买境外保险，到抵达报到和在校协助，4个阶段15个步骤，附入学前90天起办签证、入学前2–4周付尾款等关键时间节点。',
+    keywords:
+      '菲律宾游学流程, 菲律宾游学报名流程, 菲律宾游学签证, 菲律宾E-travel, 菲律宾游学行前准备, 菲律宾游学时间安排, 思达启航',
+    image: '/assets/philippines/cebu-study-hero.webp',
   },
   '/philippines-study/baguio/airport-pickup': {
     title: '2026–2027 碧瑶游学接机指南｜马尼拉、克拉克接机日期、费用与注意事项',

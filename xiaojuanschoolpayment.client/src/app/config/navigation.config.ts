@@ -698,6 +698,12 @@ export const mainNavigation: NavigationItem[] = [
         type: '活动页',
       },
       {
+        id: 'philippines-service-process',
+        label: '菲律宾游学服务流程',
+        route: '/philippines-study/service-process',
+        type: '服务流程页',
+      },
+      {
         id: 'philippines-faq',
         label: '菲律宾游学常见问题',
         route: '/philippines-study/faq',
@@ -814,6 +820,18 @@ export const mainNavigation: NavigationItem[] = [
         label: '新加坡游学',
         route: '/overseas-study-tour/singapore',
         type: '国家页',
+        children: [
+          {
+            id: 'singapore-tour-overview',
+            label: '新加坡游学总览',
+            route: '/overseas-study-tour/singapore',
+          },
+          {
+            id: 'canadian-education-college',
+            label: '加拿大教育学院（新加坡）',
+            route: '/overseas-study-tour/singapore/canadian-education-college',
+          },
+        ],
       },
       {
         id: 'malaysia-tour',

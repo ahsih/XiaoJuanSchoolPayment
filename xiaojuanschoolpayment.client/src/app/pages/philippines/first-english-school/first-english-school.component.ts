@@ -13,7 +13,6 @@ interface GalleryImage { category: Exclude<GalleryCategory, '全部'>; title: st
 interface CourseItem { icon: string; name: string; lessons: string; suitable: string; }
 interface LocalFee { item: string; amount: string; note: string; }
 interface FitItem { title: string; text: string; }
-interface SourceLink { label: string; url: string; }
 interface SideNavItem { label: string; target: string; icon: string; }
 
 interface FeePackage {
@@ -61,7 +60,7 @@ export class FirstEnglishSchoolComponent {
     { icon: 'family_restroom', title: '亲子游学友好', text: '4-12岁儿童可选Kids ESL / Eiken，家长与孩子分别上课，也有陪读住宿方案。' },
     { icon: 'crib', title: '婴幼儿看护', text: '学校公布工作日7:30-17:30看护服务，方便带低龄儿童同行的家长上课。' },
     { icon: 'apartment', title: '公寓或Share House', text: '亲子家庭使用Mactan Newtown公寓，成人可选车程约5分钟的Share House。' },
-    { icon: 'verified_user', title: '日式运营支持', text: '学校由日本团队运营，官方介绍强调全员TESOL资质教师与学习支持。' },
+    { icon: 'verified_user', title: '日式运营支持', text: '学校由日本团队运营，教师持TESOL资质，并提供学习支持。' },
   ];
 
   readonly galleryImages: GalleryImage[] = [
@@ -92,7 +91,7 @@ export class FirstEnglishSchoolComponent {
     {
       category: '住宿',
       title: 'Share House房间',
-      text: '成人可选择Share House，校方说明车程约5分钟到教室。',
+      text: '成人可选择Share House，车程约5分钟到教室。',
       src: 'https://www.firstcebu.com/wp2/wp-content/uploads/2023/01/LINE_ALBUM_2022.7%E6%9C%88%E3%83%8A%E3%83%AB%E3%82%B9%E3%82%A2%E3%83%B3Room-No.-3_230118_26-1024x768.jpg',
     },
     {
@@ -231,17 +230,17 @@ export class FirstEnglishSchoolComponent {
   ];
 
   readonly localFees: LocalFee[] = [
-    { item: '入学金', amount: 'JPY 18,000', note: '官方费用页列基础费用之外另付，本页报价器已按参考汇率折算加入。' },
-    { item: 'SSP', amount: 'PHP 7,800', note: '官方费用页列2025年7月后SSP费用，实际以学校请款为准。' },
-    { item: 'SSP E-Card', amount: 'PHP 4,500', note: '官方费用页列2025年7月后SSP I-Card申请费用。' },
+    { item: '入学金', amount: 'JPY 18,000', note: '一次性费用，报价已计入（按参考汇率折算）。' },
+    { item: 'SSP', amount: 'PHP 7,800', note: '2025年7月起的SSP费用，以学校实际收取为准。' },
+    { item: 'SSP E-Card', amount: 'PHP 4,500', note: '2025年7月起的SSP I-Card申请费用。' },
     { item: '教材费', amount: 'PHP 2,000起', note: '按课程、级别和学习周数变化。' },
     { item: '电费', amount: 'PHP 1,000起', note: '按住宿、周数和实际用电规则确认。' },
     { item: '宿舍押金', amount: 'PHP 2,000', note: '退房结算损坏、超额费用或杂费后处理。' },
     { item: '洗衣费', amount: 'PHP 35-65 / kg', note: '按实际使用量计算。' },
-    { item: '午餐 / 晚餐', amount: '各PHP 2,500 / 周', note: '官方说明为周一至周五餐食追加参考，需按当期餐食政策确认。' },
-    { item: '设施管理费', amount: 'PHP 1,000 / 周', note: '官方费用页列每周设施管理费参考。' },
+    { item: '午餐 / 晚餐', amount: '各PHP 2,500 / 周', note: '周一至周五追加餐食参考，需按当期餐食政策确认。' },
+    { item: '设施管理费', amount: 'PHP 1,000 / 周', note: '每周设施管理费参考。' },
     { item: '签证延长', amount: '按周数确认', note: '5周以上通常需要确认延签费用；长周期还需核对ACR I-Card。' },
-    { item: '机票与保险', amount: '另行准备', note: '官方费用页说明机票、海外旅行保险不包含在基础费用中。' },
+    { item: '机票与保险', amount: '另行准备', note: '机票、海外旅行保险不包含在基础费用中。' },
     { item: '接送机', amount: '需确认', note: '家庭、未成年和夜间抵达建议提前安排并确认费用。' },
   ];
 
@@ -249,23 +248,13 @@ export class FirstEnglishSchoolComponent {
     { title: '亲子游学或带低龄儿童同行', text: '课程、住宿和看护服务都围绕亲子场景设计，家长更容易安排上课与陪同。' },
     { title: '想住在麦克坦、靠近机场和海岛生活', text: 'Mactan Newtown周边生活配套集中，周末活动和机场往返都相对方便。' },
     { title: '希望一对一课比例高', text: 'GENERAL已经有6节一对一，短期学生可以把时间集中在口语、发音和表达修正。' },
-    { title: '偏好日本式学校管理与支持', text: 'First English由日本团队运营，官方信息强调日式服务和TESOL资质教师。' },
+    { title: '偏好日本式学校管理与支持', text: 'First English由日本团队运营，提供日式服务，教师持TESOL资质。' },
   ];
 
   readonly notSuitableFor: FitItem[] = [
     { title: '想要大型校园和度假村式设施', text: 'First English更像城市型学习点和住宿组合，不是CIA、CPI那类大型校内校园。' },
     { title: '目标是严格斯巴达考试冲刺', text: '它更适合亲子、一对一口语和灵活学习，强制自习型雅思冲刺可比较EV、CPI、Baguio学校。' },
-    { title: '只按网页价格做最终预算', text: '官网原始费用已在本页换算为美元展示，仍需要把入学金、当地PHP费用、餐食、机票保险和汇率一起确认。' },
-  ];
-
-  readonly sourceLinks: SourceLink[] = [
-    { label: 'First English Global College官网', url: 'https://www.firstcebu.com/' },
-    { label: 'First English官方费用表', url: 'https://www.firstcebu.com/price/' },
-    { label: 'First English教室介绍', url: 'https://www.firstcebu.com/classroom/' },
-    { label: 'First English住宿介绍', url: 'https://www.firstcebu.com/room/' },
-    { label: 'First English亲子游学说明', url: 'https://www.firstcebu.com/cebu-con/' },
-    { label: 'First English 2026公开学校信息', url: 'https://matchingenglish.com/ph/first-english' },
-    { label: 'Study Philippines费用参考', url: 'https://www.study-philippines.com/school/13.html' },
+    { title: '只按网页价格做最终预算', text: '这里的价格已换算为美元，仍需要把入学金、当地比索费用、餐食、机票保险和汇率一起确认。' },
   ];
 
   readonly mobileAnchors: SideNavItem[] = [

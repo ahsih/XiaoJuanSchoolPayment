@@ -139,7 +139,7 @@ export class PhilinterSchoolComponent {
   readonly faqs: FaqItem[] = [
     {
       question: '菲律宾宿务Philinter语言学校的起价是多少？',
-      answer: '2026费用表中，Light ESL加校内三人房4周原价为1,600 美元；通过思达启航报名，课程及住宿9折后为1,440 美元，再加每人120美元注册费，4周参考合计1,560美元。',
+      answer: '2026年Light ESL加校内三人房4周原价为1,600 美元；通过思达启航报名，课程及住宿9折后为1,440 美元，再加每人120美元注册费，4周参考合计1,560美元。',
     },
     {
       question: 'Philinter 适合口说强化吗？',
