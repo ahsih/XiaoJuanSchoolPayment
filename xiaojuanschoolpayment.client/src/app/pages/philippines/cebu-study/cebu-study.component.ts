@@ -537,8 +537,8 @@ export class CebuStudyComponent {
     },
     {
       name: 'Genius English', route: '/philippines-study/cebu/genius-english-academy', tag: '海边多国籍',
-      location: 'Maribago · Mactan', summary: '海边度假型学校，多国籍环境，管理强度和家庭课程选择灵活。',
-      image: 'https://cebu-navi.com/photo/school/24/c0db828e2ab95ccc3199fa2614e5fa9f.jpg', highlights: ['综合英语 / 强化口语', '雅思保证班', '托业 / 托福', '商务英语', '亲子课程'],
+      location: 'Maribago · Mactan', summary: '麦克坦岛海边学校，校内有海滩和泳池；本地老师一对一加外教小组课，可选常规、半斯巴达或斯巴达管理。',
+      image: '/assets/genius/campus/common-area-01.webp', highlights: ['一般英语 / 强化口语', '生存英语', '商务 / 托业 / 托福 / 雅思', '亲子课程', '常规 / 半斯巴达 / 斯巴达'],
     },
     {
       name: 'Howdy English', route: '/philippines-study/cebu/howdy-english-academy', tag: '日系酒店型',

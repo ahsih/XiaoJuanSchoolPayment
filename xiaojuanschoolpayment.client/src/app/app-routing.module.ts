@@ -349,8 +349,8 @@ const routes: Routes = [
       {
         path: 'philippines-study/cebu/genius-english-academy',
         loadComponent: () =>
-          import('./pages/philippines/genius-school/genius-school.component').then(
-            (m) => m.GeniusSchoolComponent,
+          import('./pages/philippines/genius-school/genius-school-page.component').then(
+            (m) => m.GeniusSchoolPageComponent,
           ),
       },
       {
