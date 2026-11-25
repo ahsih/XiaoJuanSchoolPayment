@@ -41,7 +41,7 @@ export const CPILS_FINAL_CTA_BADGES = ['快速响应', '专业顾问一对一', 
  */
 const SCHOLARSHIP_TERMS = '2027/01/01–12/27开课（05/31–08/29开课除外）';
 export const CPILS_OFFERS: PhOfferCard[] = [
-  { icon: 'percent', title: '思达启航折扣', amount: '课程费和住宿费9折', text: '所有通过思达启航报名的学生，在下面的学校优惠之后再享9折。', promotionIds: ['cpils-sida'] },
+  { icon: 'percent', title: '思达启航折扣', amount: '课程费和住宿费9折', text: '所有通过思达启航报名的学生，课程费和住宿费按原价先打9折，再叠加下面的学校优惠。', promotionIds: ['cpils-sida'] },
   {
     icon: 'school', title: '学校奖学金', amount: '课程费和住宿费再减5%', text: `${SCHOLARSHIP_TERMS}、至少报名4周。`,
     until: '2027-12-28', promotionIds: ['cpils-scholarship-2027'],
@@ -75,7 +75,7 @@ export const CPILS_OFFERS: PhOfferCard[] = [
   },
   { icon: 'replay', title: '老学员返校', amount: '免注册费', text: '在CPILS读过书的学生再次报名，免收一次性注册费。', promotionIds: ['cpils-returning-registration'] },
   {
-    icon: 'event', title: '2026年内入学', amount: '淡季再享95折', text: '2026/12/27前入学，课程或住宿满4周的部分减去节日立减后享95折，再享思达启航9折。',
+    icon: 'event', title: '2026年内入学', amount: '淡季再享95折', text: '2026/12/27前入学，课程或住宿满4周的部分在9折后再享95折。',
     detail: '学习期涵盖2026/12/21–12/26减75美元，涵盖至2027/01/01减150美元。',
     until: '2026-12-28', promotionIds: ['cpils-off-season-fall'],
   },

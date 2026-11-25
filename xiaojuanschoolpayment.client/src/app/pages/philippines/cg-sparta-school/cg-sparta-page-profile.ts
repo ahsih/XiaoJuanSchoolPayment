@@ -11,7 +11,7 @@ import {
   type CiaShortVideo,
   type RoomRateGroup,
 } from '../cia-school/cia-page-content';
-import type { PhPageCopy, PhSchoolProfile, PhVideoItem } from '../school-page/ph-school-profile';
+import type { PhPageCopy, PhSchoolProfile, PhVideoItem, PhVideoTab } from '../school-page/ph-school-profile';
 import { cloneCgSpartaContentConfig, createDefaultCgSpartaContentConfig } from './cg-sparta-content-config';
 import {
   CG_SPARTA_ALBUM_DESCRIPTIONS,
@@ -117,7 +117,7 @@ const CG_SPARTA_COPY: PhPageCopy = {
   videos: {
     eyebrow: 'SCHOOL VIDEOS',
     title: '用视频了解 CG斯巴达校区',
-    intro: '校园、课堂和学员生活的实拍视频。',
+    intro: '校园、学员访谈和学员日常的实拍视频。',
     badge: 'CG 学校视频',
     lifeTitle: '校园短片',
   },
@@ -183,6 +183,13 @@ const shortVideo = (item: CgSpartaVideo): CiaShortVideo => ({
   ...(item.orientation === 'landscape' ? { shape: 'wide' as const } : {}),
 });
 
+const CG_SPARTA_VIDEO_TOPICS: ReadonlyArray<CgSpartaVideo['topic']> = ['校园', '学员访谈', '学员日常'];
+const CG_SPARTA_VIDEO_TABS: PhVideoTab[] = CG_SPARTA_VIDEO_TOPICS.map(topic => ({
+  label: topic === '校园' ? '校园视频' : topic,
+  icon: 'videocam',
+  items: CG_SPARTA_VIDEOS.filter(item => item.topic === topic).map(albumVideo),
+}));
+
 export const CG_SPARTA_PAGE_PROFILE: PhSchoolProfile = {
   code: 'CG-SPARTA',
   name: 'CG斯巴达校区',
@@ -191,10 +198,7 @@ export const CG_SPARTA_PAGE_PROFILE: PhSchoolProfile = {
   copy: CG_SPARTA_COPY,
   compactLayout: true,
   overviewFacts: CG_SPARTA_OVERVIEW_FACTS,
-  videoTabs: [
-    { label: '校园视频', icon: 'videocam', items: [albumVideo(CG_SPARTA_VIDEOS[0])] },
-    { label: '学员日常', icon: 'videocam', items: [albumVideo(CG_SPARTA_VIDEOS[1])] },
-  ],
+  videoTabs: CG_SPARTA_VIDEO_TABS,
   courseHighlights: {
     'ielts-guarantee': { badge: '只报12周，指定日期开课', icon: 'workspace_premium' },
     booster: { badge: '只报1–2周', icon: 'bolt' },
