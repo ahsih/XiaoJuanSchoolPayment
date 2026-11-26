@@ -677,7 +677,7 @@ const routes: Routes = [
       {
         path: 'philippines-study/iloilo/mk-language-training-center',
         loadComponent: () =>
-          import('./pages/philippines/mk-school/mk-school.component').then((m) => m.MkSchoolComponent),
+          import('./pages/philippines/mk-school/mk-school-page.component').then((m) => m.MkSchoolPageComponent),
       },
       {
         path: 'philippines-study/iloilo',

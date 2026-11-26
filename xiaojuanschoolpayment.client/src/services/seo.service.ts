@@ -387,12 +387,12 @@ export const SEO_PAGES: Record<string, SeoPage> = {
     image: '/assets/philippines/baguio-study-hero.webp',
   },
   '/philippines-study/iloilo/mk-language-training-center': {
-    title: '菲律宾伊洛伊洛MK Language Training Center | ESL雅思亲子课程费用',
+    title: '菲律宾伊洛伊洛MK语言学校 | 课程住宿费用与报价',
     description:
-      '菲律宾伊洛伊洛MK Language Training Center页面，整理MK Iloilo的ESL Basic至Intensive、IELTS、TESOL、Business、Working Holiday、Junior、Internship课程、短期与4周USD课程住宿费、PHP当地费用和报名注意事项。',
+      '菲律宾伊洛伊洛MK Language Training Center介绍：综合英语、雅思保分班、实习和亲子课程，单人间到四人间住宿费与2026、2027年优惠，可在线计算报价并保存报价图片；思达启航提供伊洛伊洛游学选校与申请咨询。',
     keywords:
-      '菲律宾伊洛伊洛MK Language Training Center, MK Iloilo, MK Education Iloilo, 伊洛伊洛语言学校, 菲律宾ESL学校, 菲律宾亲子游学, 菲律宾IELTS学校',
-    image: '/assets/philippines/baguio-study-hero.webp',
+      '菲律宾伊洛伊洛MK Language Training Center, MK Iloilo, MK Education Iloilo, MK报价, MK费用, 伊洛伊洛语言学校, 菲律宾亲子游学, 菲律宾雅思保分班',
+    image: '/assets/mk/campus/main-building.webp',
   },
   '/philippines-study/davao': {
     title: '达沃菲律宾留学与英语游学 | Davao语言学校',
