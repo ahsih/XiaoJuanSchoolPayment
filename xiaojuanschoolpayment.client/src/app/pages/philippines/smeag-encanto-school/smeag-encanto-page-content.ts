@@ -128,18 +128,29 @@ export const ENCANTO_PAGE = {
   heroCategories: ['校园', '设施', '住宿'] as const,
   // Short clips from the school's own video channel (宿务SMEAG). The 亲子活动课 clip is left out: a child's
   // T-shirt in it shows the flag of the Taiwan authorities (see AGENTS.md, Taiwan wording).
+  // The two wide films come from SMEAG's official YouTube channels: the 2025 film is cut (no student names,
+  // office screens, third-party brands or logo/website end card) and the campus tour has its www.smeag.com
+  // tag covered and its end card removed; see docs/smeag-encanto-source-2026-11-23.md.
   videoTabs: [
-    { label: '校园视频', videos: ['campus-tour', 'entrance-lobby', 'pool', 'gym'] },
+    { label: '校园视频', videos: ['encanto-film-2025', 'campus-tour', 'entrance-lobby', 'pool', 'gym'] },
     { label: '课程视频', videos: ['one-to-one', 'group-class', 'classroom-area', 'textbooks'] },
     { label: '宿舍视频', videos: ['sea-view-room'] },
   ],
   videos: {
+    'encanto-film-2025': {
+      title: 'SMEAG Encanto 校园影片（2025）',
+      text: '学校2025年官方影片：前台、教室、餐厅、泳池、海景宿舍和晚间活动；活动以学校实际安排为准。',
+      src: '/assets/smeag-encanto/videos/encanto-film-2025.mp4',
+      poster: '/assets/smeag-encanto/videos/encanto-film-2025-poster.webp',
+      duration: '2:53',
+      shape: 'wide',
+    },
     'campus-tour': {
       title: 'SMEAG Encanto 校园导览',
-      text: '跟着镜头看度假村校区的泳池、教室、宿舍和餐厅。',
+      text: '跟着镜头看度假村校区的宿舍、教室、健身房、泳池和餐厅。',
       src: '/assets/smeag-encanto/videos/campus-tour.mp4',
       poster: '/assets/smeag-encanto/videos/campus-tour-poster.webp',
-      duration: '2:48',
+      duration: '2:35',
       shape: 'wide',
     },
     'entrance-lobby': clip('entrance-lobby', '校园入口和前台', '从草坪和教学楼外观，一路走进前台和大厅。', '0:29'),
