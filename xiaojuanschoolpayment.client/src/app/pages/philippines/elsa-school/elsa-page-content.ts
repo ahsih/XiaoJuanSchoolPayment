@@ -147,6 +147,22 @@ export const ELSA_CAMPUS_VIDEO: PhVideoItem = {
   src: '/assets/elsa/videos/campus-aerial.mp4', poster: '/assets/elsa/videos/campus-aerial.webp', duration: '1:58', shape: 'wide',
 };
 
+const elsaVideo = (file: string, title: string, text: string, duration: string, shape: 'wide' | 'tall'): PhVideoItem => ({
+  title, text, src: `/assets/elsa/videos/${file}.mp4`, poster: `/assets/elsa/videos/${file}.webp`, duration, shape,
+});
+
+/**
+ * Clips from ELSA's own YouTube channel, all from 2026 (user request 2026-11-26), 720p H.264 in
+ * public/assets/elsa/videos/; each ends with the school's logo only. None needed a cut.
+ */
+export const ELSA_POOL_VIDEO = elsaVideo('pool-rules', '游泳池使用规则', '学校用中文介绍泳池：平日课后开放，周末和假日全天开放。', '1:19', 'wide');
+export const ELSA_DORM_C_VIDEO = elsaVideo('dorm-c-building', 'C栋宿舍实拍', '学校拍的C栋宿舍走廊和三人间。', '0:43', 'tall');
+export const ELSA_LUNCH_VIDEO = elsaVideo('lunch', '午餐时间', '学校餐厅的午餐。', '0:37', 'tall');
+export const ELSA_ACTIVITY_VIDEOS: PhVideoItem[] = [
+  elsaVideo('after-school-swim-golf', '课后游泳和高尔夫', '孩子们放学后的游泳课和高尔夫课，都在校内。', '1:13', 'wide'),
+  elsaVideo('zumba', '周三尊巴舞课', '每周三晚上在餐厅上尊巴舞课，学员都可以参加。', '1:55', 'wide'),
+];
+
 const numbered = (prefix: string, count: number) => Array.from({ length: count }, (_, index) => rooms(`${prefix}-${String(index + 1).padStart(2, '0')}`));
 const ROOM_SERVICE = '每周打扫2次，每月换床单2次；每周免费洗衣2次，每人每次4公斤';
 

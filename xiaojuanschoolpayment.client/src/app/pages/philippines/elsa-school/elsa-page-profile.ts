@@ -13,11 +13,13 @@ import {
 import type { PhPageCopy, PhSchoolProfile } from '../school-page/ph-school-profile';
 import { cloneElsaContentConfig, createDefaultElsaContentConfig, ELSA_SCHOOL_CODE } from './elsa-content-config';
 import {
+  ELSA_ACTIVITY_VIDEOS,
   ELSA_ALBUM_DESCRIPTIONS,
   ELSA_BASIC_INFO,
   ELSA_CAMPUS_BUILDINGS,
   ELSA_CAMPUS_VIDEO,
   ELSA_COURSE_DETAIL_GUIDES,
+  ELSA_DORM_C_VIDEO,
   ELSA_DORM_RULES,
   ELSA_FAQS,
   ELSA_FINAL_CTA_BADGES,
@@ -25,10 +27,12 @@ import {
   ELSA_HOLIDAY_CALENDARS,
   ELSA_HOLIDAY_FOOTNOTE,
   ELSA_LICENSE,
+  ELSA_LUNCH_VIDEO,
   ELSA_NOT_SUITABLE_FOR,
   ELSA_OFFERS,
   ELSA_OVERVIEW_FACTS,
   ELSA_PAGE_TEXT,
+  ELSA_POOL_VIDEO,
   ELSA_PRACTICAL_GUIDES,
   ELSA_QUICK_INFO,
   ELSA_REFERENCE_NOTE,
@@ -178,7 +182,13 @@ export const ELSA_PAGE_PROFILE: PhSchoolProfile = {
   copy: ELSA_COPY,
   compactLayout: true,
   overviewFacts: ELSA_OVERVIEW_FACTS,
-  videoTabs: [{ label: '校园视频', icon: 'videocam', items: [ELSA_CAMPUS_VIDEO] }],
+  videoTabs: [
+    { label: '校园视频', icon: 'videocam', items: [ELSA_CAMPUS_VIDEO, ELSA_POOL_VIDEO] },
+    { label: '宿舍视频', icon: 'videocam', items: [ELSA_DORM_C_VIDEO] },
+    { label: '餐厅视频', icon: 'videocam', items: [ELSA_LUNCH_VIDEO] },
+    { label: '活动视频', icon: 'videocam', items: ELSA_ACTIVITY_VIDEOS },
+  ],
+  roomVideos: { 'dorm-bc': ELSA_DORM_C_VIDEO },
   gallery: {
     categories: CIA_GALLERY_CATEGORIES,
     albumCategories: ['校园', '教室', '住宿', '餐厅', '设施'],

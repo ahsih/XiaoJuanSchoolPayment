@@ -126,6 +126,8 @@ export interface CboaVideo {
   title: string;
   description: string;
   duration: string;
+  /** Vertical clips are 'tall'; every other clip is landscape. */
+  shape?: 'wide' | 'tall';
 }
 
 export const cboaVideoSrc = (video: CboaVideo) => `/assets/cebu-blue-ocean/videos/${video.name}.mp4`;
@@ -139,6 +141,24 @@ export const CBOA_VIDEOS: CboaVideo[] = [
   { name: 'ocean-suites-ocean-view', title: '海景单人间', duration: '0:25', description: '大床、分体空调，窗外是海；共10间。' },
   { name: 'ocean-suites-deluxe', title: '豪华单人间', duration: '0:17', description: '大床、分体空调；共15间。' },
   { name: 'ocean-suites-superior', title: '高级单人间', duration: '0:17', description: '双人床、窗式空调；共29间。' },
+  // From the school's own YouTube channel (user request 2026-11-26). The 2025 tour lost its row of flags (one was
+  // the Taiwan authorities' flag), a lobby wall with a test company's logo, the café counter with other brands and
+  // a notice board with QR codes. The vlog lost its intro card, the smoking area and the supermarket, fruit stand
+  // and restaurant outside the gate.
+  {
+    name: 'campus-tour-2025', title: '校园导览（2025）', duration: '2:11',
+    description: '教学楼的大堂、自习区、图书室、医务室和一对一教室，EGI宿舍的大堂、餐厅、房间、健身房和泳池。',
+  },
+  { name: 'one-on-one-2024', title: '一对一课堂（2024）', duration: '0:45', shape: 'tall', description: '2024年8月拍的一对一教室上课。' },
+  { name: 'self-study-2024', title: '自习时间（2024）', duration: '0:33', shape: 'tall', description: '2024年8月拍的学员课后自习。' },
+  {
+    name: 'student-interview-diving', title: '中国学员采访', duration: '1:48',
+    description: '中国学员讲为什么选菲律宾和蓝海、每天的一对一课和周末出海（英文）。',
+  },
+  {
+    name: 'student-vlog', title: '中国学员的一天', duration: '3:21',
+    description: '中国学员用中文记录一天：上课、自习、吃饭、健身和宿舍窗外的海。',
+  },
 ];
 
 const SUITES_SERVICE = '酒店式管理，每天免费早餐';

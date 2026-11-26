@@ -56,13 +56,15 @@ export interface CellaPageContent {
 
 const uni = (file: string) => `assets/cella-uni/${file}.webp`;
 const premium = (file: string) => `assets/cella-premium/${file}.webp`;
-const video = (campus: 'uni' | 'premium', name: string, title: string, text: string, duration: string): PhVideoItem => ({
+const video = (
+  campus: 'uni' | 'premium', name: string, title: string, text: string, duration: string, shape: 'wide' | 'tall' = 'wide',
+): PhVideoItem => ({
   title,
   text,
   src: `/assets/cella-${campus}/videos/${name}.mp4`,
   poster: `/assets/cella-${campus}/videos/${name}.webp`,
   duration,
-  shape: 'wide',
+  shape,
 });
 const room = (
   campus: 'uni' | 'premium', id: string, label: string, location: '校内' | '校外', gallery: readonly string[],
@@ -190,6 +192,7 @@ export const CELLA_PAGE_CONTENT: Record<CellaCampus, CellaPageContent> = {
     videoTabs: [
       { label: '校园视频', videos: ['uni-campus-tour', 'uni-campus-walk', 'uni-pool', 'uni-dining'] },
       { label: '宿舍视频', videos: ['uni-single-room', 'uni-twin-room', 'uni-triple-room', 'uni-quad-room'] },
+      { label: '学员访谈', videos: ['uni-student-interview'] },
     ],
     videos: {
       'uni-campus-tour': video('uni', 'uni-campus-tour', 'CELLA Uni 校园导览', '跟着镜头看教室、各类课程、宿舍、餐厅、泳池和健身房。', '3:15'),
@@ -200,6 +203,9 @@ export const CELLA_PAGE_CONTENT: Record<CellaCampus, CellaPageContent> = {
       'uni-twin-room': video('uni', 'uni-twin-room', '双人间', '校内双人间实拍。', '0:13'),
       'uni-triple-room': video('uni', 'uni-triple-room', '三人间', '校内三人间实拍。', '0:14'),
       'uni-quad-room': video('uni', 'uni-quad-room', '四人间', '校内四人间实拍。', '0:14'),
+      // CELLA's own YouTube, 2026-01 (user request 2026-11-26). She talks about the Sparta program, so it is Uni Sparta.
+      // The opening with her full name was cut, and the website and Instagram strip at the top is blurred.
+      'uni-student-interview': video('uni', 'uni-student-interview', '蒙古学员采访', '蒙古学员讲为什么来菲律宾、斯巴达课程和在CELLA的生活（英文）。', '2:06', 'tall'),
     },
     roomVideos: {
       'uni-single': 'uni-single-room',
@@ -353,6 +359,8 @@ export const CELLA_PAGE_CONTENT: Record<CellaCampus, CellaPageContent> = {
     videoTabs: [
       { label: '校园视频', videos: ['premium-campus-tour', 'premium-campus-walk'] },
       { label: '宿舍视频', videos: ['premium-single-twin-room', 'premium-semi-single-room', 'premium-quad-room'] },
+      { label: '课程视频', videos: ['premium-family-course'] },
+      { label: '活动视频', videos: ['premium-christmas-party-2025'] },
     ],
     videos: {
       'premium-campus-tour': video('premium', 'premium-campus-tour', 'CELLA Premium 校园导览', '跟着镜头看学习区、教室、宿舍、餐厅和泳池。', '3:05'),
@@ -360,6 +368,11 @@ export const CELLA_PAGE_CONTENT: Record<CellaCampus, CellaPageContent> = {
       'premium-single-twin-room': video('premium', 'premium-single-twin-room', '单人／双人间', '校内单人或双人入住的房间实拍。', '0:07'),
       'premium-semi-single-room': video('premium', 'premium-semi-single-room', '半单人间', '校内半单人间实拍。', '0:03'),
       'premium-quad-room': video('premium', 'premium-quad-room', '四人间', '校内四人间实拍。', '0:12'),
+      // CELLA's own YouTube, 2026 (user request 2026-11-26). In the family-course video the tennis court with sponsor
+      // boards and the outdoor trips (zipline, a restaurant, canyoneering) are covered by a still of the interview, so
+      // the answers stay whole; the party video lost a speaker close-up that showed its brand.
+      'premium-family-course': video('premium', 'premium-family-course', '亲子课程', '在Premium校区上亲子课程的一家人，孩子和家长讲上课和进步（英文）。', '2:52'),
+      'premium-christmas-party-2025': video('premium', 'premium-christmas-party-2025', '2025圣诞派对', '学校给Premium校区学员办的圣诞派对。', '2:15'),
     },
     roomVideos: {
       'premium-single': 'premium-single-twin-room',

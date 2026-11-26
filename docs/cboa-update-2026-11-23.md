@@ -52,6 +52,25 @@ The school sent a Google Drive folder with Pines and Cebu Blue Ocean material. T
   - The brochure does not say which EGI room type they show, so all three EGI cards open the same photos.
 - Exchange rates stay live (Frankfurter); no fixed rate.
 
+## Official YouTube videos (2026-11-26)
+
+User request: more videos that build trust, from the school's own YouTube channel (@cebublueoceanacademy). Facebook
+was not checked (user decision 2026-11-26). Files are 720p H.264 in `public/assets/cebu-blue-ocean/videos/` with
+`poster-<name>.jpg`; the hero album gains a 校园 chip and a 学员 chip.
+
+| File | Source | Cuts |
+| --- | --- | --- |
+| `campus-tour-2025` | "Discover Cebu Blue Ocean Academy" (2025-02) | Removed the row of flags at the entrance (one was the Taiwan authorities' flag), the lobby wall with a test company's logo, the café counter with other brands' products and payment signs, and a notice board with QR codes. |
+| `one-on-one-2024` | Short "One-on-One Classes" (2024-08), vertical | None. |
+| `self-study-2024` | Short "Self-Study Time" (2024-08), vertical | None. |
+| `student-interview-diving` | "Chinese Student Explains" (2025-12), English | None; the student gives only his first name. |
+| `student-vlog` | "Student Vlog" (2025-11), Chinese narration | Removed the intro card, the smoking-area line, and the supermarket, fruit stand and restaurants outside the gate. About 3:21, longer than the 2:30 first estimated. |
+
+The tour also shows the EGI single, twin and triple rooms, but in one clip, so it opens no room album.
+
+Left out: clips with the Taiwan authorities' flag or Taiwan named as a country, clips with other companies' brands
+(test centres, cafés, fast food, supermarkets), QR codes, students' full names, and trips that are not the school.
+
 ## Checks
 
 ```powershell

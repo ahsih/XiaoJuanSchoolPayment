@@ -167,7 +167,10 @@ const CBOA_INITIAL_ROOM_RATE_GROUPS: RoomRateGroup[] = [...new Set(defaults.room
 const video = (name: string): CboaVideo => CBOA_VIDEOS.find(item => item.name === name) as CboaVideo;
 const albumVideo = (name: string): PhVideoItem => {
   const item = video(name);
-  return { title: item.title, text: item.description, src: cboaVideoSrc(item), poster: cboaVideoPoster(item), duration: item.duration, shape: 'wide' };
+  return {
+    title: item.title, text: item.description, src: cboaVideoSrc(item), poster: cboaVideoPoster(item), duration: item.duration,
+    shape: item.shape ?? 'wide',
+  };
 };
 const videoCard = (item: CboaVideo): CiaVideoCard => ({
   code: 'CBOA',
@@ -184,6 +187,8 @@ const videoCard = (item: CboaVideo): CiaVideoCard => ({
 const CBOA_VIDEO_TABS: PhVideoTab[] = [
   { label: '公寓视频', icon: 'videocam', items: [albumVideo('ocean-suites-tour')] },
   { label: '房型视频', icon: 'videocam', items: ['ocean-suites-ocean-view', 'ocean-suites-deluxe', 'ocean-suites-superior'].map(albumVideo) },
+  { label: '校园视频', icon: 'videocam', items: ['campus-tour-2025', 'one-on-one-2024', 'self-study-2024'].map(albumVideo) },
+  { label: '学员视频', icon: 'videocam', items: ['student-interview-diving', 'student-vlog'].map(albumVideo) },
 ];
 
 export const CBOA_PAGE_PROFILE: PhSchoolProfile = {

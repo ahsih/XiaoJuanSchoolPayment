@@ -64,6 +64,7 @@ December 2026 holiday notice and the BESA pickup poster.
 - Meals: described as mostly Korean with Japanese, Vietnamese and Filipino dishes at times; no vegetarian meals.
 - Not yet synced to the WeChat mini program; follow the mini-program workflow in AGENTS.md once the user confirms.
 
+
 ## Videos from JIC's official YouTube channel (2026-11-25)
 
 The user asked for more trust-building videos from JIC's official YouTube channel ("Baguio JIC") and Facebook page
@@ -93,3 +94,20 @@ Our titles never use a student's name. Checked frame by frame (every 3 s plus th
   Premium's, and it mentions getting 500 back without saying what that is).
 - Lower value: interviews without captions (MANA, Justin, Suji), a long interview with a full name in the title
   (Huw--9EgoUo) and a Facebook interview filmed in front of a laptop covered in stickers (Spencer).
+
+## More official YouTube videos (2026-11-26)
+
+A second pass on the same channel (@BaguioJIC) added four 2026 clips that the 2026-11-25 pass had not used, in the
+same folders. Titles follow the rule above and never use a student's name.
+
+| File | Chip | Cuts |
+| --- | --- | --- |
+| `jic-challenger-student-interview` ("PRO CHALLENGER INTERVIEW") | Challenger 学员访谈 | the opening card with the student's full name cut |
+| `jic-premium-student-interview-jack` | Premium 学员视频 | whole |
+| `jic-premium-student-interview-rick` | Premium 学员视频 | whole |
+| `jic-premium-circuit-training` | Premium 课程视频 | whole |
+
+`jic-premium-graduation` was also re-cut: the 2026-11-25 file still showed the certificates with students' full
+names (source 8.2–11.45 s). Those seconds are now cut too, as is the logo ending, so the clip is 0:49.
+
+Facebook was not checked in this pass (user decision 2026-11-26).
