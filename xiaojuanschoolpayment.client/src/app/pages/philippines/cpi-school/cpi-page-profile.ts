@@ -102,8 +102,8 @@ const CPI_COPY: PhPageCopy = {
   videos: {
     eyebrow: 'SCHOOL VIDEOS',
     title: '用视频了解 CPI',
-    intro: '视频都来自CPI官方账号，可以看到房间、餐厅、课堂和课后活动。部分拍摄于2016–2019年，现况以学校为准；新开的Premium公寓暂无视频。',
-    badge: 'CPI 官方视频',
+    intro: '可以看到房间、教室、餐厅、泳池和课后活动。部分学校官方视频拍摄于2016–2019年，现况以学校为准；新开的Premium公寓暂无视频。',
+    badge: 'CPI 校园视频',
     lifeTitle: '校园生活短片',
   },
   rooms: {
@@ -182,12 +182,18 @@ const albumVideo = (name: string): PhVideoItem => {
   };
 };
 
-/** Videos in the hero album, one chip per topic; the school film opens the album. */
+/** Videos in the hero album, one chip per topic; the school film opens the album, newer clips come next. */
 const CPI_VIDEO_TABS: PhVideoTab[] = [
-  { label: '校园视频', icon: 'videocam', items: ['school-intro', 'campus-night', 'teachers'].map(albumVideo) },
-  { label: '宿舍视频', icon: 'videocam', items: ['dorm-tour'].map(albumVideo) },
-  { label: '餐厅与活动视频', icon: 'videocam', items: ['meals-activities', 'graduation', 'foam-festival'].map(albumVideo) },
-  { label: '青少年课程视频', icon: 'videocam', items: ['junior-program', 'ukulele-class'].map(albumVideo) },
+  {
+    label: '校园视频', icon: 'videocam',
+    items: ['school-intro', 'teachers-day', 'new-students', 'campus-walk', 'pool', 'gym', 'campus-night', 'teachers'].map(albumVideo),
+  },
+  { label: '宿舍视频', icon: 'videocam', items: ['room-a-double', 'dorm-tour'].map(albumVideo) },
+  {
+    label: '课程视频', icon: 'videocam',
+    items: ['class-one-to-one', 'class-group', 'exam-room', 'junior-program', 'ukulele-class'].map(albumVideo),
+  },
+  { label: '餐厅与活动视频', icon: 'videocam', items: ['dining', 'meals-activities', 'graduation', 'coolture-festival', 'foam-festival'].map(albumVideo) },
 ];
 
 export const CPI_PAGE_PROFILE: PhSchoolProfile = {
@@ -206,7 +212,8 @@ export const CPI_PAGE_PROFILE: PhSchoolProfile = {
       text: '学校在最后一个月安排1次官方雅思考试，不用另付考试费。',
     },
   },
-  // No room video: the dorm tour shows several room types, so it stays in the hero album only.
+  // The A-2 clip opens that room's photos; the dorm tour shows several room types, so it stays in the hero album only.
+  roomVideos: { 'a-double': albumVideo('room-a-double') },
   gallery: {
     categories: CIA_GALLERY_CATEGORIES,
     albumCategories: ['校园', '教室', '住宿', '餐厅', '设施'],

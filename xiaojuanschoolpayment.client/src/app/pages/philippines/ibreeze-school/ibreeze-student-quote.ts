@@ -20,7 +20,7 @@ export interface IbreezeQuotePrices {
   exchangeRateLive: boolean;
   contentConfig?: () => CiaContentConfig;
 }
-interface LocalFee { item: string; amount: string; note: string; quantity: number; total: number; }
+interface LocalFee { item: string; amount: string; note: string; quantity: number; total: number; waived?: boolean; }
 export type IbreezeVisaType = 30 | 59 | 'student' | 'work' | 'srrv' | 'sirv';
 
 /** One person owns all their periods. Concurrent students never share overlap validation. */
@@ -75,15 +75,19 @@ export class IbreezeStudentQuote {
       const id = kind === 'course' && this.isMinor ? 'junior-english' : row.optionId;
       const course = this.contentConfig.courses.find(item => item.id === id);
       const room = this.contentConfig.rooms.find(item => item.id === id);
-      if (this.uses2027Prices && row.weeks < 4) {
-        return (kind === 'course' ? course?.feeByWeeks2027 : room?.feeByWeeks2027)?.[String(row.weeks)] ?? 0;
-      }
+      // Under four course weeks the school lists exact short-stay prices; from four weeks every period is proportional.
+      if (row.weeks < 4) return this.shortStayTable(kind === 'course' ? course : room)?.[String(row.weeks)] ?? 0;
       const rate = kind === 'course'
         ? (this.uses2027Prices ? course?.tuition2027 : this.courseOptions.find(item => item.id === id)?.tuition) ?? 0
         : (this.uses2027Prices ? room?.fee2027 : this.roomOptions.find(item => item.id === id)?.fee) ?? 0;
       return this.roundMoney(rate * row.weeks / 4);
     });
 
+  private shortStayTable(item?: { feeByWeeks?: Record<string, number>; feeByWeeks2027?: Record<string, number> }) {
+    return this.uses2027Prices ? item?.feeByWeeks2027 : item?.feeByWeeks;
+  }
+  /** School minimums: IELTS Starter runs 3–8 weeks, IELTS Target at least 4. */
+  minimumWeeks(courseId: string) { return courseId === 'ielts-target' ? 4 : courseId === 'ielts-starter' ? 3 : 1; }
   get tuitionForSelectedWeeks() { return this.quotePlan.total('course'); }
   get roomFeeForSelectedWeeks() { return this.quotePlan.total('room'); }
   get isMinor() { return this.selectedAgeGroup !== 'adult'; }
@@ -120,11 +124,14 @@ export class IbreezeStudentQuote {
   }
   private get novemberRules() { return this.contentConfig.quoteSettings.promotions.filter(rule => rule.id.startsWith('november-')); }
   get novemberPromotionText() { return this.novemberRules.filter(rule => rule.enabled).map(rule => rule.description).join(' '); }
-  private get novemberQuoteNote() {
+  /** The November offers this plan's dates and rooms qualify for. */
+  private get eligibleNovemberRules() {
     return this.novemberRules.filter(rule => rule.enabled && this.promotionDateEligible(rule)
-      && this.quotePlan.rooms.some(row => rule.eligibleRoomIds?.includes(row.optionId)))
-      .map(rule => rule.description).join(' ');
+      && this.quotePlan.rooms.some(row => rule.eligibleRoomIds?.includes(row.optionId)));
   }
+  get eligibleNovemberRuleIds() { return this.eligibleNovemberRules.map(rule => rule.id); }
+  /** Descriptions of the November offers this plan's rooms qualify for. */
+  get novemberQuoteNote() { return this.eligibleNovemberRules.map(rule => rule.description).join(' '); }
   get novemberPromotionDiscount() {
     if (this.quotePlan.roomWeeks < 4) return 0;
     return this.roundMoney(this.novemberRules.filter(rule => rule.enabled && this.promotionDateEligible(rule)).reduce((total, rule) => {
@@ -155,26 +162,32 @@ export class IbreezeStudentQuote {
     if (this.selectedAgeGroup === 'under-16' && this.quotePlan.courses.some(row => row.optionId !== 'junior-english')) return '未满16岁须选择青少年英语课程，请调整课程安排后再生成报价。';
     if (!this.quotePlan.date(this.selectedRegistrationDate)) return '请选择有效的报名注册日期。';
     if (this.selectedRegistrationDate > this.selectedStartDate) return '报名日不能晚于入学日期，请核对日期。';
-    if (!this.uses2027Prices && this.quotePlan.courseWeeks < 4) return '2026价目表暂未确认不足4周的价格，请联系顾问。';
-    if (this.uses2027Prices) {
-      const tier = Math.min(4, this.quotePlan.courseWeeks);
+    const courseWeeks = (id: string) => this.quotePlan.courses.filter(row => row.optionId === id).reduce((sum, row) => sum + row.weeks, 0);
+    if (!this.isMinor) {
+      for (const id of ['ielts-target', 'ielts-starter']) {
+        const weeks = courseWeeks(id);
+        if (weeks > 0 && weeks < this.minimumWeeks(id)) return `${this.courseName(id)}最少报名${this.minimumWeeks(id)}周，请调整课程周数。`;
+      }
+      if (courseWeeks('ielts-starter') > 8) return '雅思起步课程最长8周，之后可升入雅思目标课程，请调整课程安排。';
+      if (courseWeeks('general-business-and-bec') > 4) return '商务英语课程最长4周，请调整课程安排。';
+    }
+    if (this.quotePlan.courseWeeks < 4) {
+      const tier = String(this.quotePlan.courseWeeks);
       for (const row of this.quotePlan.courses) {
         const course = this.contentConfig.courses.find(item => item.id === (this.isMinor ? 'junior-english' : row.optionId));
-        if (!course?.feeByWeeks2027?.[String(tier)]) return '所选课程未公布该短期价格，请调整课程或周数。';
+        if (!this.shortStayTable(course)?.[tier]) return '所选课程没有该周数的短期价格，请调整课程或周数。';
       }
       for (const row of this.quotePlan.rooms) {
         const room = this.contentConfig.rooms.find(item => item.id === row.optionId);
-        if (!room?.feeByWeeks2027?.[String(tier)]) return '所选房型未公布该短期价格，请联系顾问确认。';
+        if (!this.shortStayTable(room)?.[tier]) return '所选房型没有该周数的短期价格，请联系顾问确认。';
       }
-      const courseWeeks = (id: string) => this.quotePlan.courses.filter(row => row.optionId === id).reduce((sum, row) => sum + row.weeks, 0);
-      if (courseWeeks('ielts-starter') > 8) return '2027价目表的IELTS Starter仅列至8周，请联系顾问确认更长课程安排。';
-      if (courseWeeks('general-business-and-bec') > 4) return '2027价目表的商务英语仅列至4周，请联系顾问确认更长课程安排。';
     }
     const summerWeeks = this.quotePlan.overlapWeeks('2027-06-27', '2027-08-14', [...this.quotePlan.courses, ...this.quotePlan.rooms]);
     if (summerWeeks && this.quotePlan.courseWeeks < 4) return '2027暑期最短报名4周，请调整学习周数。';
     if (!this.familyTravel && this.quotePlan.overlapWeeks('2027-06-27', '2027-08-14', this.quotePlan.rooms.filter(row => row.optionId.startsWith('off-campus-')))) return '2027暑期公寓仅接受家庭学生，请确认家庭同行或选择校内宿舍。';
     return '';
   }
+  private courseName(id: string) { return (this.contentConfig.courses.find(item => item.id === id)?.name ?? id).split(' ')[0]; }
   get courseEligibilityText() {
     if (this.selectedAgeGroup === 'under-16') return '未满16岁：按青少年课程安排及收费。';
     if (this.selectedAgeGroup === '16-17') return '16–17岁：可选择其他课程，课程费按青少年英语标准计算。';
@@ -188,25 +201,14 @@ export class IbreezeStudentQuote {
   get quoteCnyText() { return `约 ${Math.round(this.quoteUsd * this.usdToCny).toLocaleString('zh-CN')} 元`; }
   get exchangeRateText() { return this.exchangeRateLive && this.exchangeRateDate ? `汇率日期 ${this.exchangeRateDate}` : '暂按备用汇率估算'; }
   get campusWeeks() { return this.quotePlan.rooms.filter(row => !row.optionId.startsWith('off-campus-')).reduce((sum, row) => sum + row.weeks, 0); }
+  get condoWeeks() { return this.quotePlan.roomWeeks - this.campusWeeks; }
   get visaExtensionCount() { return this.isLongTermVisa ? 0 : Math.max(0, Math.ceil((this.quotePlan.stayWeeks * 7 - this.initialVisaDays) / 30)); }
   get visaExtensionTotal() {
     const fee = this.contentConfig?.localFees.find(item => item.id === 'visa-extension');
-    return (fee?.rates ?? [5140, 6410, 4440, 5040, 4440]).slice(0, this.visaExtensionCount).reduce((sum, amount) => sum + amount, 0);
+    return (fee?.rates ?? [6410, 4440, 5040, 4440, 5040]).slice(0, this.visaExtensionCount).reduce((sum, amount) => sum + amount, 0);
   }
   get localFees(): LocalFee[] {
-    const defaults: CiaLocalFeeRule[] = [
-      { id: 'ssp', name: 'SSP特殊学习许可证', currency: 'PHP', amount: 7800, billingRule: 'once', waiveForLongTermVisa: true, includeInTotal: true, note: '移民局收取；按报名学习时长办理，续费及换校需重新办理。', enabled: true, sortOrder: 0 },
-      { id: 'ssp-e-card', name: 'SSP E-CARD', currency: 'PHP', amount: 4500, billingRule: 'once', waiveForLongTermVisa: true, includeInTotal: true, note: '入学时与SSP同时办理，只收一次。', enabled: true, sortOrder: 1 },
-      { id: 'acr-i-card', name: 'ACR-I CARD 外国人身份证', currency: 'PHP', amount: 4000, billingRule: 'first-visa-extension', waiveForLongTermVisa: true, includeInTotal: true, note: '首次续签时计入一次。', enabled: true, sortOrder: 2 },
-      { id: 'arp', name: 'ARP外国人登记', currency: 'PHP', amount: 300, billingRule: 'long-term-or-first-extension', includeInTotal: true, note: '旅游签证首次续签或长期签证时计入一次。', enabled: true, sortOrder: 3 },
-      { id: 'management', name: '维护管理费', currency: 'PHP', amount: 4000, billingRule: 'per-accommodation-period', periodWeeks: 4, rounding: 'ceil', includeInTotal: true, note: '校内教学楼及其他设施维护费。', enabled: true, sortOrder: 4 },
-      { id: 'electricity', name: '校内电费', currency: 'PHP', amount: 2000, billingRule: 'per-accommodation-period', periodWeeks: 4, rounding: 'ceil', includeInTotal: true, note: '仅校内住宿计收。', enabled: true, sortOrder: 5 },
-      { id: 'water', name: '水费', currency: 'PHP', amount: 1000, billingRule: 'per-accommodation-period', periodWeeks: 4, rounding: 'ceil', includeInTotal: true, note: '仅校内住宿计收。', enabled: true, sortOrder: 6 },
-      { id: 'visa-extension', name: '签证续签', currency: 'PHP', amount: 5140, rates: [5140, 6410, 4440, 5040, 4440], billingRule: 'visa-extension-schedule', waiveForLongTermVisa: true, includeInTotal: true, note: '按签证与停留天数累计。', enabled: true, sortOrder: 7 },
-      { id: 'books', name: '教材费', currency: 'PHP', amount: 2000, billingRule: 'per-course-period', periodWeeks: 4, rounding: 'ceil', includeInTotal: true, note: '依课程及学习进度实际购买。', enabled: true, sortOrder: 8 },
-      { id: 'student-card', name: '学生证', currency: 'PHP', amount: 400, billingRule: 'once', includeInTotal: true, note: '一次性费用。', enabled: true, sortOrder: 9 },
-    ];
-    const fees = (this.contentConfig?.localFees ?? defaults).filter(item => item.enabled && item.includeInTotal).sort((a, b) => a.sortOrder - b.sortOrder);
+    const fees = this.contentConfig.localFees.filter(item => item.enabled && item.includeInTotal).sort((a, b) => a.sortOrder - b.sortOrder);
     return fees.map(fee => this.calculateLocalFee(fee));
   }
   get localFeesTotal() { return this.localFees.reduce((sum, fee) => sum + fee.total, 0); }
@@ -247,7 +249,7 @@ export class IbreezeStudentQuote {
   formatPhp(value: number) { return `${quoteMoney(value)} 比索`; }
   private calculateLocalFee(fee: CiaLocalFeeRule): LocalFee {
     const periodWeeks = fee.periodWeeks ?? 4;
-    const relevantWeeks = ['electricity', 'water'].includes(fee.id) ? this.campusWeeks
+    const relevantWeeks = ['electricity', 'water'].includes(fee.id) ? this.campusWeeks : fee.id === 'condo-electricity' ? this.condoWeeks
       : fee.billingRule === 'per-course-period' ? this.quotePlan.courseWeeks : this.quotePlan.roomWeeks;
     const periodQuantity = fee.id === 'books' ? textbookPeriods(this.quotePlan.courses, periodWeeks, fee.rounding === 'proportional' ? 'proportional' : 'ceil') : fee.rounding === 'proportional' ? relevantWeeks / periodWeeks : Math.ceil(relevantWeeks / periodWeeks);
     const extensions = this.visaExtensionCount;
@@ -260,7 +262,7 @@ export class IbreezeStudentQuote {
     else if (fee.billingRule === 'long-term-or-first-extension') { quantity = this.isLongTermVisa || extensions > 0 ? 1 : 0; total = fee.amount * quantity; }
     else if (fee.billingRule === 'visa-extension-schedule') { quantity = extensions; total = (fee.rates ?? [fee.amount]).slice(0, extensions).reduce((sum, value) => sum + value, 0); }
     const amount = fee.billingRule === 'per-accommodation-period' || fee.billingRule === 'per-course-period'
-      ? `${quoteMoney(fee.amount)} 比索／${periodWeeks}周`
+      ? `${quoteMoney(fee.amount)} 比索／${periodWeeks === 1 ? '' : periodWeeks}周`
       : fee.billingRule === 'visa-extension-schedule' && extensions > 1 ? '按续签次数累计' : `${quoteMoney(fee.amount)} 比索／次`;
     const touristVisaNote = `按${this.initialVisaDays}天旅游签证预估`;
     const editableVisaNote = fee.note.split('；长期签证')[0].trim();
@@ -269,7 +271,7 @@ export class IbreezeStudentQuote {
         ? `${touristVisaNote}；${editableVisaNote} 本次${extensions}次：${(fee.rates ?? [fee.amount]).slice(0, extensions).map(value => quoteMoney(value)).join('、')}比索。`
         : `${touristVisaNote}；${editableVisaNote} 本次无需续签。`
       : fee.billingRule === 'first-visa-extension' && !this.isLongTermVisa ? `${touristVisaNote}；${fee.note}` : fee.note;
-    return { item: fee.name, amount, quantity, total: this.roundMoney(total), note };
+    return { item: fee.name, amount, quantity, total: this.roundMoney(total), note, ...(waived ? { waived: true } : {}) };
   }
   private roundMoney(value: number) { return Math.round(value * 100) / 100; }
   private isDateBetween(value: string, start: string, end: string) { return value >= start && value <= end; }

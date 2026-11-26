@@ -99,7 +99,7 @@
 
     <div class="loading-state" *ngIf="isLoading"><span></span>正在加载 {{ schoolShortName }} 内容…</div>
 
-    <main class="workspace" *ngIf="!isLoading && (isLaMerSelected || activeTab !== 'media')">
+    <main class="workspace" *ngIf="!isLoading && activeTab !== 'media'">
       <section class="form-panel" (input)="contentChanged()" (change)="contentChanged()">
         <div class="panel-heading">
           <div>
@@ -115,7 +115,6 @@
           <div><strong>先从下面选择一项</strong><span>选中后左侧打开它的表单，右侧自动滚到官网对应位置并高亮。</span></div>
         </div>
 
-        <app-admin-school-photos *ngIf="isLaMerSelected && activeTab === 'media'" [embeddedSchoolId]="selectedSchool?.id" [draftMedia]="content.media" (draftMediaChange)="updateMedia($event)" />
         <ng-container *ngIf="activeTab === 'courses'">
           <div class="item-picker">
             <div class="picker-heading"><strong>课程列表</strong><button type="button" (click)="addCourse()"><mat-icon>add</mat-icon>新增课程</button></div>
@@ -133,21 +132,12 @@
               <label *ngIf="isCpilsSelected">2027短住／保分整套价格（周数:美元）<input [ngModel]="formatNumberMap(item.feeByWeeks2027)" (ngModelChange)="updateCpilsFuturePrices(item, $event)" /></label>
               <label *ngIf="isIbreezeSelected">2027官方分周价（周数:美元；不足4周按此表）<input [ngModel]="formatNumberMap(item.feeByWeeks2027)" (ngModelChange)="updateCpilsFuturePrices(item, $event)" /></label>
               <label *ngIf="isCpilsSelected && item.allowedWeeks2027 !== undefined">2027限定课程周数（空白表示待确认）<input [ngModel]="item.allowedWeeks2027.join(', ')" (ngModelChange)="updateCpilsFutureWeeks(item, $event)" /></label>
-              <label *ngIf="isGlcSelected">英文显示名称<input [(ngModel)]="item.englishName" /></label>
-              <label *ngIf="isGlcSelected">中文名称<input [(ngModel)]="item.chineseName" /></label>
-              <label *ngIf="isGlcSelected">课程分组<input [(ngModel)]="item.group" /></label>
-              <label *ngIf="isGlcSelected">教材类型<select [(ngModel)]="item.textbook"><option value="esl">英语课程教材</option><option value="ielts">雅思教材</option></select></label>
               <label *ngIf="isAnjSelected || isImsSelected">课程类型<input [(ngModel)]="item.courseType" /></label>
               <label *ngIf="isJicSelected">所属校区<select [(ngModel)]="item.campus"><option value="challenger">Challenger 挑战校区</option><option value="premium">Premium 高级校区</option></select></label>
               <label *ngIf="isBeciSelected">所属校区<input [value]="beciCampus === 'eop' ? 'EOP 校区' : beciCampus === 'sparta' ? 'Sparta 校区' : 'City 校区'" disabled /></label>
               <label *ngIf="isBeciSelected">最低报名周数<input type="number" min="1" [(ngModel)]="item.minimumWeeks" /></label>
               <label *ngIf="(isAnjSelected || isImsSelected) && item.feeByWeeks !== undefined">明确周数价格（周数:美元）<input [ngModel]="formatNumberMap(item.feeByWeeks)" (ngModelChange)="updateCourseWeekPrices(item, $event)" placeholder="1:210, 2:420, 3:560, 4:700" /></label>
               <label *ngIf="(isAnjSelected || isImsSelected) && item.allowedWeeks !== undefined">允许周数（逗号分隔）<input [ngModel]="item.allowedWeeks.join(', ')" (ngModelChange)="updateCourseAllowedWeeks(item, $event)" placeholder="1, 2, 3, 4, 8, 12" /></label>
-            </div>
-            <div class="checkbox-grid" *ngIf="isGlcSelected">
-              <label><input type="checkbox" [(ngModel)]="item.offSeasonEligible" />参加学校年度优惠</label>
-              <label><input type="checkbox" [(ngModel)]="item.annexOnly" />只可选择副楼住宿</label>
-              <label><input type="checkbox" [(ngModel)]="item.family" />亲子共享课程套餐</label>
             </div>
             <label>每日课程安排<textarea rows="3" [(ngModel)]="item.schedule"></textarea></label>
             <label>课程定位与适合人群<input [(ngModel)]="item.suitable" /></label>
@@ -170,20 +160,20 @@
           <div class="item-picker">
             <div class="picker-heading"><strong>房型列表</strong><button type="button" (click)="addRoom()"><mat-icon>add</mat-icon>新增房型</button></div>
             <button class="picker-item" *ngFor="let item of visibleRooms; trackBy: trackById" type="button" [class.active]="selectedRoomId === item.id" [class.hidden-item]="!item.enabled" (click)="selectEditorItem('room', item.id)">
-              <span>{{ isLaMerSelected ? item.name : item.label }}<small *ngIf="!isLaMerSelected">{{ item.code }} · {{ item.location }}</small></span><b>{{ item.fee | number }} 美元</b>
+              <span>{{ item.label }}<small>{{ item.code }} · {{ item.location }}</small></span><b>{{ item.fee | number }} 美元</b>
             </button>
           </div>
           <div class="edit-card" data-selected-editor *ngIf="selectedRoom as item" (focusin)="focusEditorItem('room', item.id)">
             <div class="edit-card-title"><h3>编辑房型</h3><label class="switch"><input type="checkbox" [(ngModel)]="item.enabled" /><span>官网显示</span></label></div>
             <div class="field-grid two">
               <label>完整名称<input [(ngModel)]="item.name" /></label>
-              <label *ngIf="!isLaMerSelected">页面短名称<input [(ngModel)]="item.label" /></label>
-              <label *ngIf="!isLaMerSelected">房型编号<input [(ngModel)]="item.code" /></label>
+              <label>页面短名称<input [(ngModel)]="item.label" /></label>
+              <label>房型编号<input [(ngModel)]="item.code" /></label>
               <label>{{ roomPriceLabel }}<input type="number" min="0" [(ngModel)]="item.fee" /></label>
-              <label *ngIf="isCpilsSelected || isIbreezeSelected">2027住宿价格（美元/4周）<input type="number" min="0" [(ngModel)]="item.fee2027" /></label>
+              <label *ngIf="usesFutureRoomPrices">2027住宿价格（美元/4周）<input type="number" min="0" [ngModel]="item.fee2027" (ngModelChange)="setRoomFee2027(item, $event)" /></label>
               <label *ngIf="isCpilsSelected || isIbreezeSelected">2027短住价格（周数:美元）<input [ngModel]="formatNumberMap(item.feeByWeeks2027)" (ngModelChange)="updateCpilsFuturePrices(item, $event)" /></label>
-              <label *ngIf="!isLaMerSelected">住宿位置<select [(ngModel)]="item.location"><option value="校内">校内</option><option value="校外">校外</option></select></label>
-              <label *ngIf="!isLaMerSelected">页面分组<input [(ngModel)]="item.group" /></label>
+              <label>住宿位置<select [(ngModel)]="item.location"><option value="校内">校内</option><option value="校外">校外</option></select></label>
+              <label>页面分组<input [(ngModel)]="item.group" /></label>
               <label *ngIf="isImsSelected && item.feeByWeeks !== undefined">明确周数价格（周数:美元）<input [ngModel]="formatNumberMap(item.feeByWeeks)" (ngModelChange)="updateRoomWeekPrices(item, $event)" placeholder="1:195, 2:390, 3:520, 4:650" /></label>
               <label *ngIf="isImsSelected && item.allowedWeeks !== undefined">允许周数（逗号分隔）<input [ngModel]="item.allowedWeeks.join(', ')" (ngModelChange)="updateRoomAllowedWeeks(item, $event)" placeholder="1, 2, 3, 4, 8, 12" /></label>
             </div>
@@ -295,13 +285,13 @@
               <label *ngIf="isIbreezeSelected" (focusin)="focusEditorItem('section', 'quote-breakdown')">不足8周押金（比索）<input type="number" min="0" [(ngModel)]="content.quoteSettings.roomDepositUnder8Weeks" /></label>
               <label *ngIf="isIbreezeSelected" (focusin)="focusEditorItem('section', 'quote-breakdown')">8周及以上押金（比索）<input type="number" min="0" [(ngModel)]="content.quoteSettings.roomDeposit8WeeksOrMore" /></label>
               <label *ngIf="isIbreezeSelected" (focusin)="focusEditorItem('section', 'quote-breakdown')">到校后换课费（美元/4周）<input type="number" min="0" [(ngModel)]="content.quoteSettings.courseChangeFeePerPeriod" /></label>
-              <label *ngIf="usesFutureCoursePrices" (focusin)="focusEditorItem('section', 'quote')">新价格报名起始日<input type="date" [(ngModel)]="content.quoteSettings.futurePriceRegistrationStart" [readOnly]="isIbreezeSelected" /></label>
-              <label *ngIf="usesFutureCoursePrices && !isIbreezeSelected" (focusin)="focusEditorItem('section', 'quote')">新价格入学起始日<input type="date" [(ngModel)]="content.quoteSettings.futurePriceArrivalStart" /></label>
+              <label *ngIf="usesFuturePriceDates" (focusin)="focusEditorItem('section', 'quote')">新价格报名起始日<input type="date" [(ngModel)]="content.quoteSettings.futurePriceRegistrationStart" [readOnly]="isIbreezeSelected" /></label>
+              <label *ngIf="usesFuturePriceDates && !isIbreezeSelected" (focusin)="focusEditorItem('section', 'quote')">新价格入学起始日<input type="date" [(ngModel)]="content.quoteSettings.futurePriceArrivalStart" /></label>
               <label *ngIf="supportsOneWeekShortStay" data-editor-section="short-stay" (focusin)="focusEditorItem('section', 'short-stay')">1周按4周价格比例<input type="number" min="0" max="1" step="0.01" [(ngModel)]="content.quoteSettings.shortStayRatios['1']" /></label>
               <label *ngIf="supportsShortStay" (focusin)="focusEditorItem('section', 'short-stay')">2周按4周价格比例<input type="number" min="0" max="1" step="0.01" [(ngModel)]="content.quoteSettings.shortStayRatios['2']" /></label>
               <label *ngIf="supportsShortStay" (focusin)="focusEditorItem('section', 'short-stay')">3周按4周价格比例<input type="number" min="0" max="1" step="0.01" [(ngModel)]="content.quoteSettings.shortStayRatios['3']" /></label>
-              <label *ngIf="isBCebuSelected" (focusin)="focusEditorItem('section', 'quote-breakdown')">15岁以下管理费（美元/周）<input type="number" min="0" [(ngModel)]="content.quoteSettings.minorManagementFeeUnder15PerWeek" /></label>
-              <label *ngIf="isBCebuSelected" (focusin)="focusEditorItem('section', 'quote-breakdown')">15–17岁管理费（美元/周）<input type="number" min="0" [(ngModel)]="content.quoteSettings.minorManagementFeeAge15To17PerWeek" /></label>
+              <label *ngIf="isBCebuSelected" (focusin)="focusEditorItem('section', 'quote-breakdown')">小学或初中生管理费（美元/周）<input type="number" min="0" [(ngModel)]="content.quoteSettings.minorManagementFeeUnder15PerWeek" /></label>
+              <label *ngIf="isBCebuSelected" (focusin)="focusEditorItem('section', 'quote-breakdown')">高中生管理费（美元/周）<input type="number" min="0" [(ngModel)]="content.quoteSettings.minorManagementFeeAge15To17PerWeek" /></label>
             </div>
           </div>
 
@@ -414,7 +404,7 @@
       </aside>
     </main>
 
-    <section class="media-workspace" *ngIf="!isLoading && activeTab === 'media' && !isLaMerSelected">
+    <section class="media-workspace" *ngIf="!isLoading && activeTab === 'media'">
       <app-admin-school-photos
         [embeddedSchoolId]="selectedSchool?.id"
         [draftMedia]="content.media"

@@ -1141,7 +1141,7 @@ export const CIA_CAMPUS_LIFE_VIDEOS: CiaShortVideo[] = [
     duration: '1:00',
   },
   {
-    title: '单人间实拍',
+    title: '豪华单人间实拍',
     text: '床、衣柜、卫生间和阳台景观',
     src: 'assets/cia-video/shorts/single-room.mp4',
     poster: 'assets/cia/video-posters/single-room.webp',
@@ -1196,6 +1196,37 @@ export const CIA_INTERVIEW_VIDEOS: CiaShortVideo[] = [
     duration: '3:26',
     shape: 'wide',
   },
+];
+
+/**
+ * Vertical clips 思达启航 filmed at CIA (the user's CIA 视频号 pack, 2026-11-24). Each was checked frame by frame:
+ * only 宿务CIA captions, no contact details or other companies. The burned-in captions, including 宿务最美语言学校
+ * in three clips, stay as they are (user decision 2026-11-24). Room clips are named by the room our team filmed.
+ */
+export const CIA_SIDA_VIDEOS: CiaShortVideo[] = [
+  { title: '校园环境', text: '思达启航实拍：校园入口、咖啡厅和泳池', src: 'assets/cia-video/sida/campus.mp4', poster: 'assets/cia/video-posters/sida/campus.webp', duration: '0:19' },
+  { title: '课间休息', text: '思达启航实拍：课间走廊和休息区', src: 'assets/cia-video/sida/class-break.mp4', poster: 'assets/cia/video-posters/sida/class-break.webp', duration: '0:22' },
+  { title: '餐厅餐饮', text: '思达启航实拍：排队取餐、荤素菜、面点水果和饮料', src: 'assets/cia-video/sida/dining-hall.mp4', poster: 'assets/cia/video-posters/sida/dining-hall.webp', duration: '0:41' },
+  { title: '校园商超', text: '思达启航实拍：零食、饮料和日用品', src: 'assets/cia-video/sida/mini-mart.mp4', poster: 'assets/cia/video-posters/sida/mini-mart.webp', duration: '0:40' },
+  { title: '健身房', text: '思达启航实拍：健身器材、桌球和乒乓球', src: 'assets/cia-video/sida/gym.mp4', poster: 'assets/cia/video-posters/sida/gym.webp', duration: '0:23' },
+  { title: '图书馆自习室', text: '思达启航实拍：图书馆和自习室', src: 'assets/cia-video/sida/library.mp4', poster: 'assets/cia/video-posters/sida/library.webp', duration: '0:22' },
+  { title: '自助洗衣房', text: '思达启航实拍：自助洗衣机', src: 'assets/cia-video/sida/laundry.mp4', poster: 'assets/cia/video-posters/sida/laundry.webp', duration: '0:28' },
+  { title: '医务室', text: '思达启航实拍：校内医务室', src: 'assets/cia-video/sida/clinic.mp4', poster: 'assets/cia/video-posters/sida/clinic.webp', duration: '0:10' },
+  { title: '祈祷室', text: '思达启航实拍：校内祈祷室', src: 'assets/cia-video/sida/prayer-room.mp4', poster: 'assets/cia/video-posters/sida/prayer-room.webp', duration: '0:22' },
+  { title: '服饰租赁', text: '思达启航实拍：各式服装和配饰', src: 'assets/cia-video/sida/clothing-rental.mp4', poster: 'assets/cia/video-posters/sida/clothing-rental.webp', duration: '0:43' },
+  { title: '豪华单人间 P-1', text: '思达启航实拍：厨房台面、电磁炉、大床和泳池景观阳台', src: 'assets/cia-video/sida/premium-single-p1.mp4', poster: 'assets/cia/video-posters/sida/premium-single-p1.webp', duration: '0:36' },
+  { title: '校外单人间 PN-1', text: '思达启航实拍：4号楼单人间的门卡、床、厨房和卫浴', src: 'assets/cia-video/sida/building-4-single-pn1.mp4', poster: 'assets/cia/video-posters/sida/building-4-single-pn1.webp', duration: '0:43' },
+  { title: '标准单人间 S-1', text: '思达启航实拍：床、书桌、阳台和泳池景观', src: 'assets/cia-video/sida/standard-single-s1.mp4', poster: 'assets/cia/video-posters/sida/standard-single-s1.webp', duration: '0:22' },
+  { title: '双人间 D-2', text: '思达启航实拍：两张床、书桌和卫浴', src: 'assets/cia-video/sida/twin-room-d2.mp4', poster: 'assets/cia/video-posters/sida/twin-room-d2.webp', duration: '0:30' },
+  { title: '三人间 D-3', text: '思达启航实拍：三张床、书桌、阳台景观和卫浴', src: 'assets/cia-video/sida/triple-room-d3.mp4', poster: 'assets/cia/video-posters/sida/triple-room-d3.webp', duration: '0:20' },
+  { title: '四人间 D-4', text: '思达启航实拍：四张床、书桌、窗外景观和卫浴', src: 'assets/cia-video/sida/quad-room-d4.mp4', poster: 'assets/cia/video-posters/sida/quad-room-d4.webp', duration: '0:22' },
+  { title: '四人间入住体验', text: '思达启航实拍：衣柜、书桌和窗外景观', src: 'assets/cia-video/sida/quad-check-in.mp4', poster: 'assets/cia/video-posters/sida/quad-check-in.webp', duration: '1:08' },
+  { title: '上课实拍', text: '思达启航实拍：一对一小教室和小组课', src: 'assets/cia-video/sida/classes.mp4', poster: 'assets/cia/video-posters/sida/classes.webp', duration: '0:26' },
+  { title: '瑜伽普拉提', text: '思达启航实拍：瑜伽选修课和普拉提教室', src: 'assets/cia-video/sida/yoga-pilates.mp4', poster: 'assets/cia/video-posters/sida/yoga-pilates.webp', duration: '0:25' },
+  { title: '雅思官方考场', text: '思达启航实拍：校内雅思官方考场', src: 'assets/cia-video/sida/ielts-test-venue.mp4', poster: 'assets/cia/video-posters/sida/ielts-test-venue.webp', duration: '0:08' },
+  { title: '课后活动', text: '思达启航实拍：篮球场上的活动和舞蹈表演', src: 'assets/cia-video/sida/after-class-activities.mp4', poster: 'assets/cia/video-posters/sida/after-class-activities.webp', duration: '0:20' },
+  { title: '篮球比赛', text: '思达启航实拍：晚上的篮球比赛', src: 'assets/cia-video/sida/basketball-game.mp4', poster: 'assets/cia/video-posters/sida/basketball-game.webp', duration: '0:33' },
+  { title: '羽毛球场', text: '思达启航实拍：晚上亮灯的草坪球场', src: 'assets/cia-video/sida/badminton-court.mp4', poster: 'assets/cia/video-posters/sida/badminton-court.webp', duration: '0:16' },
 ];
 
 export const CIA_COURSE_CHOICE_CARDS = [

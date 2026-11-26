@@ -84,6 +84,10 @@ export class PhPlanComparison<S extends PhCompareStudent> {
 
   get started(): boolean { return this.plans.length > 0; }
 
+  /** Courses and rooms a plan can pick; a school may compare fewer than it quotes (SMEAG Encanto: adult courses only). */
+  get courseOptions(): PhComparePricing['courseFees'] { return this.pricing.courseFees; }
+  get roomOptions(): PhComparePricing['roomFees'] { return this.pricing.roomFees; }
+
   /** Builds plan A from the normal quote's first course and room, then applies a shortcut. */
   start(focus: PhCompareFocus = this.focus): void {
     const plan = this.conditions().quotePlan;

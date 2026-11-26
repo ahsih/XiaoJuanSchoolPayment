@@ -59,6 +59,13 @@ export class UkTourComponent {
         text: '1990年创办的伦敦寄宿式语言学校，学习、住宿、吃饭在同一栋楼；有青少年四季全包项目、成人课程和成人暑期公寓套餐。',
         tags: ['青少年11–17岁', '成人16岁以上', '校内住宿', '巴斯城堡'],
       },
+      {
+        name: 'St Giles（伦敦、布莱顿、剑桥、伊斯特本）',
+        route: '/overseas-study-tour/uk/st-giles',
+        image: '/assets/st-giles/london-central/london-central-36.jpg',
+        text: '1955年在伦敦创办的语言学校，英国有5个全年校区：伦敦中心、伦敦海格特、布莱顿、剑桥和伊斯特本；暑期另有青少年夏校和亲子课程。',
+        tags: ['5个校区', '成人和14岁起', '青少年夏校', '亲子课程'],
+      },
     ],
     sources: [
       { label: 'Study UK', url: 'https://study-uk.britishcouncil.org/' },

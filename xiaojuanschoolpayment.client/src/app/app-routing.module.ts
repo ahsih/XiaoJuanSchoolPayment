@@ -216,12 +216,12 @@ const routes: Routes = [
       {
         path: 'philippines-study/cebu/ciec',
         loadComponent: () =>
-          import('./pages/philippines/ciec-school/ciec-school.component').then((m) => m.CiecSchoolComponent),
+          import('./pages/philippines/ciec-school/ciec-school-page.component').then((m) => m.CiecSchoolPageComponent),
       },
       {
         path: 'philippines-study/cebu/elsa-international-language-school',
         loadComponent: () =>
-          import('./pages/philippines/elsa-school/elsa-school.component').then((m) => m.ElsaSchoolComponent),
+          import('./pages/philippines/elsa-school/elsa-school-page.component').then((m) => m.ElsaSchoolPageComponent),
       },
       {
         path: 'philippines-study/cebu/ethos-language-school',
@@ -231,7 +231,7 @@ const routes: Routes = [
       {
         path: 'philippines-study/cebu/ims-academy',
         loadComponent: () =>
-          import('./pages/philippines/ims-school/ims-school.component').then((m) => m.ImsSchoolComponent),
+          import('./pages/philippines/ims-school/ims-school-page.component').then((m) => m.ImsSchoolPageComponent),
       },
       {
         path: 'philippines-study/cebu/target-global-english-academy',
@@ -257,8 +257,8 @@ const routes: Routes = [
       {
         path: 'philippines-study/cebu/global-language-cebu',
         loadComponent: () =>
-          import('./pages/philippines/glc-school/glc-school.component').then(
-            (m) => m.GlcSchoolComponent,
+          import('./pages/philippines/glc-school/glc-school-page.component').then(
+            (m) => m.GlcSchoolPageComponent,
           ),
       },
       {
@@ -321,22 +321,22 @@ const routes: Routes = [
       {
         path: 'philippines-study/cebu/cg-academy-sparta-campus',
         loadComponent: () =>
-          import('./pages/philippines/cg-sparta-school/cg-sparta-school.component').then(
-            (m) => m.CgSpartaSchoolComponent,
+          import('./pages/philippines/cg-sparta-school/cg-sparta-school-page.component').then(
+            (m) => m.CgSpartaSchoolPageComponent,
           ),
       },
       {
         path: 'philippines-study/cebu/cg-academy-banilad-campus',
         loadComponent: () =>
-          import('./pages/philippines/cg-banilad-school/cg-banilad-school.component').then(
-            (m) => m.CgBaniladSchoolComponent,
+          import('./pages/philippines/cg-banilad-school/cg-banilad-school-page.component').then(
+            (m) => m.CgBaniladSchoolPageComponent,
           ),
       },
       {
         path: 'philippines-study/cebu/smeag-capital',
         loadComponent: () =>
-          import('./pages/philippines/smeag-capital-school/smeag-capital-school.component').then(
-            (m) => m.SmeagCapitalSchoolComponent,
+          import('./pages/philippines/smeag-capital-school/smeag-capital-school-page.component').then(
+            (m) => m.SmeagCapitalSchoolPageComponent,
           ),
       },
       {
@@ -349,8 +349,8 @@ const routes: Routes = [
       {
         path: 'philippines-study/cebu/genius-english-academy',
         loadComponent: () =>
-          import('./pages/philippines/genius-school/genius-school.component').then(
-            (m) => m.GeniusSchoolComponent,
+          import('./pages/philippines/genius-school/genius-school-page.component').then(
+            (m) => m.GeniusSchoolPageComponent,
           ),
       },
       {
@@ -363,8 +363,8 @@ const routes: Routes = [
       {
         path: 'philippines-study/cebu/ibreeze',
         loadComponent: () =>
-          import('./pages/philippines/ibreeze-school/ibreeze-school.component').then(
-            (m) => m.IbreezeSchoolComponent,
+          import('./pages/philippines/ibreeze-school/ibreeze-school-page.component').then(
+            (m) => m.IbreezeSchoolPageComponent,
           ),
       },
       {
@@ -384,8 +384,8 @@ const routes: Routes = [
       {
         path: 'philippines-study/cebu/cebu-blue-ocean-academy',
         loadComponent: () =>
-          import('./pages/philippines/cebu-blue-ocean-school/cebu-blue-ocean-school.component').then(
-            (m) => m.CebuBlueOceanSchoolComponent,
+          import('./pages/philippines/cebu-blue-ocean-school/cboa-school-page.component').then(
+            (m) => m.CboaSchoolPageComponent,
           ),
       },
       {
@@ -397,7 +397,7 @@ const routes: Routes = [
       },
       {
         path: 'philippines-study/cebu/ev-la-mer',
-        loadComponent: () => import('./pages/philippines/la-mer-school/la-mer-school.component').then(m => m.LaMerSchoolComponent),
+        loadComponent: () => import('./pages/philippines/la-mer-school/la-mer-school-page.component').then(m => m.LaMerSchoolPageComponent),
       },
       {
         path: 'philippines-study/cebu/ev-academy',
@@ -412,7 +412,7 @@ const routes: Routes = [
       {
         path: 'philippines-study/cebu/bcebu',
         loadComponent: () =>
-          import('./pages/philippines/bcebu-school/bcebu-school.component').then((m) => m.BCebuSchoolComponent),
+          import('./pages/philippines/bcebu-school/bcebu-school-page.component').then((m) => m.BCebuSchoolPageComponent),
       },
       {
         path: 'philippines-study/cebu/cpils',
@@ -420,14 +420,25 @@ const routes: Routes = [
           import('./pages/philippines/cpils-school/cpils-school-page.component').then((m) => m.CpilsSchoolPageComponent),
       },
       {
-        path: 'philippines-study/cebu/english-fella',
+        path: 'philippines-study/cebu/english-fella-first-campus',
         loadComponent: () =>
-          import('./pages/philippines/fella-school/fella-school-detail.component').then((m) => m.FellaSchoolDetailComponent),
+          import('./pages/philippines/fella-school/fella-first-campus-school.component').then((m) => m.FellaFirstCampusSchoolComponent),
+      },
+      {
+        path: 'philippines-study/cebu/english-fella-second-campus',
+        loadComponent: () =>
+          import('./pages/philippines/fella-school/fella-second-campus-school.component').then((m) => m.FellaSecondCampusSchoolComponent),
+      },
+      {
+        // The former combined page; each campus now has its own page.
+        path: 'philippines-study/cebu/english-fella',
+        redirectTo: '/philippines-study/cebu/english-fella-first-campus',
+        pathMatch: 'full',
       },
       {
         path: 'philippines-study/cebu/philinter-academy',
         loadComponent: () =>
-          import('./pages/philippines/philinter-school/philinter-school-detail.component').then((m) => m.PhilinterSchoolDetailComponent),
+          import('./pages/philippines/philinter-school/philinter-school-page.component').then((m) => m.PhilinterSchoolPageComponent),
       },
       {
         path: 'philippines-study/cebu',
@@ -437,7 +448,7 @@ const routes: Routes = [
       {
         path: 'philippines-study/baguio/pines-international-academy',
         loadComponent: () =>
-          import('./pages/philippines/pines-school/pines-school-detail.component').then((m) => m.PinesSchoolDetailComponent),
+          import('./pages/philippines/pines-school/pines-school-page.component').then((m) => m.PinesSchoolPageComponent),
       },
       {
         path: 'philippines-study/baguio/beci-eop-campus',
@@ -465,36 +476,35 @@ const routes: Routes = [
       },
       {
         path: 'philippines-study/baguio/baguio-jic-challenger',
-        data: { campus: 'challenger' },
         loadComponent: () =>
-          import('./pages/philippines/jic-school/jic-school-detail.component').then((m) => m.JicSchoolDetailComponent),
+          import('./pages/philippines/jic-school/jic-challenger-school.component').then((m) => m.JicChallengerSchoolComponent),
       },
       {
         path: 'philippines-study/baguio/baguio-jic-premium',
-        data: { campus: 'premium' },
         loadComponent: () =>
-          import('./pages/philippines/jic-school/jic-school-detail.component').then((m) => m.JicSchoolDetailComponent),
+          import('./pages/philippines/jic-school/jic-premium-school.component').then((m) => m.JicPremiumSchoolComponent),
       },
       {
+        // The former combined page; each campus now has its own page.
         path: 'philippines-study/baguio/baguio-jic',
-        loadComponent: () =>
-          import('./pages/philippines/jic-school/jic-school-detail.component').then((m) => m.JicSchoolDetailComponent),
+        redirectTo: '/philippines-study/baguio/baguio-jic-challenger',
+        pathMatch: 'full',
       },
       {
         path: 'philippines-study/baguio/baguio-jic-academy',
-        redirectTo: '/philippines-study/baguio/baguio-jic',
+        redirectTo: '/philippines-study/baguio/baguio-jic-challenger',
         pathMatch: 'full',
       },
       {
         path: 'philippines-study/baguio/monol',
         loadComponent: () =>
-          import('./pages/philippines/monol-school/monol-school-detail.component').then((m) => m.MonolSchoolDetailComponent),
+          import('./pages/philippines/monol-school/monol-school-page.component').then((m) => m.MonolSchoolPageComponent),
       },
       {
         path: 'philippines-study/baguio/monol-sparta-campus',
         loadComponent: () =>
-          import('./pages/philippines/monol-sparta-school/monol-sparta-school-detail.component').then(
-            (m) => m.MonolSpartaSchoolDetailComponent,
+          import('./pages/philippines/monol-sparta-school/monol-sparta-school-page.component').then(
+            (m) => m.MonolSpartaSchoolPageComponent,
           ),
       },
       {
@@ -505,7 +515,7 @@ const routes: Routes = [
       {
         path: 'philippines-study/baguio/anj-e-edu-english-academy',
         loadComponent: () =>
-          import('./pages/philippines/anj-school/anj-school.component').then((m) => m.AnjSchoolComponent),
+          import('./pages/philippines/anj-school/anj-school-page.component').then((m) => m.AnjSchoolPageComponent),
       },
       {
         path: 'philippines-study/baguio/help-english-longlong-campus',
@@ -531,7 +541,7 @@ const routes: Routes = [
       {
         path: 'philippines-study/clark/cip-english-kepos',
         loadComponent: () =>
-          import('./pages/philippines/cip-school/cip-school.component').then((m) => m.CipSchoolComponent),
+          import('./pages/philippines/cip-school/cip-school-page.component').then((m) => m.CipSchoolPageComponent),
       },
       {
         path: 'philippines-study/clark/eg-academy',
@@ -553,7 +563,7 @@ const routes: Routes = [
       {
         path: 'philippines-study/clark/help-english-clark',
         loadComponent: () =>
-          import('./pages/philippines/help-school/help-school-detail.component').then((m) => m.HelpSchoolDetailComponent),
+          import('./pages/philippines/help-school/help-school-page.component').then((m) => m.HelpSchoolPageComponent),
       },
       {
         path: 'philippines-study/clark/aelc-native-focused-clark-schools',
@@ -563,7 +573,7 @@ const routes: Routes = [
       {
         path: 'philippines-study/clark/hana-academy',
         loadComponent: () =>
-          import('./pages/philippines/hana-school/hana-school.component').then((m) => m.HanaSchoolComponent),
+          import('./pages/philippines/hana-school/hana-school-page.component').then((m) => m.HanaSchoolPageComponent),
       },
       {
         path: 'philippines-study/clark/gitc-college-international-language-center',
@@ -746,6 +756,13 @@ const routes: Routes = [
           import('./pages/school-compare/school-compare-page.component').then((m) => m.SchoolComparePageComponent),
       },
       {
+        path: 'philippines-study/service-process',
+        loadComponent: () =>
+          import('./pages/philippines/service-process/service-process.component').then(
+            (m) => m.PhilippinesServiceProcessComponent,
+          ),
+      },
+      {
         path: 'philippines-study/faq',
         component: PhilippinesInfoPageComponent,
         data: { infoKey: 'faq' },
@@ -821,6 +838,11 @@ const routes: Routes = [
           ),
       },
       {
+        path: 'overseas-study-tour/ireland/atc-language-schools',
+        loadComponent: () =>
+          import('./pages/overseas-study-tour/ireland-schools/atc/atc-school.component').then((m) => m.AtcSchoolComponent),
+      },
+      {
         path: 'overseas-study-tour/uk',
         loadComponent: () =>
           import('./pages/overseas-study-tour/uk-tour/uk-tour.component').then((m) => m.UkTourComponent),
@@ -833,11 +855,32 @@ const routes: Routes = [
           ),
       },
       {
+        path: 'overseas-study-tour/uk/st-giles',
+        loadComponent: () =>
+          import('./pages/overseas-study-tour/uk-schools/st-giles/st-giles-hub.component').then((m) => m.StGilesHubComponent),
+      },
+      // One page per St Giles UK campus; the shared component reads the campus from the route data.
+      ...(['london-central', 'london-highgate', 'brighton', 'cambridge', 'eastbourne'] as const).map((campus) => ({
+        path: `overseas-study-tour/uk/st-giles/${campus}`,
+        data: { campus },
+        loadComponent: () =>
+          import('./pages/overseas-study-tour/uk-schools/st-giles/st-giles-campus.component').then(
+            (m) => m.StGilesCampusComponent,
+          ),
+      })),
+      {
         path: 'overseas-study-tour/singapore',
         loadComponent: () =>
           import('./pages/overseas-study-tour/singapore-tour/singapore-tour.component').then(
             (m) => m.SingaporeTourComponent,
           ),
+      },
+      {
+        path: 'overseas-study-tour/singapore/canadian-education-college',
+        loadComponent: () =>
+          import(
+            './pages/overseas-study-tour/singapore-schools/canadian-education-college/canadian-education-college.component'
+          ).then((m) => m.CanadianEducationCollegeComponent),
       },
       {
         path: 'overseas-study-tour/malaysia',
@@ -906,6 +949,11 @@ const routes: Routes = [
           import('./pages/study-tour-guide/philippines-guide/philippines-guide.component').then(
             (m) => m.PhilippinesGuideComponent,
           ),
+      },
+      {
+        path: 'study-tour-guide/phone-top-up',
+        loadComponent: () =>
+          import('./pages/phone-top-up/phone-top-up.component').then((m) => m.PhoneTopUpComponent),
       },
       {
         path: 'study-tour-guide/online-english',

@@ -1,0 +1,59 @@
+:host { display: block; }
+.aq { --aq-green: #0f4a2f; --aq-green-2: #1d6b45; --aq-line: #dde5df; --aq-orange: #ee7d1a; color: #1f2a24; }
+.aq-programmes { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+.aq-programmes button { text-align: left; border: 1.5px solid var(--aq-line); background: #fff; border-radius: 12px; padding: 12px 14px; cursor: pointer; font: inherit; color: inherit; }
+.aq-programmes button strong { display: block; font-size: 15px; color: var(--aq-green); }
+.aq-programmes button span { display: block; margin-top: 3px; font-size: 12px; color: #6b766f; }
+.aq-programmes button.active { border-color: var(--aq-orange); background: #fff7ef; box-shadow: 0 0 0 2px rgba(238, 125, 26, .15); }
+
+.aq-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 12px 14px; }
+.aq-student { margin: 16px 0; padding: 14px; border: 1px solid var(--aq-line); border-radius: 12px; background: #f8faf8; }
+.aq label { display: flex; flex-direction: column; gap: 5px; font-size: 13px; font-weight: 700; color: var(--aq-green-2); min-width: 0; }
+.aq select, .aq input[type='text'], .aq input[type='number'] { font: inherit; font-size: 14px; font-weight: 400; color: #1f2a24; border: 1px solid #cdd6d0;
+  border-radius: 8px; padding: 9px 10px; background: #fff; min-width: 0; width: 100%; box-sizing: border-box; }
+.aq-checks { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: 8px 18px; }
+.aq label.check { flex-direction: row; align-items: center; gap: 6px; font-weight: 400; color: #1f2a24; font-size: 14px; }
+
+.aq-plans { display: grid; gap: 14px; margin-bottom: 22px; }
+.aq-plans.two { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.aq-plans.two .aq-grid { grid-template-columns: 1fr 1fr; }
+.aq-plan { border: 1px solid var(--aq-line); border-radius: 12px; padding: 14px; background: #fff; }
+.aq-plan header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+.aq-plan header strong { color: #fff; background: var(--aq-green); border-radius: 6px; padding: 2px 10px; font-size: 13px; }
+.aq-link { display: inline-flex; align-items: center; gap: 2px; border: none; background: none; color: #8a938d; cursor: pointer; font: inherit; font-size: 13px; }
+.aq-link mat-icon { font-size: 16px; width: 16px; height: 16px; }
+.aq-add { display: inline-flex; align-items: center; justify-content: center; gap: 4px; border: 1.5px dashed #b9c6bd; background: #fbfdfb; color: var(--aq-green-2);
+  border-radius: 12px; padding: 12px; cursor: pointer; font: inherit; font-weight: 700; font-size: 14px; }
+
+.aq-actions { margin-top: 20px; display: flex; flex-direction: column; align-items: flex-start; gap: 8px; }
+.aq-actions p { margin: 0; font-size: 13px; color: #a23a1f; }
+
+@media (max-width: 760px) {
+  .aq-programmes { grid-template-columns: 1fr; }
+  .aq-plans.two { grid-template-columns: 1fr; }
+  .aq-grid, .aq-plans.two .aq-grid { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 420px) {
+  .aq-grid, .aq-plans.two .aq-grid { grid-template-columns: 1fr; }
+}
+
+.aq label small { font-weight: 400; font-size: 12px; color: #6b766f; line-height: 1.5; }
+.aq-student label.check { align-self: end; padding-bottom: 10px; }
+.aq-fixed { display: flex; flex-direction: column; gap: 5px; font-size: 13px; }
+.aq-fixed span { font-weight: 700; color: var(--aq-green-2); }
+.aq-fixed strong { font-weight: 400; font-size: 14px; padding: 9px 0; }
+.aq-shared { margin: -8px 0 18px; }
+
+/* The save button lives inside the shared download component. */
+:host ::ng-deep .aq-actions .primary-action {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 50px; padding: 0 26px;
+  border: none; border-radius: 999px; background: #ee7d1a; color: #fff; cursor: pointer;
+  font: inherit; font-size: 16px; font-weight: 800; box-shadow: 0 10px 22px rgba(238, 125, 26, 0.25);
+}
+:host ::ng-deep .aq-actions .primary-action:disabled { background: #c9cfcb; box-shadow: none; cursor: not-allowed; }
+:host ::ng-deep .aq-actions .primary-action mat-icon { font-size: 20px; width: 20px; height: 20px; }
+@media (max-width: 760px) {
+  :host ::ng-deep .aq-actions app-quote-image-download-button,
+  :host ::ng-deep .aq-actions .primary-action { width: 100%; }
+  .aq-actions { align-items: stretch; }
+}

@@ -13,7 +13,7 @@
             <p class="hero-lead">
               <span>位于Angeles City Friendship Highway生活圈的综合型语言学校。</span>
               <span>ESL、Native、IELTS、TOEIC、TOEFL、Business、Junior与Golf英语都能一起比较。</span>
-              <span>本页按EG 2025年USD价目表和官网校园资料整理。</span>
+              <span>课程住宿以美元计价，到校当地费用以比索另列。</span>
             </p>
             <div class="hero-tags" aria-label="EG Academy特点">
               <span><mat-icon>location_on</mat-icon>Clark / Angeles</span>
@@ -27,7 +27,7 @@
                 <mat-icon>calculate</mat-icon>
               </a>
               <a class="secondary-action" href="#course-fees" (click)="scrollToSection('course-fees', $event)">
-                查看官方课程价格
+                查看课程价格
                 <mat-icon>payments</mat-icon>
               </a>
               <a class="secondary-action" routerLink="/about-sida/contact">
@@ -37,14 +37,14 @@
             </div>
             <p class="trust-note">
               <mat-icon>verified</mat-icon>
-              2025年价目表以USD列出课程与住宿，注册费和到校PHP费用需另计；正式报名仍以学校回函、空房和付款日汇率为准。
+              2025年课程与住宿以美元计价，注册费和到校比索费用另计；正式报名以学校当期报价、空房和付款日汇率为准。
             </p>
           </div>
 
           <div class="hero-media" aria-label="EG Academy校园图片展示">
             <figure class="feature-photo">
               <img src="assets/philippines/eg-facility-001.webp" alt="菲律宾克拉克EG语言学校校园与泳池环境" />
-              <figcaption>EG官方校园图片：校区、泳池、运动场与公共空间</figcaption>
+              <figcaption>EG校区、泳池、运动场与公共空间</figcaption>
             </figure>
             <div class="media-strip" aria-label="EG Academy校园缩略图">
               <figure *ngFor="let image of galleryImages.slice(2, 5)">
@@ -68,7 +68,7 @@
               </ul>
             </aside>
             <p class="photo-source">
-              图片来源：EG Academy官网Campus、Facilities与Golf页面；费用参考EG Academy 2025年USD价目表。
+              图片仅供参考，具体以学校实际安排为准。
             </p>
           </div>
         </section>
@@ -94,7 +94,7 @@
         <section class="section-block" id="gallery">
           <div class="section-heading">
             <span>校园图片</span>
-            <h2>使用EG官方图片核对学习、住宿和Golf环境</h2>
+            <h2>EG学习、住宿和Golf环境</h2>
             <p>EG适合把克拉克生活便利、校内住宿、Native课程、考试课程和Golf体验放在同一张清单里比较。</p>
           </div>
           <div class="gallery-tabs" role="tablist" aria-label="EG Academy图片分类">
@@ -209,8 +209,8 @@
           <div class="section-block">
             <div class="section-heading">
               <span>EG 2025年4周课程费</span>
-              <h2>2025年价目表以USD列出课程费用</h2>
-              <p>以下为4周课程费，不含住宿与注册费；短期暂沿用1/2/3周40%/65%/85%规则估算，正式报价需确认。</p>
+              <h2>2025年课程费用（美元）</h2>
+              <p>以下为4周课程费，不含住宿与注册费；1/2/3周按40%/65%/85%估算，正式报价需确认。</p>
             </div>
             <div class="data-table course-fee-table" role="table" aria-label="EG 2025年4周课程费">
               <div class="table-row table-head" role="row">
@@ -253,7 +253,7 @@
             <div class="section-heading">
               <span>EG 2025年4周住宿费</span>
               <h2>房型会直接影响总价和空房难度</h2>
-              <p>以下为官方PDF的4周住宿费参考；家庭与特别房型要按同行人数、性别、入学日和空房确认。</p>
+              <p>以下为4周住宿费参考；家庭与特别房型要按同行人数、性别、入学日和空房确认。</p>
             </div>
             <div class="data-table room-fee-table" role="table" aria-label="EG 2025年4周住宿费">
               <div class="table-row table-head" role="row">
@@ -299,14 +299,14 @@
               <span>前期USD参考</span>
               <strong>{{ quoteText }}</strong>
               <em>人民币换算请按付款日汇率确认</em>
-              <p *ngIf="quoteCalculated">已按当前选择更新。正式报价仍需确认入学日、房型、课程开放、优惠和学校回函。</p>
+              <p *ngIf="quoteCalculated">已按当前选择更新。正式报价仍需确认入学日、房型、课程开放和优惠。</p>
             </div>
             <div class="quote-actions">
               <button type="button" class="primary-action" (click)="calculateQuote()">立即计算费用<mat-icon>calculate</mat-icon></button>
               <a class="secondary-action" routerLink="/about-sida/contact">获取顾问确认报价<mat-icon>support_agent</mat-icon></a>
             </div>
             <p class="fee-alert">
-              注意：2025年USD价目表列出注册费USD100；教材费、SSP、SSP E-Card、ACR I-Card、接机、延签、保证金和Golf追加费用多以PHP到校支付。
+              注意：注册费100美元；教材费、SSP、SSP E-Card、ACR I-Card、接机、延签、保证金和Golf追加费用多以PHP到校支付。
             </p>
           </section>
         </section>
@@ -315,7 +315,7 @@
           <div class="section-heading">
             <span>到校支付费用</span>
             <h2>USD课程住宿之外，还要准备PHP当地费用</h2>
-            <p>以下按EG费用资料和Golf页面整理，金额会随周数、课程、签证规则和学校现场政策调整。</p>
+            <p>以下金额可能随菲律宾政策、汇率和学校规则调整，以学校实际收取为准。</p>
           </div>
           <div class="local-fee-grid desktop-local-fees">
             <article *ngFor="let fee of localFees">
@@ -339,9 +339,9 @@
         <section class="notice-panel" id="price-note">
           <mat-icon>info</mat-icon>
           <div>
-            <h2>价格更新时间与资料说明</h2>
+            <h2>价格说明</h2>
             <p>
-              本页课程、住宿与注册费参考EG Academy 2025年USD价目表，并结合EG官网Overview、Campus、Golf和FAQ页面整理。学校价格、优惠、房型空位、接机和到校费用可能调整，报名以学校正式报价为准。
+              课程、住宿与注册费为EG Academy 2025年价格。学校价格、优惠、房型空位、接机和到校费用可能调整，报名以学校正式报价为准。
             </p>
           </div>
         </section>
@@ -379,19 +379,6 @@
           <ul class="note-list">
             <li *ngFor="let note of notes"><mat-icon>check</mat-icon><span>{{ note }}</span></li>
           </ul>
-        </section>
-
-        <section class="section-block" id="sources">
-          <div class="section-heading">
-            <span>资料来源</span>
-            <h2>EG官方参考链接</h2>
-          </div>
-          <div class="source-list">
-            <a *ngFor="let source of sources" [href]="source.url" target="_blank" rel="noopener">
-              <mat-icon>open_in_new</mat-icon>
-              {{ source.label }}
-            </a>
-          </div>
         </section>
 
         <section class="faq-section" id="faq">

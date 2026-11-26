@@ -20,12 +20,12 @@
                 <a class="secondary-action" href="#courses" (click)="scrollToSection('courses', $event)">查看课程价格<mat-icon>menu_book</mat-icon></a>
                 <a class="secondary-action" routerLink="/about-sida/contact">咨询薄荷岛顾问<mat-icon>support_agent</mat-icon></a>
               </div>
-              <p class="trust-note"><mat-icon>verified</mat-icon>页面按English MINT学校介绍、住宿、餐食、价目表及最新项目海报整理；没有明确数据的项目未计算。</p>
+              <p class="trust-note"><mat-icon>verified</mat-icon>课程、住宿、餐食、价格和项目以学校最新安排为准；学校未列明金额的项目不计入报价。</p>
             </div>
             <div class="hero-media" aria-label="English MINT真实校园图片">
               <figure class="feature-photo"><img src="/assets/english-mint/campus-building.webp" alt="菲律宾薄荷岛English MINT校园建筑" fetchpriority="high" /><figcaption>English MINT邦劳校园实拍</figcaption></figure>
               <div class="media-strip"><figure><img src="/assets/english-mint/campus-pool.webp" alt="English MINT校内泳池" /><figcaption>校内泳池</figcaption></figure><figure><img src="/assets/english-mint/classroom.webp" alt="English MINT教室" /><figcaption>教学教室</figcaption></figure><figure><img src="/assets/english-mint/deluxe-twin.webp" alt="English MINT标准双人间" /><figcaption>标准双人间</figcaption></figure></div>
-              <p class="photo-source">本区使用所提供的真实校园照片；房间、设施开放和餐食以到校实际安排为准。</p>
+              <p class="photo-source">图片仅供参考，具体以学校实际安排为准。</p>
             </div>
           </section>
 
@@ -34,7 +34,7 @@
           <section class="quick-info" aria-label="English MINT快速信息"><article class="quick-card" *ngFor="let item of quickInfo"><mat-icon>{{ item.icon }}</mat-icon><div><span>{{ item.label }}</span><strong>{{ item.value }}</strong><p>{{ item.text }}</p></div></article></section>
 
           <div class="info-trio">
-            <section class="panel basic-panel" id="basic-info"><div class="compact-heading"><span>学校基本信息</span><h2>English MINT一页看懂</h2></div><dl class="info-list"><div><dt>学校全名</dt><dd>English MINT International Academy</dd></div><div><dt>位置</dt><dd>菲律宾薄荷岛邦劳；距塔比拉兰码头约30分钟</dd></div><div><dt>认证</dt><dd>学校资料列TESDA、菲律宾旅游部与移民局相关认证</dd></div><div><dt>教学空间</dt><dd>约2,200平方米；72间一对一教室、60间宿舍</dd></div><div><dt>课程</dt><dd>Adult ESL、Junior ESL、Speaking Master、Lite ESL</dd></div><div><dt>设施</dt><dd>泳池、图书馆/自习区、餐厅、洗衣与客房清洁服务、Wi-Fi</dd></div></dl></section>
+            <section class="panel basic-panel" id="basic-info"><div class="compact-heading"><span>学校基本信息</span><h2>English MINT一页看懂</h2></div><dl class="info-list"><div><dt>学校全名</dt><dd>English MINT International Academy</dd></div><div><dt>位置</dt><dd>菲律宾薄荷岛邦劳；距塔比拉兰码头约30分钟</dd></div><div><dt>认证</dt><dd>TESDA、菲律宾旅游部与移民局相关认证</dd></div><div><dt>教学空间</dt><dd>约2,200平方米；72间一对一教室、60间宿舍</dd></div><div><dt>课程</dt><dd>Adult ESL、Junior ESL、Speaking Master、Lite ESL</dd></div><div><dt>设施</dt><dd>泳池、图书馆/自习区、餐厅、洗衣与客房清洁服务、Wi-Fi</dd></div></dl></section>
             <section class="panel highlight-panel" id="highlights"><div class="compact-heading"><span>English MINT核心亮点</span><h2>为什么把它列入薄荷岛候选？</h2></div><div class="highlight-list"><article *ngFor="let item of highlights"><mat-icon>check_circle</mat-icon><div><strong>{{ item.title }}</strong><p>{{ item.text }}</p></div></article></div></section>
           </div>
 
@@ -48,10 +48,10 @@
             <div class="mint-scroll-table" aria-label="English MINT住宿价格"><table><thead><tr><th>住宿名称</th><th *ngFor="let weeks of allWeeks">{{ weeks }}周</th></tr></thead><tbody><tr *ngFor="let room of rooms"><th>{{ room.name }}<small>{{ room.note }}</small></th><td *ngFor="let weeks of allWeeks">{{ formatMoney(roomPrice(room.id, weeks) || 0) }}</td></tr></tbody></table></div>
           </section>
 
-          <section class="section-block" id="study-life"><div class="section-heading"><span>课程表 / 学习生活</span><h2>45分钟一节的平日学习节奏</h2><p>学校采用PACE学习理念：Practical、Active、Communicative、Effective。正式课程从08:45开始，每节45分钟、课间5分钟；个人课表会因课程和分班不同而调整。</p></div><div class="timeline"><article *ngFor="let item of schedule"><time>{{ item.time }}</time><div><strong>{{ item.title }}</strong><p>{{ item.text }}</p></div></article></div><div class="mint-life-notes"><article><mat-icon>cleaning_services</mat-icon><div><strong>清洁与洗衣</strong><p>客房清洁每间每周最多2次，床品每周更换；洗衣150比索／5公斤，超出每公斤10比索，处理约1至3天。</p></div></article><article><mat-icon>event_available</mat-icon><div><strong>上课天数</strong><p>学校保证19个教学日；如节假日影响教学日，资料说明可能安排3小时补课。</p></div></article><article><mat-icon>bedtime</mat-icon><div><strong>门禁</strong><p>成人23:00；未成年人22:00，未成年人18:00后外出须有成年人同行。</p></div></article></div></section>
+          <section class="section-block" id="study-life"><div class="section-heading"><span>课程表 / 学习生活</span><h2>45分钟一节的平日学习节奏</h2><p>学校采用PACE学习理念：Practical、Active、Communicative、Effective。正式课程从08:45开始，每节45分钟、课间5分钟；个人课表会因课程和分班不同而调整。</p></div><div class="timeline"><article *ngFor="let item of schedule"><time>{{ item.time }}</time><div><strong>{{ item.title }}</strong><p>{{ item.text }}</p></div></article></div><div class="mint-life-notes"><article><mat-icon>cleaning_services</mat-icon><div><strong>清洁与洗衣</strong><p>客房清洁每间每周最多2次，床品每周更换；洗衣150比索／5公斤，超出每公斤10比索，处理约1至3天。</p></div></article><article><mat-icon>event_available</mat-icon><div><strong>上课天数</strong><p>学校保证19个教学日；如节假日影响教学日，学校可能安排3小时补课。</p></div></article><article><mat-icon>bedtime</mat-icon><div><strong>门禁</strong><p>成人23:00；未成年人22:00，未成年人18:00后外出须有成年人同行。</p></div></article></div></section>
 
           <section class="section-block mint-packages" id="packages">
-            <div class="section-heading"><span>套餐与优惠</span><h2>先看人数、时长和包含项目</h2><p>以下均按学校提供的项目资料整理；价格和包含内容先摘要展示，点击右侧海报可查看完整文字。</p></div>
+            <div class="section-heading"><span>套餐与优惠</span><h2>先看人数、时长和包含项目</h2><p>价格和包含内容先摘要展示，点击右侧海报可查看完整文字。</p></div>
             <div class="package-grid">
               <article class="package-feature">
                 <div class="package-feature-copy">
@@ -64,7 +64,7 @@
                   <p class="package-footnote">两种组合均入住Deluxe Twin；另收注册费100美元／人。</p>
                 </div>
                 <div class="package-poster">
-                  <app-expandable-image src="/assets/english-mint/promo-two-week.webp" [images]="['/assets/english-mint/promo-two-week.webp']" alt="English MINT 2周成人及亲子全包项目官方宣传图" title="English MINT 2周全包项目" caption="学校提供的项目宣传海报" previewHeight="clamp(300px, 30vw, 380px)" previewFit="contain"></app-expandable-image>
+                  <app-expandable-image src="/assets/english-mint/promo-two-week.webp" [images]="['/assets/english-mint/promo-two-week.webp']" alt="English MINT 2周成人及亲子全包项目官方宣传图" title="English MINT 2周全包项目" caption="学校项目海报" previewHeight="clamp(300px, 30vw, 380px)" previewFit="contain"></app-expandable-image>
                   <p><mat-icon>zoom_in</mat-icon>点击海报查看完整文字</p>
                 </div>
               </article>
@@ -81,7 +81,7 @@
                   <p class="package-footnote">500美元／家庭预约金包含在套餐总价内；房型升级和不参加课程的家长减免可在报价区选择。</p>
                 </div>
                 <div class="package-poster">
-                  <app-expandable-image src="/assets/english-mint/promo-family.webp" [images]="['/assets/english-mint/promo-family.webp']" alt="English MINT家庭项目官方宣传图" title="English MINT家庭项目" caption="学校提供的家庭项目宣传海报" previewHeight="clamp(300px, 30vw, 380px)" previewFit="contain"></app-expandable-image>
+                  <app-expandable-image src="/assets/english-mint/promo-family.webp" [images]="['/assets/english-mint/promo-family.webp']" alt="English MINT家庭项目官方宣传图" title="English MINT家庭项目" caption="学校家庭项目海报" previewHeight="clamp(300px, 30vw, 380px)" previewFit="contain"></app-expandable-image>
                   <p><mat-icon>zoom_in</mat-icon>点击海报查看完整文字</p>
                 </div>
               </article>
@@ -90,7 +90,7 @@
           </section>
 
           <section class="section-block" id="gallery">
-            <div class="section-heading"><span>完整相册 / 视频</span><h2>按区域查看English MINT全部学校素材</h2><p>已整理资料中的104张不重复图片与2段不重复视频；校园实拍、住宿细节和真实餐食按区域分类，宣传照片及AI处理图单独标注。</p></div>
+            <div class="section-heading"><span>完整相册 / 视频</span><h2>按区域查看English MINT校园照片与视频</h2><p>校园实拍、住宿细节和真实餐食按区域分类，宣传照片及AI处理图单独标注。</p></div>
             <div class="gallery-tabs" role="tablist" aria-label="English MINT环境分类"><button type="button" *ngFor="let category of galleryCategories" [class.active]="selectedGalleryCategory === category" (click)="setGalleryCategory(category)">{{ category }}</button></div>
             <div *ngIf="selectedGalleryCategory === '全部'" class="mint-gallery-album-grid" aria-label="English MINT相册入口">
               <button type="button" *ngFor="let category of galleryAlbumCategories" (click)="setGalleryCategory(category)" [attr.aria-label]="'进入' + category + '相册'">
@@ -107,15 +107,15 @@
               <div class="mint-gallery-filmstrip" role="tablist" [attr.aria-label]="selectedGalleryCategory + '相册缩略图'"><button type="button" role="tab" *ngFor="let image of displayedGalleryImages; let imageIndex = index" [class.active]="selectedGalleryImageIndex === imageIndex" [attr.aria-selected]="selectedGalleryImageIndex === imageIndex" (click)="selectGalleryImage(imageIndex)"><img [src]="image.src" [alt]="image.title + '缩略图'" loading="lazy" /><span>{{ image.title }}</span></button></div>
               <article class="mint-gallery-profile"><div class="mint-gallery-photo"><app-expandable-image [src]="selectedGalleryImage.src" [images]="displayedGalleryImageSources" [imageAlts]="displayedGalleryImageAlts" [imageTitles]="displayedGalleryImageTitles" [imageCaptions]="displayedGalleryImageCaptions" [alt]="selectedGalleryImage.title" [title]="selectedGalleryImage.title" [caption]="selectedGalleryImage.description" loading="eager" previewHeight="clamp(320px, 38vw, 520px)" previewFit="cover"></app-expandable-image><span><mat-icon>collections</mat-icon>{{ displayedGalleryImages.length }}张 · 点击主图放大并左右浏览</span></div><div class="mint-gallery-copy"><span>{{ selectedGalleryImage.category }} · ENGLISH MINT</span><h3>{{ selectedGalleryImage.title }}</h3><p>{{ selectedGalleryImage.description }}</p></div></article>
             </div>
-            <div class="video-heading"><span>学校视频</span><strong>2段不重复视频</strong><p>ZIP中的Introduction与单独提供的微信视频内容相同，因此仅展示一次；视频已转换为适合网页播放的版本。</p></div>
+            <div class="video-heading"><span>学校视频</span><strong>学校介绍与住宿实拍</strong><p>点击播放查看校园、项目和住宿画面。</p></div>
             <div class="video-grid">
-              <article class="video-card video-card--portrait"><video controls preload="metadata" src="/assets/english-mint/introduction.mp4" poster="/assets/english-mint/campus-building.webp"></video><div><span>学校介绍 · 2分42秒</span><h3>English MINT学校介绍视频</h3><p>学校提供的竖版介绍视频，点击播放查看校园与项目画面。</p></div></article>
+              <article class="video-card video-card--portrait"><video controls preload="metadata" src="/assets/english-mint/introduction.mp4" poster="/assets/english-mint/campus-building.webp"></video><div><span>学校介绍 · 2分42秒</span><h3>English MINT学校介绍视频</h3><p>学校竖版介绍视频，点击播放查看校园与项目画面。</p></div></article>
               <article class="video-card"><video controls preload="metadata" src="/assets/english-mint/deluxe-room-tour.mp4" poster="/assets/english-mint/deluxe-twin.webp"></video><div><span>住宿实拍 · 52秒</span><h3>Deluxe标准双人间实拍视频</h3><p>查看标准双人间的空间与房内细节；实际房间和空房以学校确认为准。</p></div></article>
               <article class="video-card" *ngFor="let video of uploadedVideos"><video controls preload="metadata" [src]="video.url"></video><div><span>学校已发布视频</span><h3>{{ video.caption || video.originalFileName || 'English MINT校园视频' }}</h3></div></article>
             </div>
           </section>
 
-          <section class="section-block" id="local-fee-reference"><div class="section-heading"><span>菲律宾当地费用</span><h2>学校公布的完整周数学杂费</h2><p>学校资料提供4、8、12、16、20、24周对应金额；网页报价与报价图片直接使用这里的同一份数据。</p></div><div class="mint-scroll-table local-reference"><table><thead><tr><th>费用项目</th><th *ngFor="let weeks of localFeeWeeks">{{ weeks }}周</th></tr></thead><tbody><tr *ngFor="let row of localFeeReferenceRows"><th>{{ row.name }}</th><td *ngFor="let weeks of localFeeWeeks">{{ formatMoney(row.amounts[weeks]) }}</td></tr><tr><th>官方学杂费合计</th><td *ngFor="let weeks of localFeeWeeks">{{ formatMoney(localFeeReferenceTotals[weeks]) }}</td></tr></tbody></table></div><p class="source-review-note">普通课程教材费未包含；每周基础电量20千瓦时，超出按20比索／千瓦时。超过24周另有学校资料列明的SSP、ECC与CRTV办理费用，本报价器暂不处理超过24周。</p></section>
+          <section class="section-block" id="local-fee-reference"><div class="section-heading"><span>菲律宾当地费用</span><h2>学校公布的完整周数学杂费</h2><p>学校列明4、8、12、16、20、24周对应金额；在线报价与报价图片都使用这份金额。</p></div><div class="mint-scroll-table local-reference"><table><thead><tr><th>费用项目</th><th *ngFor="let weeks of localFeeWeeks">{{ weeks }}周</th></tr></thead><tbody><tr *ngFor="let row of localFeeReferenceRows"><th>{{ row.name }}</th><td *ngFor="let weeks of localFeeWeeks">{{ formatMoney(row.amounts[weeks]) }}</td></tr><tr><th>官方学杂费合计</th><td *ngFor="let weeks of localFeeWeeks">{{ formatMoney(localFeeReferenceTotals[weeks]) }}</td></tr></tbody></table></div><p class="source-review-note">ACR I-Card随第一次签证续签办理，8周起计入；普通课程教材费未包含；每周基础电量20千瓦时，超出按20比索／千瓦时。超过24周另有学校资料列明的SSP、ECC与CRTV办理费用，本报价器暂不处理超过24周。</p></section>
         </ng-container>
 
         <section class="quote-panel" id="quote">
@@ -153,7 +153,7 @@
 
         <ng-container *ngIf="!quoteOnly">
           <app-sida-why-section [schoolName]="'菲律宾薄荷岛English MINT International Academy'" [detailed]="true"></app-sida-why-section>
-          <section class="section-block" id="faq"><div class="section-heading"><span>报名前常见问题</span><h2>确认English MINT前，建议先看这些</h2></div><div class="faq-section"><details><summary>淡季优惠可以住单人间吗？</summary><p>可以选择单人间，但学校现金优惠只适用于双人间；单人间不会自动扣减现金优惠。</p></details><details><summary>5周起的SSP或潜水权益能同时选择吗？</summary><p>不能。符合活动条件时只能选择首次SSP免费或OW潜水课程其中一项，并需在报名第一周前确认，不能折现或转让。</p></details><details><summary>家庭项目的500美元预约金会额外加入总价吗？</summary><p>不会。学校资料说明每个家庭的500美元预约金包含在家庭套餐总价中，并从后续应付余额里抵扣。</p></details></div></section>
+          <section class="section-block" id="faq"><div class="section-heading"><span>报名前常见问题</span><h2>确认English MINT前，建议先看这些</h2></div><div class="faq-section"><details><summary>淡季优惠可以住单人间吗？</summary><p>可以选择单人间，但学校现金优惠只适用于双人间；单人间不会自动扣减现金优惠。</p></details><details><summary>5周起的SSP或潜水权益能同时选择吗？</summary><p>不能。符合活动条件时只能选择首次SSP免费或OW潜水课程其中一项，并需在报名第一周前确认，不能折现或转让。</p></details><details><summary>家庭项目的500美元预约金会额外加入总价吗？</summary><p>不会。每个家庭的500美元预约金包含在家庭套餐总价中，并从后续应付余额里抵扣。</p></details></div></section>
           <section class="bottom-cta"><div><span>获取English MINT完整资料与确认报价</span><h2>把日期、课程、房型和同行人数告诉思达启航</h2><p>顾问会协助核对English MINT当期名额、房型、家庭组合、优惠资格和正式账单，并说明薄荷岛抵达安排。</p></div><ul><li><mat-icon>check_circle</mat-icon>免费核对学校空位与项目名额</li><li><mat-icon>check_circle</mat-icon>拆分美元学校费与比索当地费</li><li><mat-icon>check_circle</mat-icon>生成可保存的完整报价图片</li></ul><a class="primary-action" routerLink="/about-sida/contact">联系思达启航顾问<mat-icon>support_agent</mat-icon></a></section>
         </ng-container>
       </main>

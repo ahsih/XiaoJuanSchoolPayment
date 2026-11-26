@@ -12,11 +12,6 @@ interface CityCard {
   text: string;
 }
 
-interface SourceLink {
-  label: string;
-  url: string;
-}
-
 @Component({
   selector: 'app-why-philippines-study',
   standalone: false,
@@ -85,14 +80,5 @@ export class WhyPhilippinesStudyComponent {
     '再选管理模式：斯巴达适合冲刺，半斯巴达适合平衡，自律型适合成熟学习者。',
     '比较总费用：学费、住宿、餐食、接机、签证、SSP、教材、保险和当地杂费要一起看。',
     '看学校质量：教师培训、课程管理、宿舍餐食、安全、国籍比例和学生支持都要纳入判断。',
-  ];
-
-  readonly sources: SourceLink[] = [
-    { label: 'iOutback 澳贝客', url: 'https://www.ioutback.com/' },
-    { label: '非凡游学', url: 'https://feifanstudy.com/' },
-    { label: '玩美游学宿务学校页', url: 'https://www.studytoura.com/cebu-schools/' },
-    { label: '南崎游学', url: 'https://www.nanqi.org/' },
-    { label: '格仲游学', url: 'https://gezhong.com.tw/' },
-    { label: '大洋游学', url: 'http://www.dayang101.com/' },
   ];
 }

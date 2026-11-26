@@ -90,11 +90,6 @@ interface SideNavItem {
   icon: string;
 }
 
-interface SourceLink {
-  label: string;
-  url: string;
-}
-
 @Component({
   selector: 'app-paradise-english-school',
   standalone: true,
@@ -127,12 +122,12 @@ export class ParadiseEnglishSchoolComponent {
   readonly pricingModes = [
     {
       id: 'promo' as const,
-      label: '官网显示优惠价',
-      note: '2026价格页显示1-4周按10%-40%优惠，Additional Week也有优惠价。',
+      label: '优惠价',
+      note: '2026年1-4周按10%-40%优惠，Additional Week也有优惠价。',
     },
     {
       id: 'standard' as const,
-      label: '官网原价',
+      label: '原价',
       note: '用于促销结束、旺季或学校重新核价时做保守预算。',
     },
   ];
@@ -142,37 +137,37 @@ export class ParadiseEnglishSchoolComponent {
       icon: 'location_on',
       label: '位置',
       value: 'Cagban / Manoc-Manoc, Boracay',
-      note: '官网Contact与FAQ列地址为Cagban, Manoc-Manoc, Boracay Island, Malay, Aklan。',
+      note: '学校位于长滩岛南部Cagban / Manoc-Manoc一带。',
     },
     {
       icon: 'flag',
       label: '学校背景',
       value: 'Canadian family-owned',
-      note: '官网写明Paradise English为加拿大人家庭经营的长滩岛英语学校，2005年创立。',
+      note: 'Paradise English为加拿大人家庭经营的长滩岛英语学校，2005年创立。',
     },
     {
       icon: 'groups',
       label: '学生多样性',
       value: '70+国家学生',
-      note: '官网About页写明学生来自70多个国家，首页与教师页也强调国际化学习环境。',
+      note: '学生来自70多个国家和地区，学习环境国际化。',
     },
     {
       icon: 'menu_book',
       label: '课程',
       value: 'Budget / General / Intensive / IELTS',
-      note: '官网课程页列ESL、True Beginner、IELTS/TOEIC/Business、Junior Camp和Bildungsurlaub。',
+      note: '课程有ESL、True Beginner、IELTS/TOEIC/Business、Junior Camp和Bildungsurlaub。',
     },
     {
       icon: 'hotel',
       label: '住宿',
       value: 'Dorm / Homestay / Annex Hotel / Resort',
-      note: '住宿页列校外宿舍、寄宿家庭、Annex Hotel和4星度假村等选择。',
+      note: '可选校外宿舍、寄宿家庭、Annex Hotel和4星度假村等住宿。',
     },
     {
       icon: 'payments',
       label: '4周参考',
       value: 'USD 1,072起含注册费',
-      note: '按官网优惠价Budget 4周USD591 + Shared Standard Dorm 4周USD351 + 注册费USD130估算。',
+      note: '按优惠价Budget 4周591美元 + Shared Standard Dorm 4周351美元 + 注册费130美元估算。',
     },
   ];
 
@@ -195,7 +190,7 @@ export class ParadiseEnglishSchoolComponent {
       category: '教室',
       title: '小组课堂参考',
       description:
-        '课程页说明小组课和一对一由American、Canadian、British和Filipino老师授课。',
+        '小组课和一对一由American、Canadian、British和Filipino老师授课。',
       src: 'https://www.esl.ch/sites/default/files/styles/image_gallery/public/school/gallery/school/Philippines/Paradise-English-Language-Institute-School-Gallery-990-7.jpg?itok=CaI2joiu',
     },
     {
@@ -209,7 +204,7 @@ export class ParadiseEnglishSchoolComponent {
       category: '住宿',
       title: '宿舍房间参考',
       description:
-        '住宿页列宿舍房有空调、独立卫浴、热冷水、公共厨房和距离学校约3分钟步行。',
+        '宿舍房有空调、独立卫浴、热冷水和公共厨房，距离学校约3分钟步行。',
       src: 'https://storage.googleapis.com/world-study-prod/media/school_photo/858/b912f7b4-a73b-4192-8e96-835e410987a5.jpg',
     },
     {
@@ -225,20 +220,20 @@ export class ParadiseEnglishSchoolComponent {
     { label: '学校名称', value: '菲律宾长滩岛Paradise English Boracay Language Institute' },
     { label: '英文名称', value: 'Paradise English Boracay / Paradise English Language Institute' },
     { label: '地址', value: 'Cagban, Manoc-Manoc, Boracay Island, Malay, Aklan 5608, Philippines' },
-    { label: '创立时间', value: '官网About页写明Established in 2005' },
+    { label: '创立时间', value: '2005年' },
     { label: '学校背景', value: 'Canadian family-owned English Language center' },
     { label: '主要课程', value: 'Budget、General、Intensive、True Beginner、IELTS/TOEIC/Business、Bildungsurlaub、Junior Camp' },
-    { label: '授课老师', value: '官网课程页列American、Canadian、British和Filipino teachers' },
-    { label: '认证与合作', value: 'Bureau of Immigration、Association of Accredited Schools in the Philippines；官网列British Council和Ascentis关联' },
+    { label: '授课老师', value: 'American、Canadian、British和Filipino teachers' },
+    { label: '认证与合作', value: 'Bureau of Immigration、Association of Accredited Schools in the Philippines；与British Council和Ascentis有关联' },
     { label: '开放时间', value: '周一至周五8:30AM-5:30PM，节假日除外' },
-    { label: '本页费用口径', value: '按官网2026课程价格与Accommodation页面整理，正式以学校invoice为准' },
+    { label: '费用说明', value: '2026年课程和住宿价格，正式以学校invoice为准' },
   ];
 
   readonly highlights: Highlight[] = [
     {
       image: 'https://storage.googleapis.com/world-study-prod/media/858/aac6e10c-c603-458d-b02d-c7242621fa98.jpg',
       title: '长滩岛老牌加拿大背景学校',
-      text: '官网写明学校2005年创立，加拿大人家庭经营，适合想要多国籍、轻松但有课堂推动的学生。',
+      text: '学校2005年创立，加拿大人家庭经营，适合想要多国籍、轻松但有课堂推动的学生。',
     },
     {
       image: 'https://www.esl.ch/sites/default/files/styles/image_gallery/public/school/gallery/school/Philippines/Paradise-English-Language-Institute-School-Gallery-990-7.jpg?itok=CaI2joiu',
@@ -267,7 +262,7 @@ export class ParadiseEnglishSchoolComponent {
     },
     {
       title: '想比较宿舍、寄宿家庭和酒店住宿',
-      text: '住宿页直接列多种住宿价格与包含项目，适合先把预算拆清楚。',
+      text: '多种住宿的价格与包含项目分开列出，适合先把预算拆清楚。',
     },
   ];
 
@@ -297,7 +292,7 @@ export class ParadiseEnglishSchoolComponent {
         standard: { priceByWeek: { 1: 295, 2: 565, 3: 820, 4: 985 }, additionalWeek: 245 },
         promo: { priceByWeek: { 1: 266, 2: 452, 3: 574, 4: 591 }, additionalWeek: 150 },
       },
-      note: '官网课程页写明可选上午或下午学习。',
+      note: '可选上午或下午学习。',
     },
     {
       id: 'general',
@@ -309,7 +304,7 @@ export class ParadiseEnglishSchoolComponent {
         standard: { priceByWeek: { 1: 395, 2: 770, 3: 1095, 4: 1335 }, additionalWeek: 335 },
         promo: { priceByWeek: { 1: 355, 2: 616, 3: 767, 4: 801 }, additionalWeek: 205 },
       },
-      note: '官网课程页写明每天5节课，含4节小组和1节一对一。',
+      note: '每天5节课，含4节小组和1节一对一。',
     },
     {
       id: 'intensive',
@@ -321,7 +316,7 @@ export class ParadiseEnglishSchoolComponent {
         standard: { priceByWeek: { 1: 505, 2: 975, 3: 1395, 4: 1695 }, additionalWeek: 420 },
         promo: { priceByWeek: { 1: 455, 2: 780, 3: 977, 4: 1017 }, additionalWeek: 255 },
       },
-      note: '官网写明该课程常见于就业或学术目的学生。',
+      note: '该课程常见于就业或学术目的学生。',
     },
     {
       id: 'true-beginner',
@@ -333,7 +328,7 @@ export class ParadiseEnglishSchoolComponent {
         standard: { priceByWeek: { 1: 490, 2: 920, 3: 1315, 4: 1595 }, additionalWeek: 395 },
         promo: { priceByWeek: { 1: 441, 2: 736, 3: 921, 4: 957 }, additionalWeek: 245 },
       },
-      note: '官网课程页强调基础词汇、表达、语法、口语、阅读和写作。',
+      note: '重点是基础词汇、表达、语法、口语、阅读和写作。',
     },
     {
       id: 'ielts-toeic-business',
@@ -345,7 +340,7 @@ export class ParadiseEnglishSchoolComponent {
         standard: { priceByWeek: { 1: 395, 2: 765, 3: 1090, 4: 1325 }, additionalWeek: 330 },
         promo: { priceByWeek: { 1: 356, 2: 612, 3: 763, 4: 795 }, additionalWeek: 199 },
       },
-      note: '官网说明一对一会按目的主题安排。',
+      note: '一对一会按目的主题安排。',
     },
   ];
 
@@ -360,7 +355,7 @@ export class ParadiseEnglishSchoolComponent {
         standard: { priceByWeek: { 1: 185, 2: 345, 3: 485, 4: 585 }, additionalWeek: 150 },
         promo: { priceByWeek: { 1: 167, 2: 276, 3: 340, 4: 351 }, additionalWeek: 90 },
       },
-      note: '官网住宿页低价房型，距离学校约3分钟步行。',
+      note: '价格较低的房型，距离学校约3分钟步行。',
     },
     {
       id: 'single-standard-dorm',
@@ -384,7 +379,7 @@ export class ParadiseEnglishSchoolComponent {
         standard: { priceByWeek: { 1: 395, 2: 745, 3: 1050, 4: 1285 }, additionalWeek: 315 },
         promo: { priceByWeek: { 1: 356, 2: 596, 3: 735, 4: 771 }, additionalWeek: 193 },
       },
-      note: '官网写明Deluxe rooms have own refrigerator。',
+      note: 'Deluxe房有独立冰箱。',
     },
     {
       id: 'homestay-shared',
@@ -420,20 +415,20 @@ export class ParadiseEnglishSchoolComponent {
         standard: { priceByWeek: { 1: 295, 2: 495, 3: 650, 4: 850 }, additionalWeek: 295 },
         promo: { priceByWeek: { 1: 295, 2: 495, 3: 650, 4: 850 }, additionalWeek: 295 },
       },
-      note: '官网写明步行到学校约1分钟，价格为starting rates。',
+      note: '步行到学校约1分钟，价格为起价。',
     },
   ];
 
   readonly localFees: LocalFee[] = [
     { item: 'Registration Fee', amount: 'USD 130', note: '一次性注册费；报价器已计入。' },
-    { item: 'Special Study Permit', amount: 'USD 200', note: '官网价格页列Required；FAQ说明所有菲律宾学生都需办理SSP。' },
+    { item: 'Special Study Permit', amount: 'USD 200', note: '必须办理，所有在菲律宾学习的学生都需要SSP。' },
     { item: 'Textbooks', amount: 'USD 16 / 本', note: '按课程和实际教材数量计算。' },
-    { item: 'Airport Pickup', amount: 'USD 24 / 单程', note: '官网英文价格页列one-way；往返需另算。' },
+    { item: 'Airport Pickup', amount: 'USD 24 / 单程', note: '单程价格，往返需另算。' },
     { item: 'Lunch', amount: 'USD 50 / 1周平日5次', note: '一个月平日午餐参考USD185。' },
-    { item: 'Visa Extension', amount: '约USD 85起', note: 'FAQ写明首次延签约USD85，后续按停留时间办理。' },
-    { item: 'Additional Group Class', amount: 'USD 40 / 周起', note: '5节小组课官网优惠价USD40；20节月度优惠价USD119。' },
-    { item: 'Additional 1:1 Class', amount: 'USD 59 / 周起', note: '5节一对一官网优惠价USD59；20节月度优惠价USD198。' },
-    { item: 'Deposit', amount: '20% non-refundable', note: '官网课程和住宿页均说明至少开课前4周需20%不可退订金。' },
+    { item: 'Visa Extension', amount: '约USD 85起', note: '首次延签约85美元，后续按停留时间办理。' },
+    { item: 'Additional Group Class', amount: 'USD 40 / 周起', note: '5节小组课优惠价40美元；20节月度优惠价119美元。' },
+    { item: 'Additional 1:1 Class', amount: 'USD 59 / 周起', note: '5节一对一优惠价59美元；20节月度优惠价198美元。' },
+    { item: 'Deposit', amount: '20% non-refundable', note: '课程和住宿都需在开课前至少4周支付20%不可退订金。' },
   ];
 
   readonly serviceSteps: ProcessStep[] = [
@@ -446,7 +441,7 @@ export class ParadiseEnglishSchoolComponent {
   ];
 
   readonly trustBadges = [
-    { icon: 'verified_user', label: '官网2026价格整理' },
+    { icon: 'verified_user', label: '2026费用分项列明' },
     { icon: 'groups', label: '多国籍学习环境' },
     { icon: 'hotel', label: '住宿与餐食拆分核对' },
     { icon: 'apartment', label: '深圳总部 + 菲律宾支持' },
@@ -473,10 +468,9 @@ export class ParadiseEnglishSchoolComponent {
   readonly campusActivities = ['多国籍交流', '小组讨论', '一对一辅导', '文化活动', '课堂外练习', '岛上社群'];
   readonly weekendActivities = ['White Beach', 'Station 1/2/3', '跳岛', '水上活动', '日落', '咖啡厅'];
   readonly notes = [
-    '本页按Paradise English官网2026课程价格页、Accommodation页、Courses页、About页、FAQ和Contact页整理。',
-    '官网显示课程和Dorm Stay住宿有优惠价；促销、旺季和空位可能变动，正式报价以学校invoice为准。',
+    '课程和Dorm Stay住宿有优惠价；促销、旺季和空位可能变动，正式报价以学校invoice为准。',
     '报价器估算课程费、住宿费和注册费；SSP、教材、午餐、签证延长、机票保险和个人生活费另算。',
-    '寄宿家庭、Annex Hotel和4 Star Resort住宿页面没有显示同样的优惠价，本页按官网列价估算。',
+    '寄宿家庭、Annex Hotel和4 Star Resort住宿没有同样的优惠价，按学校标价估算。',
     '学校课程页提到Junior Camp，但青少年营队有独立价格和押金规则，亲子/低龄学生需单独核价。',
   ];
 
@@ -499,7 +493,7 @@ export class ParadiseEnglishSchoolComponent {
     {
       question: 'Paradise English适合考试课程吗？',
       answer:
-        '官网列IELTS/TOEIC/Business Program，每周20节课，含2节小组和2节一对一。若目标是高压冲分，也建议同步比较碧瑶考试型学校。',
+        '学校有IELTS/TOEIC/Business Program，每周20节课，含2节小组和2节一对一。若目标是高压冲分，也建议同步比较碧瑶考试型学校。',
     },
   ];
 
@@ -518,16 +512,6 @@ export class ParadiseEnglishSchoolComponent {
     { label: '住宿', target: 'room-fees', icon: 'hotel' },
     { label: '费用', target: 'quote', icon: 'calculate' },
     { label: 'FAQ', target: 'faq', icon: 'help' },
-  ];
-
-  readonly sources: SourceLink[] = [
-    { label: 'Paradise English官方首页', url: 'https://paradiseenglish.com/' },
-    { label: '官方2026 Course Pricing', url: 'https://paradiseenglish.com/course-pricing-2026/' },
-    { label: '官方Accommodation', url: 'https://paradiseenglish.com/accommodation/' },
-    { label: '官方Courses', url: 'https://paradiseenglish.com/courses/' },
-    { label: '官方About Us', url: 'https://paradiseenglish.com/about-us/' },
-    { label: '官方FAQ', url: 'https://paradiseenglish.com/faq/' },
-    { label: '官方Contact Us', url: 'https://paradiseenglish.com/contact-us/' },
   ];
 
   setGalleryCategory(category: GalleryCategory): void {

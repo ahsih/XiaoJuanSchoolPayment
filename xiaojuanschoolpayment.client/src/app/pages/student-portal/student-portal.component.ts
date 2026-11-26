@@ -9,12 +9,27 @@ import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { RouterLink } from '@angular/router';
 import {
   STUDENT_APPLICATION_STATUSES,
+  STUDENT_SUBMISSION_TYPES,
   StudentApplicationDTO,
   StudentApplicationDocumentDTO,
   StudentPaymentDTO,
+  StudentSubmissionDTO,
+  studentCurrencyName,
+  studentMoney,
 } from '../../../interfaces/student-application.dto';
 import { AuthService } from '../../../services/auth.service';
 import { StudentApplicationService } from '../../../services/student-application.service';
+import { SIDA_PHILIPPINES_CONSULTANTS, SidaConsultant } from '../../components/sida-consultants';
+
+const MAX_UPLOAD_BYTES = 15 * 1024 * 1024;
+const UPLOAD_EXTENSIONS = ['.pdf', '.png', '.jpg', '.jpeg', '.webp', '.docx'];
+
+interface UploadDraft {
+  documentType: string;
+  note: string;
+  file: File | null;
+  busy: boolean;
+}
 
 @Component({
   selector: 'app-student-portal',
@@ -35,9 +50,15 @@ import { StudentApplicationService } from '../../../services/student-application
 export class StudentPortalComponent implements OnInit {
   private readonly fb = inject(FormBuilder);
   readonly statuses = STUDENT_APPLICATION_STATUSES.filter((status) => !['已取消', '保留/延期'].includes(status));
+  readonly submissionTypes = STUDENT_SUBMISSION_TYPES;
+  readonly uploadAccept = UPLOAD_EXTENSIONS.join(',');
+  readonly currencyName = studentCurrencyName;
+  readonly money = studentMoney;
   applications: StudentApplicationDTO[] = [];
   loading = true;
   changingPassword = false;
+  deletingSubmissionId: string | null = null;
+  private readonly uploads = new Map<string, UploadDraft>();
 
   readonly passwordForm = this.fb.group(
     {
@@ -55,6 +76,10 @@ export class StudentPortalComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    this.load();
+  }
+
+  private load(): void {
     this.applicationService.getMine().subscribe({
       next: (applications) => {
         this.applications = applications ?? [];
@@ -65,6 +90,108 @@ export class StudentPortalComponent implements OnInit {
         this.snackBar.open('报名信息加载失败，请重新登录后再试', '关闭', { duration: 4000 });
       },
     });
+  }
+
+  consultant(application: StudentApplicationDTO): SidaConsultant | undefined {
+    const name = application.consultantName?.trim().toLowerCase();
+    return name ? SIDA_PHILIPPINES_CONSULTANTS.find((item) => item.name.toLowerCase() === name) : undefined;
+  }
+
+  hasFees(application: StudentApplicationDTO): boolean {
+    return !!application.feeItems?.length || !!application.payments.length;
+  }
+
+  upload(application: StudentApplicationDTO): UploadDraft {
+    let draft = this.uploads.get(application.id);
+    if (!draft) {
+      const waiting = application.requestedDocuments?.find((request) => request.uploadStatus !== '已收到' && request.uploadStatus !== '待确认');
+      draft = { documentType: waiting?.documentType ?? STUDENT_SUBMISSION_TYPES[0], note: '', file: null, busy: false };
+      this.uploads.set(application.id, draft);
+    }
+    return draft;
+  }
+
+  chooseUploadType(application: StudentApplicationDTO, documentType: string): void {
+    this.upload(application).documentType = documentType;
+  }
+
+  onUploadFile(application: StudentApplicationDTO, event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const file = input.files?.[0] ?? null;
+    const draft = this.upload(application);
+    if (!file) {
+      draft.file = null;
+      return;
+    }
+    const lowerName = file.name.toLowerCase();
+    if (!UPLOAD_EXTENSIONS.some((extension) => lowerName.endsWith(extension))) {
+      this.snackBar.open('只能上传 PDF、图片（JPG／PNG／WebP）或 Word（DOCX）文件', '关闭', { duration: 4000 });
+      input.value = '';
+      draft.file = null;
+      return;
+    }
+    if (file.size > MAX_UPLOAD_BYTES) {
+      this.snackBar.open('文件不能超过 15MB，请压缩后再上传', '关闭', { duration: 4000 });
+      input.value = '';
+      draft.file = null;
+      return;
+    }
+    draft.file = file;
+  }
+
+  submitUpload(application: StudentApplicationDTO, input: HTMLInputElement): void {
+    const draft = this.upload(application);
+    if (draft.busy) return;
+    if (!draft.file) {
+      this.snackBar.open('请先选择要上传的文件', '关闭', { duration: 3000 });
+      return;
+    }
+    draft.busy = true;
+    this.applicationService.uploadSubmission(application.id, draft.file, draft.documentType, draft.note.trim()).subscribe({
+      next: () => {
+        this.uploads.delete(application.id);
+        input.value = '';
+        this.snackBar.open('已上传，顾问确认后会显示“已收到”', '关闭', { duration: 4000 });
+        this.load();
+      },
+      error: (error) => {
+        draft.busy = false;
+        this.snackBar.open(this.errorText(error, '上传失败，请稍后再试'), '关闭', { duration: 5000 });
+      },
+    });
+  }
+
+  deleteSubmission(application: StudentApplicationDTO, submission: StudentSubmissionDTO): void {
+    if (this.deletingSubmissionId || !window.confirm(`删除“${submission.originalFileName}”？`)) return;
+    this.deletingSubmissionId = submission.id;
+    this.applicationService.deleteSubmission(application.id, submission.id).subscribe({
+      next: () => {
+        this.deletingSubmissionId = null;
+        this.load();
+      },
+      error: (error) => {
+        this.deletingSubmissionId = null;
+        this.snackBar.open(this.errorText(error, '删除失败，请稍后再试'), '关闭', { duration: 4000 });
+      },
+    });
+  }
+
+  downloadSubmission(application: StudentApplicationDTO, submission: StudentSubmissionDTO): void {
+    this.applicationService.downloadSubmission(application.id, submission);
+  }
+
+  submissionStatus(submission: StudentSubmissionDTO): string {
+    if (submission.reviewStatus === 'Accepted') return '已收到';
+    if (submission.reviewStatus === 'Returned') return '需重新上传';
+    return '待顾问确认';
+  }
+
+  private errorText(error: unknown, fallback: string): string {
+    const body = (error as { error?: unknown; status?: number })?.error;
+    if ((error as { status?: number })?.status === 429) return '操作太频繁，请过几分钟再试';
+    if (typeof body === 'string' && body.trim()) return body;
+    const message = (body as { message?: string } | null)?.message;
+    return message?.trim() || fallback;
   }
 
   logout(): void {

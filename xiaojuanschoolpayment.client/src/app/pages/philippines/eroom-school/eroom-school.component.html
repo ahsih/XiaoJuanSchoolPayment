@@ -12,8 +12,8 @@
             <h1><span>菲律宾巴科洛德</span><span>E-Room Language Center</span></h1>
             <p class="hero-lead">
               <span>E-Room位于Bacolod Magsaysay Ave一带，是低干扰、预算友好、校内住宿生活一体的学习型语言学校。</span>
-              <span>2024费用表覆盖ESL/青少年、IELTS/TOEIC/商务英语、监护人和幼儿园课程，可按课量、房型和周数估算。</span>
-              <span>本页课程、住宿和注册费按所附E-Room 2024费用表整理；正式价格、空房和优惠以学校invoice为准。</span>
+              <span>课程覆盖ESL/青少年、IELTS/TOEIC/商务英语、监护人和幼儿园课程，可按课量、房型和周数估算。</span>
+              <span>课程、住宿和注册费为E-Room 2024年价格；正式价格、空房和优惠以学校invoice为准。</span>
             </p>
             <div class="hero-tags" aria-label="E-Room Language Center特点">
               <span><mat-icon>location_on</mat-icon>Bacolod / Magsaysay Ave</span>
@@ -27,7 +27,7 @@
                 <mat-icon>calculate</mat-icon>
               </a>
               <a class="secondary-action" href="#course-fees" (click)="scrollToSection('course-fees', $event)">
-                查看官方公开费用
+                查看课程费用
                 <mat-icon>payments</mat-icon>
               </a>
               <a class="secondary-action" routerLink="/about-sida/contact">
@@ -37,7 +37,7 @@
             </div>
             <p class="trust-note">
               <mat-icon>verified</mat-icon>
-              页面估算按2024费用表计算USD课程、住宿和注册费；PHP当地费用、接机费及当期优惠需另行确认。
+              在线估算按2024年价格计算美元课程、住宿和注册费；比索当地费用、接机费及当期优惠需另行确认。
             </p>
           </div>
 
@@ -61,7 +61,7 @@
                 <li><mat-icon>info</mat-icon>SSP、签证、电水、押金、教材等PHP费用另计</li>
               </ul>
             </aside>
-            <p class="photo-source">图片来源：E-Room相关公开学校页面；实际校区、房型和设施开放以学校当期资料为准。</p>
+            <p class="photo-source">图片仅供参考，具体以学校实际安排为准。</p>
           </div>
         </section>
 
@@ -202,7 +202,7 @@
           <div class="section-heading">
             <span>E-Room 2024年4周课程住宿参考</span>
             <h2>先看课程费 + 房型费，再加USD 100注册费和其他当地费用</h2>
-            <p>下表按所附E-Room 2024费用表整理。套餐参考为4周课程费 + 4周房型费，不含注册费、接机费和菲律宾当地费用。</p>
+            <p>下表为E-Room 2024年价格。套餐参考为4周课程费 + 4周房型费，不含注册费、接机费和菲律宾当地费用。</p>
           </div>
 
           <div class="data-table eroom-tuition-table" role="table" aria-label="E-Room Language Center 4周课程住宿套餐参考">
@@ -302,7 +302,7 @@
           <div class="section-heading">
             <span>到校支付费用</span>
             <h2>USD课程住宿之外，还要准备PHP当地费用</h2>
-            <p>注册费按所附2024费用表更新；其他当地费用为单独参考，可能随政府规则、学校政策、汇率和学习周数调整。</p>
+            <p>注册费为2024年标准；其他当地费用为单独参考，可能随政府规则、学校政策、汇率和学习周数调整。</p>
           </div>
           <div class="local-summary-grid" aria-label="E-Room当地费用按周数提示">
             <article *ngFor="let fee of localFeeGuides">
@@ -363,19 +363,6 @@
           <ul class="note-list">
             <li *ngFor="let note of notes"><mat-icon>check</mat-icon><span>{{ note }}</span></li>
           </ul>
-        </section>
-
-        <section class="section-block" id="sources">
-          <div class="section-heading">
-            <span>资料来源</span>
-            <h2>E-Room公开资料参考链接</h2>
-          </div>
-          <div class="source-list">
-            <a *ngFor="let source of sources" [href]="source.url" target="_blank" rel="noopener">
-              <mat-icon>open_in_new</mat-icon>
-              {{ source.label }}
-            </a>
-          </div>
         </section>
 
         <section class="faq-section" id="faq">

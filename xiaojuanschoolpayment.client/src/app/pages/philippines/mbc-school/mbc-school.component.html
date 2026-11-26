@@ -16,10 +16,6 @@
           免费确认MBC申请与费用
           <mat-icon>chevron_right</mat-icon>
         </a>
-        <a class="secondary-action" href="https://www.mbc.edu.ph/" target="_blank" rel="noopener">
-          学校官网
-          <mat-icon>open_in_new</mat-icon>
-        </a>
       </div>
     </div>
 
@@ -27,7 +23,7 @@
       <img src="assets/philippines/manila-study-hero.webp" alt="马尼拉学院型商科与国际学生学习环境" />
       <figcaption>
         <strong>顾问提醒</strong>
-        <span>官网显示SY 2026-2027招生中；国际学生仍需确认入学资格、签证、住宿和当期费用。</span>
+        <span>SY 2026-2027正在招生；国际学生仍需确认入学资格、签证、住宿和当期费用。</span>
       </figcaption>
     </figure>
   </section>
@@ -45,7 +41,7 @@
       <h2>马尼拉商科与职业应用导向学院，适合学历和城市学习路径</h2>
     </div>
     <p>
-      MBC官网说明学校成立于2000年，面向本地和外国学生，强调管理、商务、酒店和技能发展。
+      MBC成立于2000年，招收本地和外国学生，强调管理、商务、酒店和技能发展。
       对游学学生来说，它更像“英语能力 + 商科/酒店/信息系统方向”的学院候选，而不是每天多堂一对一的ESL住宿学校。
     </p>
   </section>
@@ -68,7 +64,7 @@
     <div class="content-band">
       <div class="section-heading">
         <span class="section-kicker">住宿</span>
-        <h2>官网提到dormitories，但需要逐项确认</h2>
+        <h2>学校设有宿舍，但需要逐项确认</h2>
       </div>
       <ul class="clean-list">
         <li *ngFor="let item of accommodation">{{ item }}</li>
@@ -92,7 +88,7 @@
       <span class="section-kicker">费用</span>
       <h2>学费、奖学金和国际学生费用都要当期核价</h2>
       <p>
-        MBC官网公开了部分奖学金描述和联系方式，但没有完整国际学生价目表。下面用核价清单帮助学生避免低估总预算。
+        国际学生学费需向学校当期核价。下面用核价清单帮助学生避免低估总预算。
       </p>
     </div>
 
@@ -187,20 +183,6 @@
       <summary>{{ faq.question }}</summary>
       <p>{{ faq.answer }}</p>
     </details>
-  </section>
-
-  <section class="content-band">
-    <div class="section-heading">
-      <span class="section-kicker">Sources</span>
-      <h2>资料来源</h2>
-      <p>以下为本页整理时参考的公开入口；课程、费用、奖学金、住宿和签证最终需以学校当期回函为准。</p>
-    </div>
-    <div class="source-list">
-      <a *ngFor="let source of sources" [href]="source.url" target="_blank" rel="noopener">
-        <span>{{ source.label }}</span>
-        <mat-icon>open_in_new</mat-icon>
-      </a>
-    </div>
   </section>
 
   <section class="cta-band">

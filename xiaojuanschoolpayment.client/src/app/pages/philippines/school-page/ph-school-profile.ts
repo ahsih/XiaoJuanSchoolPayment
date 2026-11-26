@@ -63,18 +63,51 @@ export interface PhPageCopy {
   calendar?: Optional<CiaCopy['calendar'], 'badge' | 'provisionalLabel' | 'footnote'>;
   ielts?: CiaCopy['ielts'];
   videos: Optional<CiaCopy['videos'], 'lifeTitle' | 'interviewTitle'>;
-  rooms: Optional<CiaCopy['rooms'], 'videoLink' | 'dormRulesTitle' | 'dormRulesNote' | 'tableHint'>;
+  rooms: Optional<CiaCopy['rooms'], 'videoLink' | 'dormRulesTitle' | 'dormRulesNote' | 'tableHint'> & {
+    /**
+     * A school whose course price already holds a base room (ELSA: course + five-person room + meals): room cards then
+     * show each room's extra charge as “+50 美元”, and a room without one shows this label instead of a price.
+     */
+    supplementBaseLabel?: string;
+  };
   /** The step and summary labels are read only by the compact layout's quote (CIA). */
-  quote: Optional<CiaCopy['quote'], 'conditionsStepTitle' | 'conditionsStepHint' | 'summaryTitle' | 'localFeeLinkLabel'>;
+  quote: Optional<CiaCopy['quote'], 'conditionsStepTitle' | 'conditionsStepHint' | 'summaryTitle' | 'localFeeLinkLabel'> & {
+    /** The quote summary's 课程费 and 住宿费 labels, for a school that prices them differently (ELSA). */
+    courseFeeLabel?: string;
+    roomFeeLabel?: string;
+  };
   fees: CiaCopy['fees'];
   refund?: CiaCopy['refund'];
   studentCare?: CiaCopy['studentCare'];
   practicalGuide?: CiaCopy['practicalGuide'];
   studentTracks?: CiaCopy['studentTracks'];
-  reviews?: Optional<CiaCopy['reviews'], 'scoresTitle' | 'scoresIntro' | 'scoresNote' | 'linkLabel'>;
+  reviews?: Optional<CiaCopy['reviews'], 'scoresTitle' | 'scoresIntro' | 'scoresNote' | 'linkLabel'> & {
+    /** Line under the short text reviews (textReviews); HANA. */
+    textNote?: string;
+  };
+  /** School-only: heading of the offers section above the quote (profile.offers; CPILS). */
+  offers?: { eyebrow: string; title: string; intro: string; note?: string };
   sida: CiaCopy['sida'];
   faq: CiaCopy['faq'];
   finalCta: CiaCopy['finalCta'];
+}
+
+/**
+ * One card of the optional offers section above the quote (CPILS). It hides itself from `until`, or when
+ * none of its `promotionIds` is enabled in the applied content document, so an ended offer leaves the page.
+ */
+export interface PhOfferCard {
+  icon: string;
+  title: string;
+  /** The headline amount, e.g. 立减75美元. */
+  amount: string;
+  /** Who qualifies and when, one short line. */
+  text: string;
+  /** An optional second line, e.g. the week tiers. */
+  detail?: string;
+  /** Local date (YYYY-MM-DD) from which the card is hidden. */
+  until?: string;
+  promotionIds?: readonly string[];
 }
 
 /** One column of the daily timetable, e.g. 周一至周四 / 周五, or 半斯巴达 / 斯巴达. */
@@ -106,6 +139,12 @@ export type PhRoomProfile = Optional<
 
 export type PhAlbumCategory = Exclude<GalleryCategory, '全部'>;
 
+/** A short written review; `who` describes the reviewer without a name (e.g. 带孩子来读的家长). */
+export interface PhTextReview {
+  who: string;
+  text: string;
+}
+
 /** One video of the compact layout's hero album; 'tall' is a vertical phone clip. */
 export interface PhVideoItem {
   title: string;
@@ -132,6 +171,11 @@ export interface PhSchoolProfile {
    * ph-school-page-compact.css and ph-school-page-compact-tools.css, which each such school lists.
    */
   compactLayout?: boolean;
+  /**
+   * Compact layout: end the overview (key facts, building list and advisor review) with `copy.referenceNote`
+   * too (PINES, user request 2026-11-24: every detail is for reference only). Off by default, so CIA is unchanged.
+   */
+  overviewReferenceNote?: boolean;
   /** Compact layout: the overview's key facts (location, size, management, courses …). */
   overviewFacts?: ReadonlyArray<{ icon: string; label: string; value: string }>;
   /** Compact layout: video groups, shown first in the hero album (the first video opens it). */
@@ -146,6 +190,29 @@ export interface PhSchoolProfile {
    * type (user rule 2026-11-21); a video showing several room types stays in the hero album only.
    */
   roomVideos?: Readonly<Record<string, PhVideoItem>>;
+  /**
+   * Compact layout: vertical videos in the hero album and room albums are shown whole (never cropped), centred over a
+   * blurred copy of their own poster; on phones the hero frame for them is 4:3 like the photos. User decision
+   * 2026-11-24 (tried on IU, then approved for every school): on by default for every school except CIA, whose locked
+   * page keeps cropping them (`TALL_VIDEO_CROPPED_SCHOOLS`). false crops vertical clips to fill the frame (whole in
+   * fullscreen).
+   */
+  tallVideoBackdrop?: boolean;
+  /**
+   * School-only: peak seasons without a surcharge (HANA), marked on the calendar with `title` (e.g. 旺季不加价)
+   * instead of the surcharge line. CIA leaves it out and charges its surcharge from the content document.
+   */
+  peakSeasonsWithoutSurcharge?: { title: string; ranges: ReadonlyArray<{ start: string; end: string; label: string }> };
+  /**
+   * School-only: lines shown instead of the 1/2/3-week price ratios in the room rules' short-stay block, for a school
+   * whose short stays are priced by the week plus a separate charge (GLC: 每周60美元短期附加费). CIA leaves it out.
+   */
+  shortStayRows?: ReadonlyArray<{ label: string; text: string }>;
+  /**
+   * School-only: short written reviews without the reviewers' names, shown as cards in the reviews section
+   * (HANA; styles in ph-school-page-options.css). CIA uses studentReviews instead.
+   */
+  textReviews?: readonly PhTextReview[];
   /** schoolCode of the content document, e.g. 'CIA'. */
   code: string;
   /** Short school name in headings, labels and the comparison image, e.g. 'CIA'. */
@@ -198,10 +265,16 @@ export interface PhSchoolProfile {
   showRoomCodes: boolean;
   dormRules: ReadonlyArray<{ title: string; text: string }>;
   roomProfiles: readonly PhRoomProfile[];
-  ieltsResults: ReadonlyArray<{ image: string; title: string; entrance: string; overall: string; detail: string }>;
+  /**
+   * Score reports. CIA's are official IELTS results (入学 X → 官方雅思 Y). A school with its own internal test reports
+   * sets `summary` (the caption line instead of 入学 → 官方雅思) and `kind` (what the image is, for its alt text).
+   */
+  ieltsResults: ReadonlyArray<{ image: string; title: string; entrance: string; overall: string; detail: string; summary?: string; kind?: string }>;
   studentReviews: readonly CiaStudentReview[];
   /** Route of the full student stories; each review's slug is appended. */
   reviewPath: string;
+  /** School-only: current offers shown above the quote with copy.offers (CPILS; styles in ph-school-page-options.css). CIA leaves it out. */
+  offers?: readonly PhOfferCard[];
   holidayCalendars: readonly HolidayCalendar[];
   ieltsComputerExamDates2027: ReadonlyArray<{ month: number; days: number[] }>;
   studentCareServices: readonly StudentCareService[];
@@ -241,6 +314,8 @@ export interface PhPageStudent extends PhCompareStudent {
   visaType: string;
   readonly visaLabel: string;
   selectedAgeGroup: 'adult' | 'minor';
+  /** Hides the 抵达时年龄段 select and its minor note (CIEC asks for a role and the child's age in extraChoices). */
+  readonly hideAgeGroup?: boolean;
   /** Only schools whose prices or offers depend on it ask for the registration date. */
   selectedRegistrationDate?: string;
   /** Shown under the conditions when the student is under 18. */

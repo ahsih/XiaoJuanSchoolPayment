@@ -31,6 +31,8 @@ import {
 } from '../philippines/cia-school/cia-content-config';
 import { CIA_PREVIEW_SECTIONS, CiaPreviewKind, CiaPreviewTarget, isCiaPreviewTarget } from '../philippines/cia-school/cia-content-preview';
 import { isAssociationPeakSchool } from '../philippines/association-peak-surcharge';
+import { keepsTwoCoursePrices, syncSingleCoursePrices } from '../philippines/school-page/course-price-years';
+import { usesDatabasePrices } from '../philippines/school-page/database-prices';
 import {
   clonePinesContentConfig,
   createDefaultPinesContentConfig,
@@ -148,7 +150,8 @@ export class AdminSchoolContentComponent implements OnInit {
   private readonly publicIclPath = '/philippines-study/cebu/icl';
   private readonly publicCellaUniPath = '/philippines-study/cebu/cella-uni-sparta-campus';
   private readonly publicCellaPremiumPath = '/philippines-study/cebu/cella-premium-campus';
-  private readonly publicFellaPath = '/philippines-study/cebu/english-fella';
+  private readonly publicFellaFirstPath = '/philippines-study/cebu/english-fella-first-campus';
+  private readonly publicFellaSecondPath = '/philippines-study/cebu/english-fella-second-campus';
   private readonly publicBtesPath = '/philippines-study/cebu/btes-english-academy';
   private readonly publicBlueOceanPath = '/philippines-study/cebu/cebu-blue-ocean-academy';
   private readonly publicTargetPath = '/philippines-study/cebu/target-global-english-academy';
@@ -199,8 +202,8 @@ export class AdminSchoolContentComponent implements OnInit {
     { id: 'junior', label: 'Junior' },
     { id: 'ielts', label: 'IELTS' },
     { id: 'toeic', label: 'TOEIC' },
-    { id: 'guarantee8', label: 'IELTS保证班 8周' },
-    { id: 'guarantee12', label: 'IELTS保证班 12周' },
+    { id: 'guarantee8', label: '雅思保分班 8周' },
+    { id: 'guarantee12', label: '雅思保分班 12周' },
   ];
   readonly iuIclPackageRooms = [
     { id: 'single', label: '单人房' },
@@ -412,12 +415,16 @@ export class AdminSchoolContentComponent implements OnInit {
       ? `JIC ${this.jicCampus === 'challenger' ? 'Challenger 挑战校区' : 'Premium 高级校区'}`
       : this.schoolCode;
   }
-  get usesFutureCoursePrices(): boolean { return this.isCiaSelected || this.isCpilsSelected || this.isIbreezeSelected; }
-  get supportsOneWeekShortStay(): boolean { return this.isLaMerSelected || this.isCiaSelected || this.isBCebuSelected; }
-  get usesWeeklyPricing(): boolean { return this.isGlcSelected; }
-  get coursePriceLabel(): string { return this.usesWeeklyPricing ? '每周价格（美元）' : `${this.usesFutureCoursePrices ? '2026 原价' : '当前价格'}（美元/4周）`; }
-  get roomPriceLabel(): string { return this.usesWeeklyPricing ? '每周价格（美元）' : '4周价格（美元）'; }
-  get supportsShortStay(): boolean { return !this.isMonolSpartaSelected && !this.isCpilsSelected && !this.isGlcSelected && !this.isIbreezeSelected && !this.isAnjSelected && !this.isImsSelected && !this.isJicSelected; }
+  /** Schools with a separate 2027 course price (course-price-years.ts); every other school keeps one price in both fields. */
+  get usesFutureCoursePrices(): boolean { return this.isSupportedSchool && keepsTwoCoursePrices(this.schoolCode); }
+  /** Schools whose rooms also have a separate 2027 price. */
+  get usesFutureRoomPrices(): boolean { return this.isCpilsSelected || this.isIbreezeSelected || this.isBlueOceanSelected || this.isPinesSelected || this.isMonolSelected; }
+  /** Schools whose content document holds the dates the 2027 prices start on (Blue Ocean and PINES use fixed dates). */
+  get usesFuturePriceDates(): boolean { return this.isCiaSelected || this.isCpilsSelected || this.isIbreezeSelected; }
+  get supportsOneWeekShortStay(): boolean { return this.isLaMerSelected || this.isCiaSelected || this.isBCebuSelected || this.isImsSelected; }
+  get coursePriceLabel(): string { return `${this.usesFutureCoursePrices ? '2026 原价' : '当前价格'}（美元/4周）`; }
+  get roomPriceLabel(): string { return '4周价格（美元）'; }
+  get supportsShortStay(): boolean { return !this.isMonolSpartaSelected && !this.isCpilsSelected && !this.isGlcSelected && !this.isIbreezeSelected && !this.isJicSelected; }
   get supportsPeakSeason(): boolean { return !this.isMonolSelected && !this.isMonolSpartaSelected && !this.isGlcSelected; }
   get usesAssociationPeakRatePolicy(): boolean { return isAssociationPeakSchool(this.schoolCode); }
   get currentPublicPath(): string {
@@ -428,7 +435,7 @@ export class AdminSchoolContentComponent implements OnInit {
     if (this.isTargetSelected) return this.publicTargetPath;
     if (this.isBlueOceanSelected) return this.publicBlueOceanPath;
     if (this.isBtesSelected) return this.publicBtesPath;
-    if (this.isFellaSelected) return this.publicFellaPath;
+    if (this.isFellaSelected) return this.fellaCampus === 'campus2' ? this.publicFellaSecondPath : this.publicFellaFirstPath;
     if (this.isCellaPremiumSelected) return this.publicCellaPremiumPath;
     if (this.isCellaUniSelected) return this.publicCellaUniPath;
     if (this.isIclSelected) return this.publicIclPath;
@@ -548,7 +555,7 @@ export class AdminSchoolContentComponent implements OnInit {
       queryParamsHandling: 'merge',
       replaceUrl: true,
     });
-    if (tab === 'media') { if (this.isLaMerSelected) this.selectItem('section', 'lamer-gallery'); return; }
+    if (tab === 'media') return;
     const kind = { courses: 'course', rooms: 'room', fees: 'fee', rules: 'promotion' } as const;
     const id = { courses: this.selectedCourseId, rooms: this.selectedRoomId, fees: this.selectedFeeId, rules: this.selectedPromotionId }[tab];
     this.selectItem(id ? kind[tab] : 'section', id || this.tabs.find(item => item.id === tab)!.anchor);
@@ -590,6 +597,7 @@ export class AdminSchoolContentComponent implements OnInit {
 
   contentChanged(): void {
     this.hasUnsavedChanges = true;
+    syncSingleCoursePrices(this.content);
     this.normalizeSortOrders();
     this.persistPreview();
     this.sendPreview();
@@ -652,6 +660,11 @@ export class AdminSchoolContentComponent implements OnInit {
   updateCpilsFuturePrices(item: CiaCourseContent | CiaRoomContent, value: string): void {
     item.feeByWeeks2027 = this.parseNumberMap(value);
     this.contentChanged();
+  }
+
+  /** An emptied 2027 room price falls back to the 4-week price (PINES lists only rooms whose fee2027 is a number). */
+  setRoomFee2027(item: CiaRoomContent, value: number | string | null): void {
+    item.fee2027 = value === null || value === '' || !Number.isFinite(Number(value)) ? undefined : Number(value);
   }
 
   updateCpilsFutureWeeks(item: CiaCourseContent, value: string): void {
@@ -724,18 +737,8 @@ export class AdminSchoolContentComponent implements OnInit {
       enabled: true,
       sortOrder: this.content.courses.length,
     };
-    if (this.isGlcSelected) {
-      item.englishName = 'New course';
-      item.chineseName = '新课程';
-      item.group = '其他课程';
-      item.offSeasonEligible = false;
-      item.annexOnly = false;
-      item.family = false;
-      item.textbook = 'esl';
-    }
     if (this.isAnjSelected || this.isImsSelected) item.courseType = '英语课程';
-    if (this.isImsSelected) { item.feeByWeeks = {}; item.allowedWeeks = [1, 2, 3, 4, 8, 12, 16, 20, 24]; }
-    if (this.isJicSelected) { item.campus = 'challenger'; item.courseType = 'Challenger 挑战校区'; item.minimumWeeks = 4; item.allowedWeeks = [4, 6, 8, 12, 16, 20, 24]; }
+    if (this.isJicSelected) { item.campus = this.jicCampus; item.courseType = this.jicCampus === 'premium' ? 'Premium 高级校区' : 'Challenger 挑战校区'; item.minimumWeeks = 1; item.allowedWeeks = [1, 2, 3, 4, 6, 8, 12, 16, 20, 24]; }
     if (this.isBeciSelected) { item.campus = this.beciCampus; item.courseType = `${this.beciCampus.toUpperCase()}课程`; }
     this.content.courses.push(item);
     this.selectedCourseId = item.id;
@@ -764,8 +767,7 @@ export class AdminSchoolContentComponent implements OnInit {
       item.waterGroup = 'Premium / Villa';
       item.deposit = 0;
     }
-    if (this.isImsSelected) { item.feeByWeeks = {}; item.allowedWeeks = [1, 2, 3, 4, 8, 12, 16, 20, 24]; }
-    if (this.isJicSelected) { item.campus = 'challenger'; item.code = 'quad'; item.group = 'Challenger 挑战校区'; item.single = false; }
+    if (this.isJicSelected) { item.campus = this.jicCampus; item.code = 'quad'; item.group = '多人间'; item.single = false; }
     if (this.isBeciSelected) { item.campus = this.beciCampus; item.single = false; item.coupleRate = undefined; item.code = this.beciCampus.toUpperCase(); }
     this.content.rooms.push(item);
     this.selectedRoomId = item.id;
@@ -776,6 +778,7 @@ export class AdminSchoolContentComponent implements OnInit {
   setJicRoomCategory(item: CiaRoomContent, category: 'single' | 'twin' | 'quad'): void {
     item.code = category;
     item.single = category === 'single';
+    item.group = category === 'single' ? '单人间' : '多人间';
     this.contentChanged();
   }
 
@@ -1077,15 +1080,17 @@ export class AdminSchoolContentComponent implements OnInit {
         this.editorLoadStatus = Number(error?.status) || 0;
         return of(null);
       })),
-      lessons: this.schoolService.getSchoolLessons({ schoolId, week: this.isGlcSelected ? 1 : 4 }).pipe(catchError(() => of([]))),
-      rooms: this.schoolService.getSchoolRooms({ schoolId, week: this.isGlcSelected ? 1 : 4 }).pipe(catchError(() => of([]))),
+      lessons: this.schoolService.getSchoolLessons({ schoolId, week: 4 }).pipe(catchError(() => of([]))),
+      rooms: this.schoolService.getSchoolRooms({ schoolId, week: 4 }).pipe(catchError(() => of([]))),
       fees: this.schoolService.getSchoolFees({ schoolId }).pipe(catchError(() => of([]))),
     }).subscribe(({ editor, lessons, rooms, fees }) => {
       this.editor = editor ?? undefined;
       const stored = editor?.draft?.content ?? editor?.pendingReview?.content ?? editor?.published?.content;
       this.content = stored ? this.cloneSelectedContent(stored) : defaults;
       this.hasUnsavedChanges = false;
-      if (!stored) {
+      // Schools whose page takes prices only from the content document (JIC, CG, PINES, …) keep their document's
+      // prices on a first save instead of older database rows.
+      if (!stored && usesDatabasePrices(this.schoolCode)) {
         for (const course of this.content.courses) {
           const row = lessons.find(item =>
             this.slug(item.name) === course.id ||
@@ -1102,6 +1107,7 @@ export class AdminSchoolContentComponent implements OnInit {
         const peak = fees.find(item => item.name === '旺季附加费' || item.name === '暑期附加费');
         if (registration) this.content.quoteSettings.registrationFee = registration.fee;
         if (peak) this.content.quoteSettings.peakSeasonFeePerWeek = peak.fee;
+        syncSingleCoursePrices(this.content);
       }
       this.selectedCourseId = this.visibleCourses[0]?.id ?? '';
       this.selectedRoomId = this.visibleRooms[0]?.id ?? '';
@@ -1191,7 +1197,12 @@ export class AdminSchoolContentComponent implements OnInit {
     return createDefaultCiaContentConfig();
   }
 
+  /** The school's own clone; a one-price school's tuition2027 then equals tuition, as on the public page. */
   private cloneSelectedContent(value: CiaContentConfig): CiaContentConfig {
+    return syncSingleCoursePrices(this.cloneSchoolContent(value));
+  }
+
+  private cloneSchoolContent(value: CiaContentConfig): CiaContentConfig {
     if (this.isMonolSpartaSelected) return cloneMonolSpartaContentConfig(value);
     if (this.isMintSelected) return cloneMintContentConfig(value);
     if (this.isWalesSelected) return cloneWalesContentConfig(value);

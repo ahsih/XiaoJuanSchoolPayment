@@ -68,7 +68,7 @@
               </ul>
             </aside>
             <p class="photo-source">
-              图片与费用参考自QQEnglish官方页面；最终以学校当期正式报价为准。
+              图片仅供参考，具体以学校实际安排为准。
             </p>
           </div>
         </section>
@@ -203,7 +203,7 @@
             <span>课程类型介绍</span>
             <h2>不知道选哪种课程？先按每日一对一节数看</h2>
             <p>
-              QQEnglish公开课程以一对一课量为核心，再选择是否加入Group Class，并可搭配Callan、R.E.M.S.、Business、TOEIC、IELTS或Kids方向。
+              QQEnglish课程以一对一课量为核心，再选择是否加入Group Class，并可搭配Callan、R.E.M.S.、Business、TOEIC、IELTS或Kids方向。
             </p>
           </div>
           <div class="course-grid">
@@ -219,14 +219,14 @@
         <section class="split-layout" id="course-fees">
           <div class="section-block">
             <div class="section-heading">
-              <span>QQEnglish官方公开价格</span>
+              <span>QQEnglish参考价格</span>
               <h2>按课程、方案和周数看主费用</h2>
               <p>
-                以下按QQEnglish官方公开美元价格整理。含学生寮餐食套餐通常含课程、胶囊学生寮和餐食；
+                以下为QQEnglish美元价格。含学生寮餐食套餐通常含课程、胶囊学生寮和餐食；
                 只上课方案不含住宿、餐食、接机和当地费用。
               </p>
             </div>
-            <div class="data-table course-fee-table" role="table" aria-label="QQEnglish官方公开价格">
+            <div class="data-table course-fee-table" role="table" aria-label="QQEnglish参考价格">
               <div class="table-row table-head" role="row">
                 <span role="columnheader">课程 / 方案</span>
                 <span role="columnheader">1周</span>
@@ -244,7 +244,7 @@
                 </div>
               </ng-container>
             </div>
-            <div class="mobile-card-list mobile-course-fees" aria-label="QQEnglish官方价格手机卡片">
+            <div class="mobile-card-list mobile-course-fees" aria-label="QQEnglish价格手机卡片">
               <ng-container *ngFor="let course of courseOptions">
                 <article *ngFor="let room of roomOptions">
                   <span>{{ course.name }}</span>
@@ -282,7 +282,7 @@
               <span>住宿餐食 / 可选费用参考</span>
               <h2>只上课方案尤其要把住宿、餐食和接机拆清</h2>
               <p>
-                以下费用来自QQEnglish公开费用说明，是否适用取决于你选含学生寮餐食套餐，还是只上课并自理住宿。
+                以下费用是否适用，取决于你选含学生寮餐食套餐，还是只上课并自理住宿。
               </p>
             </div>
             <div class="data-table special-fee-table" role="table" aria-label="QQEnglish可选费用参考">
@@ -372,7 +372,7 @@
             <span>到校支付费用参考</span>
             <h2>主费用之外，还要准备这些费用</h2>
             <p>
-              以下费用来自QQEnglish公开费用说明，不同周数、签证时长、方案和学校政策会影响最终金额。
+              以下金额会因周数、签证时长、方案和学校政策不同而变化，以学校实际收取为准。
             </p>
           </div>
           <div class="local-fee-grid desktop-local-fees">
@@ -397,10 +397,9 @@
         <section class="notice-panel" id="price-note">
           <mat-icon>info</mat-icon>
           <div>
-            <h2>价格更新时间与资料说明</h2>
+            <h2>价格更新时间与说明</h2>
             <p>
-              本页价格更新时间：2026年8月。费用参考QQEnglish官方英文课程费用页和日文Beachfront费用表整理。
-              学校价格、住宿空位、当地费用和汇率可能调整，报名以顾问向学校确认后的正式报价为准。
+              价格更新时间：2026年8月。学校价格、住宿空位、当地费用和汇率可能调整，以顾问向学校确认的正式报价为准。
             </p>
           </div>
         </section>
@@ -425,23 +424,6 @@
           <a class="primary-action" routerLink="/about-sida/contact">
             获取完整报价单<mat-icon>description</mat-icon>
           </a>
-        </section>
-
-        <section class="source-panel" id="sources">
-          <div class="section-heading">
-            <span>资料来源</span>
-            <h2>QQEnglish页面公开资料来源</h2>
-            <p>
-              本页以QQEnglish官方英文网站、课程费用页和Beachfront官方费用资料为主要来源。
-              正式报名以前请以学校确认书和最新报价单为准。
-            </p>
-          </div>
-          <div class="source-grid">
-            <a *ngFor="let source of sources" [href]="source.url" target="_blank" rel="noopener noreferrer">
-              <mat-icon>open_in_new</mat-icon>
-              {{ source.label }}
-            </a>
-          </div>
         </section>
 
         <section class="sida-ev-section" id="service-process">

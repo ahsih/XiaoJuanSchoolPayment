@@ -51,11 +51,59 @@ export const SEO_PAGES: Record<string, SeoPage> = {
     image: '/assets/student-stories/mid-autumn/gift-bags.png',
     type: 'article',
   },
+  '/overseas-study-tour/ireland/atc-language-schools': {
+    title: '爱尔兰ATC语言学校｜布雷、都柏林校区课程住宿费用与在线报价',
+    description: 'ATC Language Schools 1973年创办，布雷海边校区和都柏林市中心校区，成人英语课程1周起报、每周一开课；查看2027年学费、寄宿家庭和学生公寓价格、25周半工半读，在线计算费用并保存报价图片。',
+    keywords: 'ATC Language Schools, ATC语言学校, 爱尔兰语言学校, 爱尔兰游学, 都柏林语言学校, 布雷语言学校, 爱尔兰半工半读, ATC报价',
+    image: '/assets/atc/bray-aerial.webp',
+  },
+  '/overseas-study-tour/uk/st-giles': {
+    title: '英国St Giles语言学校｜伦敦、布莱顿、剑桥、伊斯特本5个校区与青少年夏校',
+    description: 'St Giles International 1955年创办，英国有伦敦中心、伦敦海格特、布莱顿、剑桥和伊斯特本5个全年校区，暑期另有6个青少年全包夏校和亲子课程。对比各校区年龄、规模、住宿和费用，在线计算夏校报价；思达启航提供英国游学选校与报名咨询。',
+    keywords: 'St Giles, St Giles International, 英国语言学校, 英国游学, 英国青少年夏校, 英国亲子游学, 伦敦语言学校, 剑桥语言学校',
+    image: '/assets/st-giles/london-central/london-central-36.jpg',
+  },
+  '/overseas-study-tour/uk/st-giles/london-central': {
+    title: 'St Giles伦敦中心校区｜课程、校内宿舍、费用与在线报价',
+    description: 'St Giles伦敦中心校区位于伦敦一区，步行可到大英博物馆，楼上就是校内宿舍。查看2027年英语课程、雅思和剑桥考试班、寄宿家庭和学生公寓价格，以及暑期亲子课程和伦敦青少年夏校，在线计算费用并保存报价图片。',
+    keywords: 'St Giles伦敦, St Giles London Central, 伦敦语言学校, 伦敦英语课程, 伦敦游学费用, 伦敦校内宿舍',
+    image: '/assets/st-giles/london-central/london-central-35.jpg',
+  },
+  '/overseas-study-tour/uk/st-giles/london-highgate': {
+    title: 'St Giles伦敦海格特校区｜14岁起全年课程、亲子课程与费用报价',
+    description: 'St Giles伦敦海格特校区在伦敦北部绿色住宅区，有大花园和玻璃花房咖啡厅，14岁起全年可报。查看2027年课程、16岁以下强化课程、寄宿家庭和公寓价格及暑期亲子课程，在线计算费用并保存报价图片。',
+    keywords: 'St Giles海格特, St Giles Highgate, 伦敦语言学校, 伦敦青少年英语课程, 伦敦亲子游学',
+    image: '/assets/st-giles/london-highgate/london-highgate-4.jpg',
+  },
+  '/overseas-study-tour/uk/st-giles/brighton': {
+    title: 'St Giles布莱顿校区｜海边城市英语课程、学生公寓与费用报价',
+    description: 'St Giles布莱顿校区在英国南部海边城市市中心，学校专属George Street学生公寓步行4分钟。查看2027年英语课程、剑桥考试班、50岁以上课程、寄宿家庭和公寓价格、青少年寄宿家庭夏校和亲子课程，在线计算费用并保存报价图片。',
+    keywords: 'St Giles布莱顿, St Giles Brighton, 布莱顿语言学校, 英国海边游学, 布莱顿英语课程',
+    image: '/assets/st-giles/brighton/brighton-36.jpg',
+  },
+  '/overseas-study-tour/uk/st-giles/cambridge': {
+    title: 'St Giles剑桥校区｜大学城英语课程、青少年夏校与费用报价',
+    description: 'St Giles剑桥校区是剑桥市中心约90名学生的精品校区，14岁起全年可报。查看2027年英语课程、剑桥考试班、寄宿家庭和公寓价格，以及St Mary\'s青少年夏校、STEM夏校和亲子课程，在线计算费用并保存报价图片。',
+    keywords: 'St Giles剑桥, St Giles Cambridge, 剑桥语言学校, 剑桥夏校, 剑桥游学, 英国青少年夏令营',
+    image: '/assets/st-giles/cambridge/cambridge-14.jpg',
+  },
+  '/overseas-study-tour/uk/st-giles/eastbourne': {
+    title: 'St Giles伊斯特本校区｜海滨小城英语课程、亲子课程与费用报价',
+    description: 'St Giles伊斯特本校区位于英国南部安静的海滨小城，学费和寄宿家庭是5个校区里最实惠的，14岁起全年可报。查看2027年英语课程、剑桥考试班、寄宿家庭和学生屋价格及暑期亲子课程，在线计算费用并保存报价图片。',
+    keywords: 'St Giles伊斯特本, St Giles Eastbourne, 伊斯特本语言学校, 英国海边游学, 英国游学费用',
+    image: '/assets/st-giles/eastbourne/eastbourne-87.jpg',
+  },
   '/overseas-study-tour/uk/burlington-school': {
     title: '英国伦敦Burlington School语言学校｜课程住宿费用与在线报价',
     description: '伦敦Burlington School介绍：青少年春夏秋冬季全包项目、成人英语课程、成人暑期公寓套餐、校内宿舍与寄宿家庭价格和巴斯城堡体验，可在线计算2027年费用并保存报价图片；思达启航提供英国游学选校与报名咨询。',
     keywords: 'Burlington School, 伦敦语言学校, 英国游学, 英国暑期游学, 伦敦青少年夏校, 英国语言学校费用, Burlington报价',
     image: '/assets/burlington/campus-courtyard.jpg',
+  },
+  '/overseas-study-tour/singapore/canadian-education-college': {
+    title: '新加坡加拿大教育学院Canadian Education College｜课程学费与开课日期',
+    description: '新加坡加拿大教育学院（Canadian Education College）介绍：全日制英语证书课程（零基础初级班2026年12月14日开课）、雅思预备课程、2026–2027儿童冬季营（6–13岁）学费、学期日历和课堂照片视频；思达启航提供新加坡游学报名咨询。',
+    keywords: '新加坡游学, 新加坡语言学校, Canadian Education College, 新加坡加拿大教育学院, 新加坡冬令营, 新加坡儿童英语营, 新加坡雅思课程',
+    image: '/assets/canadian-education-sg/adult-class-flag.webp',
   },
   '/philippines-study/cebu/ev-la-mer': {
     title: 'EV Academy La Mer校区 | 成人亲子课程、住宿与费用报价',
@@ -65,20 +113,20 @@ export const SEO_PAGES: Record<string, SeoPage> = {
   },
   '/philippines-study/cebu/cg-academy-sparta-campus': {
     title: 'CG斯巴达校区 | 宿务课程、住宿费用与报价',
-    description: '菲律宾宿务CG斯巴达校区介绍，查看斯巴达课程、高阶斯巴达、考试课程、住宿房型与费用报价，学杂费单独列示预估明细。',
-    keywords: 'CG斯巴达校区, CG斯巴达校区, 宿务CG语言学校, 斯巴达课程, CG费用, 菲律宾游学',
+    description: '菲律宾宿务CG斯巴达校区介绍：全斯巴达管理，斯巴达、托业、雅思保分班和雅思强化课程，校内宿舍实拍、2027假期和在线报价；学杂费单独列示。',
+    keywords: 'CG斯巴达校区, 宿务CG语言学校, CG雅思保分班, 斯巴达课程, CG费用, 菲律宾游学',
     image: '/assets/philippines/cg-sparta-campus-hero.webp',
   },
   '/philippines-study/cebu/smeag-capital': {
-    title: '菲律宾宿务SMEAG Capital校区 | 课程费用与2027假期表',
-    description: '查看SMEAG Capital市区校区课程、住宿、费用报价和2027假期上课安排，清楚区分全天停课与TOEFL、IELTS、TOEIC等假日特别课程。',
+    title: '菲律宾宿务SMEAG Capital校区 | 课程、住宿与在线报价',
+    description: '查看SMEAG Capital宿务市区校区的雅思、托福、托业和剑桥体系ESL课程，校内宿舍与合作酒店实拍，在线报价和2027假期；学杂费单独列示。',
     keywords: 'SMEAG Capital, SMEAG Capital假期, 宿务SMEAG, SMEAG 2027校历, 宿务雅思学校',
     image: '/assets/philippines/smeag-capital-building.webp',
   },
   '/philippines-study/cebu/smeag-encanto': {
-    title: '菲律宾宿务SMEAG Encanto海滨校区 | 2027假期课程表',
-    description: '查看SMEAG Encanto麦克坦海滨校区2027假期安排，区分元旦全天停课和Best Holiday Classes假日特别课程。',
-    keywords: 'SMEAG Encanto, SMEAG海滨校区, 宿务亲子游学, SMEAG 2027假期, Best Holiday Classes',
+    title: '菲律宾宿务SMEAG Encanto海滨校区 | 寒暑假亲子营与成人ESL报价',
+    description: '宿务麦克坦岛SMEAG Encanto海滨校区：寒暑假全包亲子营、淡季亲子和成人ESL课程价格，每日作息、校园照片和在线报价。',
+    keywords: 'SMEAG Encanto, SMEAG海滨校区, 宿务亲子游学, 菲律宾亲子营, SMEAG Family Camp, 宿务成人ESL',
     image: '/assets/philippines/smeag-encanto-campus-official.webp',
   },
   '/philippines-study/why-philippines': {
@@ -122,11 +170,11 @@ export const SEO_PAGES: Record<string, SeoPage> = {
     image: '/assets/philippines/baguio-study-hero.webp',
   },
   '/philippines-study/cebu/bcebu': {
-    title: "菲律宾宿务B'Cebu语言学校 | 2026课程住宿费用",
+    title: "菲律宾宿务B'Cebu语言学校 | 课程住宿费用与在线报价",
     description:
-      "菲律宾宿务B'Cebu语言学校2026费用页面，整理Speed ESL、Intensive ESL、IELTS、B'SPARTA、商务英语、Junior、幼儿园课程、住宿房型与1至3周短期比例。",
+      "菲律宾宿务B'Cebu语言学校（麦克坦岛拉普拉普市）：Speed ESL、B'Sparta斯巴达、雅思与雅思保证班、商务英语、青少年与幼儿课程，单人间到三人间住宿，2027淡季优惠、暑假附加费、在线报价与学杂费明细。",
     keywords: "菲律宾宿务B'Cebu语言学校, BECI B'Cebu, B Cebu, 宿务语言学校, 宿务IELTS, 宿务亲子游学",
-    image: '/assets/study-hero-collage.webp',
+    image: '/assets/bcebu/campus-building.webp',
   },
   '/philippines-study/cebu/btes-english-academy': {
     title: '菲律宾宿务BTES语言学校 | 课程、住宿与报名咨询',
@@ -136,18 +184,18 @@ export const SEO_PAGES: Record<string, SeoPage> = {
     image: 'https://www.fujiyama-international.com/archives/004/202404/b862d6cf8e313f63b336bb005f3f05e9.jpg',
   },
   '/philippines-study/cebu/elsa-international-language-school': {
-    title: '菲律宾宿务ELSA语言学校 | 2026-2027课程食宿费用',
+    title: '菲律宾宿务ELSA语言学校 | 课程食宿费用与报价',
     description:
-      '菲律宾宿务ELSA语言学校2026-2027费用页面，整理Guardian、成人ESL、青少年、全天/半天学校、幼儿园课程、2至5人间和单人间附加费。',
-    keywords: '菲律宾宿务ELSA语言学校, ELSA International Language School, 宿务亲子游学, 宿务幼儿园英语, ELSA费用',
-    image: '/assets/study-hero-collage.webp',
+      '菲律宾宿务ELSA语言学校介绍：成人ESL、青少年、本地学校随班、幼儿园和家长陪读课程，课程价含食宿，可在线计算报价并保存报价图片；思达启航提供宿务游学选校与申请咨询。',
+    keywords: '菲律宾宿务ELSA语言学校, ELSA International Language School, 宿务亲子游学, 宿务幼儿园英语, ELSA费用, ELSA报价',
+    image: '/assets/elsa/campus/aerial-01.webp',
   },
   '/philippines-study/baguio/pines-international-academy': {
     title: '菲律宾碧瑶PINES语言学校 | 课程费用住宿与报名咨询',
     description:
-      '菲律宾碧瑶PINES语言学校页面，整理Main Campus、IELTS Campus、ESL、Power Speaking、IELTS、TOEIC、住宿房型、2026费用和报名注意事项。',
+      '菲律宾碧瑶PINES语言学校：口语和雅思分区上课，校内有雅思、托业官方考点；2026–2027课程费、房费、优惠和到校学杂费，支持单人、多人和方案对比报价。',
     keywords: '菲律宾碧瑶PINES语言学校, PINES International Academy, 碧瑶PINES, 菲律宾雅思学校, 碧瑶语言学校',
-    image: '/assets/philippines/pines-campus-hero.webp',
+    image: '/assets/pines/campus/exterior.webp',
   },
   '/philippines-study/baguio/beci-eop-campus': {
     title: '菲律宾碧瑶BECI EOP校区 | 课程住宿费用与多人报价',
@@ -170,31 +218,24 @@ export const SEO_PAGES: Record<string, SeoPage> = {
     keywords: '菲律宾碧瑶API BECI City校区, BECI City Campus, API BECI课程费用, BECI夫妻房, 碧瑶语言学校',
     image: '/assets/philippines/beci-city-workspace.webp',
   },
-  '/philippines-study/baguio/baguio-jic': {
-    title: '菲律宾碧瑶JIC语言学校 | Challenger与Premium校区课程费用住宿',
-    description:
-      '菲律宾碧瑶JIC语言学校页面，整理Baguio JIC Challenger Campus、Premium Campus、ESL、IELTS、TOEIC、TEP、Speaking、Active Senior、Business、Working Holiday、2026课程费、住宿房型、优惠规则和报名注意事项。',
-    keywords: '菲律宾碧瑶JIC语言学校, Baguio JIC, Baguio JIC Challenger Campus, JIC Premium Campus, JIC Academy Baguio, 碧瑶雅思学校, 碧瑶语言学校',
-    image: '/assets/philippines/jic-campus-hero.webp',
-  },
   '/philippines-study/baguio/baguio-jic-challenger': {
     title: '菲律宾碧瑶JIC挑战校区 | Challenger课程住宿费用与报价',
-    description: 'JIC Challenger挑战校区独立页面，整理ESL与IELTS课程、每日课表、四种住宿、最新短期比例、学杂费、优惠和单人多人报价图片。',
-    keywords: 'JIC挑战校区, Baguio JIC Challenger Campus, JIC ESL, JIC IELTS, 碧瑶语言学校',
+    description: '菲律宾碧瑶JIC Challenger挑战校区：雅思保分班和三种强度的雅思、一般英语课程，斯巴达或半斯巴达，四种住宿，2027年课程住宿费、淡季和长期优惠、到校学杂费和在线报价。',
+    keywords: 'JIC挑战校区, 菲律宾碧瑶JIC语言学校, Baguio JIC Challenger Campus, JIC雅思保分班, JIC ESL, JIC IELTS, 碧瑶雅思学校, 碧瑶语言学校',
     image: '/assets/philippines/jic-main-campus-overview.webp',
   },
   '/philippines-study/baguio/baguio-jic-premium': {
     title: '菲律宾碧瑶JIC高级校区 | Premium课程住宿费用与报价',
-    description: 'JIC Premium高级校区独立页面，整理Speaking、TEP、TOEIC、Business、Working Holiday、Active Senior、六种住宿、最新学杂费、优惠和报价图片。',
-    keywords: 'JIC高级校区, JIC Premium Campus, JIC Speaking, JIC TEP, 碧瑶语言学校',
+    description: '菲律宾碧瑶JIC Premium高级校区：口语、主题英语TEP、托业、商务、打工度假和银发课程，半斯巴达管理，六种住宿，2027年课程住宿费、淡季和长期优惠、到校学杂费和在线报价。',
+    keywords: 'JIC高级校区, 菲律宾碧瑶JIC语言学校, JIC Premium Campus, JIC Speaking, JIC TEP, 碧瑶语言学校',
     image: '/assets/philippines/jic-premium-campus-overview.jpg',
   },
   '/philippines-study/baguio/monol': {
-    title: '菲律宾碧瑶MONOL主校区 | 课程费用住宿与报名咨询',
+    title: '菲律宾碧瑶MONOL主校区 | 课程住宿费用与在线报价',
     description:
-      '菲律宾碧瑶MONOL语言学校页面，整理MONOL的ESL 4、General ESL、IELTS、LEAP课程、Hotel-style住宿房型、课程住宿费用、餐费说明和当地费用。',
-    keywords: '菲律宾碧瑶MONOL语言学校, MONOL Baguio, mymonol, 碧瑶MONOL, 菲律宾ESL学校, 碧瑶语言学校, 菲律宾雅思学校',
-    image: '/assets/philippines/monol-campus-building.webp',
+      '菲律宾碧瑶MONOL主校区页面，整理Light ESL、General ESL、雅思和LEAP客制化课程、每天免费健身课、高级单人间到胶囊四人间六种房型、2026报名优惠、2027日历、到校学杂费、相册视频与单人多人报价。',
+    keywords: '菲律宾碧瑶MONOL语言学校, MONOL主校区, MONOL Baguio, 碧瑶MONOL, LEAP English, 菲律宾ESL学校, 碧瑶语言学校, 菲律宾雅思学校',
+    image: '/assets/philippines/monol-main/campus/building-aerial.webp',
   },
   '/philippines-study/baguio/monol-sparta-campus': {
     title: '菲律宾碧瑶MONOL斯巴达校区 | 2026课程住宿费用与报价',
@@ -213,10 +254,10 @@ export const SEO_PAGES: Record<string, SeoPage> = {
   '/philippines-study/baguio/anj-e-edu-english-academy': {
     title: '菲律宾碧瑶A&J e-Edu语言学校 | 课程费用住宿与报名咨询',
     description:
-      '菲律宾碧瑶A&J e-Edu English Academy页面，整理A&J ECO Campus、Eco Relax Lite/Plus、Eco Hub、Eco Sparta、IELTS/TOEIC、Junior课程、Deluxe/Premium/Eco Villa住宿、2026费用和当地费用。',
+      '菲律宾碧瑶A&J e-Edu Academy ECO校区：松林校园，Eco Relax、Eco Hub、Eco Sparta、雅思和托业保分班、雅思课程12周送官方考试、青少年课程，Deluxe到独栋别墅的住宿，2027课程住宿费用、在线报价和到校学杂费。',
     keywords:
       '菲律宾碧瑶A&J e-Edu语言学校, A&J e-Edu Academy, A&J ECO Campus, 碧瑶A&J, 菲律宾碧瑶语言学校, 菲律宾ESL学校, 菲律宾IELTS学校',
-    image: '/assets/philippines/baguio-study-hero.webp',
+    image: '/assets/anj/campus/main-building.webp',
   },
   '/philippines-study/baguio/help-english-longlong-campus': {
     title: 'HELP English（Longlong Campus） | 碧瑶Sparta课程费用住宿',
@@ -234,11 +275,11 @@ export const SEO_PAGES: Record<string, SeoPage> = {
     image: '/assets/philippines/clark-study-hero.webp',
   },
   '/philippines-study/clark/cip-english-kepos': {
-    title: '菲律宾克拉克 CIP语言学校 | Native一对一课程费用住宿与报名咨询',
+    title: '菲律宾克拉克 CIP语言学校 | 外教一对一课程费用住宿与在线报价',
     description:
-      '了解克拉克CIP的母语外教一对一、ESL、雅思及亲子课程，比较宿舍和酒店实景、2026年9月人民币价格与当地费用，查看入学测试、假期、学习管理及参考报价。',
+      '了解克拉克CIP的外籍老师一对一、ESL、口语、雅思保分和青少年课程，查看校园、宿舍和Clover Hotel实景视频，2027年美元课程住宿费、淡季优惠、到校学杂费和在线报价。',
     keywords: '菲律宾克拉克 CIP语言学校, CIP English Kepos, 克拉克CIP, Clark CIP, 菲律宾外教一对一, 克拉克语言学校',
-    image: '/assets/philippines/cip-campus-intro.webp',
+    image: '/assets/cip/campus/campus-01.webp',
   },
   '/philippines-study/clark/eg-academy': {
     title: '菲律宾克拉克EG语言学校 | 课程费用住宿与报名咨询',
@@ -255,11 +296,10 @@ export const SEO_PAGES: Record<string, SeoPage> = {
     image: '/assets/philippines/we-hero.webp',
   },
   '/philippines-study/clark/help-english-clark': {
-    title: '菲律宾克拉克HELP English语言学校 | Sparta课程费用住宿与报名咨询',
-    description:
-      '菲律宾克拉克HELP English语言学校页面，整理HELP Clark Campus的Sparta管理、EOP、ESL、IELTS、TOEIC、Business、Family课程、宿舍、4周USD课程住宿费用、PHP当地费用和报名注意事项。',
-    keywords: '菲律宾克拉克HELP English语言学校, HELP Clark Campus, HELP English Academy, Clark Sparta school, 菲律宾IELTS学校, 克拉克语言学校',
-    image: '/assets/philippines/help-clark-main-building.webp',
+    title: '菲律宾克拉克HELP English语言学校 | 斯巴达课程、住宿与在线报价',
+    description: '查看HELP克拉克校区的斯巴达管理、ESL、雅思、托业、商务英语和亲子营课程，2026年新房间实拍，开课日和淡季优惠，在线报价；学杂费单独列示。',
+    keywords: 'HELP克拉克, HELP English Clark, 克拉克斯巴达学校, 菲律宾亲子游学, 克拉克雅思学校, HELP开课日',
+    image: '/assets/help-clark/campus/main-building.webp',
   },
   '/philippines-study/clark/aelc-native-focused-clark-schools': {
     title: '菲律宾克拉克AELC语言学校 | Native口语课程费用住宿与报名咨询',
@@ -267,14 +307,6 @@ export const SEO_PAGES: Record<string, SeoPage> = {
       '菲律宾克拉克AELC语言学校页面，整理American English Learning Center的Native口语、ESL、TOEIC、IELTS、Business、Family方向、AELC照片、4周USD课程住宿参考费用和报名注意事项。',
     keywords: '菲律宾克拉克AELC语言学校, AELC, American English Learning Center, Clark AELC, 菲律宾外教口语学校, 克拉克语言学校, Native English Clark',
     image: '/assets/philippines/aelc-main.webp',
-  },
-  '/philippines-study/clark/hana-academy': {
-    title: '菲律宾克拉克HANA Academy | Native亲子Golf课程费用住宿',
-    description:
-      '菲律宾克拉克HANA Academy页面，整理HANA Academy的Light ESL、General ESL、Native ESL、IELTS、TOEIC、Junior、Kindergarten、Golf、Senior课程、住宿房型、4周USD课程住宿费和PHP当地费用。',
-    keywords:
-      '菲律宾克拉克HANA Academy, HANA Academy Clark, Clark HANA, HARA AND HANAH INTERNATIONAL ACADEMY, 克拉克亲子游学, 菲律宾Native口语学校, Clark Golf English',
-    image: '/assets/philippines/clark-study-hero.webp',
   },
   '/philippines-study/manila': {
     title: '马尼拉菲律宾留学与英语游学 | 马尼拉语言学校推荐',
@@ -384,6 +416,14 @@ export const SEO_PAGES: Record<string, SeoPage> = {
     keywords: '菲律宾语言学校价格对比, 菲律宾游学费用对比, 宿务语言学校对比, CIA和EV对比, 菲律宾游学报价',
     image: '/assets/philippines/cebu-city-view.webp',
   },
+  '/philippines-study/service-process': {
+    title: '菲律宾游学报名及抵达全流程指引｜4阶段15步与关键时间节点',
+    description:
+      '思达启航菲律宾游学标准服务流程：从付定金、注册学位、办理签证与机票、E-travel代填、购买境外保险，到抵达报到和在校协助，4个阶段15个步骤，附入学前90天起办签证、入学前2–4周付尾款等关键时间节点。',
+    keywords:
+      '菲律宾游学流程, 菲律宾游学报名流程, 菲律宾游学签证, 菲律宾E-travel, 菲律宾游学行前准备, 菲律宾游学时间安排, 思达启航',
+    image: '/assets/philippines/cebu-study-hero.webp',
+  },
   '/philippines-study/baguio/airport-pickup': {
     title: '2026–2027 碧瑶游学接机指南｜马尼拉、克拉克接机日期、费用与注意事项',
     description: '查看2026及2027碧瑶BESA指定接机日期、马尼拉和克拉克班次、集合点、现行3000比索费用、eTravel顾问办理及航班延误处理。',
@@ -461,6 +501,12 @@ export const SEO_PAGES: Record<string, SeoPage> = {
     keywords: '菲律宾热门语言学校, 菲律宾学校推荐, 宿务英语学校, 碧瑶英语学校, 克拉克英语学校',
     image: '/assets/philippines/beci-eop-campus.webp',
   },
+  '/study-tour-guide/phone-top-up': {
+    title: '海外手机话费充值 | 菲律宾、爱尔兰、英国手机号在线充值',
+    description:
+      '思达启航学员服务：在国内用人民币给菲律宾、爱尔兰和英国的手机号充值话费和流量，支持Globe、Smart、Vodafone、Three等当地运营商，家长也能帮孩子充。',
+    keywords: '菲律宾话费充值, 爱尔兰话费充值, 英国话费充值, 海外手机充值, 留学生话费充值, 游学话费充值',
+  },
   '/study-tour-guide/philippines': {
     title: '菲律宾游学攻略 | 英语课程选校费用与行前准备',
     description:
@@ -502,14 +548,15 @@ const SCHOOL_DETAIL_SEO: Array<{ path: string; name: string; brand: string; alia
   { path: '/philippines-study/cebu/cpils', name: '菲律宾宿务CPILS语言学校', brand: 'CPILS', quote: true },
   { path: '/philippines-study/cebu/cg-academy-banilad-campus', name: '菲律宾宿务CG Academy Banilad校区', brand: 'CG Banilad', aliases: 'CG Academy', quote: true },
   { path: '/philippines-study/cebu/philinter-academy', name: '菲律宾宿务Philinter语言学校', brand: 'Philinter', quote: true },
-  { path: '/philippines-study/cebu/english-fella', name: '菲律宾宿务English Fella语言学校', brand: 'English Fella', quote: true },
+  { path: '/philippines-study/cebu/english-fella-first-campus', name: '菲律宾宿务English Fella第一校区', brand: 'English Fella 第一校区', aliases: 'English Fella', quote: true, image: '/assets/fella-1/campus/aerial.webp' },
+  { path: '/philippines-study/cebu/english-fella-second-campus', name: '菲律宾宿务English Fella第二校区', brand: 'English Fella 第二校区', aliases: 'English Fella', quote: true, image: '/assets/fella-2/campus/aerial.webp' },
   { path: '/philippines-study/cebu/ibreeze', name: '菲律宾宿务I.BREEZE语言学校', brand: 'I.BREEZE', quote: true },
   { path: '/philippines-study/cebu/iu-english-academy', name: '菲律宾宿务IU English Academy语言学校', brand: 'IU', quote: true },
   { path: '/philippines-study/cebu/icl', name: '菲律宾宿务ICL语言学校', brand: 'ICL', quote: true },
   { path: '/philippines-study/cebu/ims-academy', name: '菲律宾宿务IMS Academy语言学校', brand: 'IMS', quote: true },
   { path: '/philippines-study/cebu/cella-uni-sparta-campus', name: '菲律宾宿务CELLA Uni Sparta校区', brand: 'CELLA Uni Sparta', aliases: 'CELLA', quote: true },
   { path: '/philippines-study/cebu/cella-premium-campus', name: '菲律宾宿务CELLA Premium校区', brand: 'CELLA Premium', aliases: 'CELLA', quote: true },
-  { path: '/philippines-study/cebu/cebu-blue-ocean-academy', name: '菲律宾宿务Cebu Blue Ocean Academy', brand: 'Cebu Blue Ocean', quote: true },
+  { path: '/philippines-study/cebu/cebu-blue-ocean-academy', name: '菲律宾宿务蓝海语言学校（Cebu Blue Ocean Academy）', brand: '蓝海CBOA', aliases: 'Cebu Blue Ocean', quote: true, image: '/assets/cebu-blue-ocean/suites/pool.webp' },
   { path: '/philippines-study/cebu/target-global-english-academy', name: '菲律宾宿务TARGET Global English Academy', brand: 'TARGET', quote: true },
   { path: '/philippines-study/cebu/global-language-cebu', name: '菲律宾宿务GLC语言学校（Global Language Cebu）', brand: 'GLC', aliases: 'Global Language Cebu', quote: true },
   { path: '/philippines-study/cebu/ciec', name: '菲律宾宿务CIEC语言学校', brand: 'CIEC', quote: true },
@@ -519,7 +566,7 @@ const SCHOOL_DETAIL_SEO: Array<{ path: string; name: string; brand: string; alia
   { path: '/philippines-study/cebu/curious-world-academy', name: '菲律宾宿务Curious World Academy', brand: 'Curious World', quote: false },
   { path: '/philippines-study/cebu/ethos-language-school', name: '菲律宾宿务ETHOS语言学校', brand: 'ETHOS', aliases: 'ETHOS Language School', quote: false },
   { path: '/philippines-study/cebu/first-english-global-college', name: '菲律宾宿务First English Global College', brand: 'First English', quote: false },
-  { path: '/philippines-study/cebu/genius-english-academy', name: '菲律宾宿务Genius English Academy语言学校', brand: 'Genius English', quote: false },
+  { path: '/philippines-study/cebu/genius-english-academy', name: '菲律宾宿务Genius English Academy语言学校', brand: 'Genius English', quote: true },
   { path: '/philippines-study/cebu/howdy-english-academy', name: '菲律宾宿务Howdy English Academy语言学校', brand: 'Howdy', quote: false },
   { path: '/philippines-study/cebu/lapulapu', name: '菲律宾宿务LCIC大学英语项目', brand: 'LCIC', aliases: 'Lapulapu-Cebu International College', quote: false },
   { path: '/philippines-study/cebu/qqenglish-beachfront-campus', name: '菲律宾宿务QQEnglish Beachfront校区', brand: 'QQEnglish', quote: false },
@@ -527,6 +574,7 @@ const SCHOOL_DETAIL_SEO: Array<{ path: string; name: string; brand: string; alia
   { path: '/philippines-study/cebu/winning-english-academy', name: '菲律宾宿务Winning English Academy', brand: 'Winning', quote: false },
   { path: '/philippines-study/boracay/boracay-coco-english-academy', name: '菲律宾长滩岛Boracay Coco English Academy', brand: 'Coco English', quote: false },
   { path: '/philippines-study/boracay/paradise-english-boracay-language-institute', name: '菲律宾长滩岛Paradise English语言学校', brand: 'Paradise English', quote: false },
+  { path: '/philippines-study/clark/hana-academy', name: '菲律宾克拉克HANA语言学校', brand: 'HANA Academy', aliases: 'HANA Academy Clark', quote: true, image: '/assets/hana/campus/pool-fountain.webp' },
   { path: '/philippines-study/clark/talk-academy', name: '菲律宾克拉克TALK Academy语言学校', brand: 'TALK Academy', quote: false },
   { path: '/philippines-study/iloilo/gitc-college-international-language-center', name: '菲律宾伊洛伊洛GITC College语言学校', brand: 'GITC', quote: false },
   { path: '/philippines-study/iloilo/we-academy', name: '菲律宾伊洛伊洛WE Academy语言学校', brand: 'WE Academy', quote: false },
@@ -639,6 +687,7 @@ const BREADCRUMB_LABELS: Record<string, string> = {
   cebu: '宿务',
   baguio: '碧瑶',
   'airport-pickup': '碧瑶接机指南',
+  'phone-top-up': '海外手机话费充值',
   clark: '克拉克',
   iloilo: '伊洛伊洛',
   bacolod: '巴科洛德',

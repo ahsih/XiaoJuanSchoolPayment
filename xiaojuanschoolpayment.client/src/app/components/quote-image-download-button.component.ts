@@ -1,10 +1,13 @@
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ExchangeRateService, CnyExchangeRateSnapshot, isUsableExchangeRates, unavailableRates } from '../../services/exchange-rate.service';
-import { CommonModule } from '@angular/common';
-import { Component, Input, OnDestroy, inject } from '@angular/core';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
+import { Component, Input, OnDestroy, OnInit, PLATFORM_ID, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
+import { Router } from '@angular/router';
+import { AuthService } from '../../services/auth.service';
 import { QuoteImagePreviewComponent } from './quote-image-preview.component';
+import { SaveQuoteToStudentComponent } from './save-quote-to-student.component';
 import { downloadQuoteBlob, encodeQuoteCanvas, loadQuoteImage, quoteBlobDataUrl,
   quoteCanvasScale, quoteImageEnvironment, validateQuoteBlob } from './quote-image-export';
 import {
@@ -29,8 +32,13 @@ import {
 import { drawPlanCompareImage, planCompareImageHeight } from './plan-compare/plan-compare-image-renderer';
 import { planCompareReady } from './plan-compare/plan-compare-sheet';
 import { drawUkQuoteImage, ukQuoteImageHeight } from './uk-quote/uk-quote-image-renderer';
+import { drawUkQuoteImage as drawUkQuoteImageV2, ukQuoteImageHeight as ukQuoteImageHeightV2 } from './uk-quote-v2/uk-quote-image-renderer';
 
 export type QuoteImageActionMode = 'download' | 'email';
+
+const EMPLOYEE_ROLES = new Set(['admin', 'manager', 'staff']);
+/** Pages where the employee 存到学员档案 button is not added (the CIA page is locked). */
+const STUDENT_SAVE_EXCLUDED_PATHS = ['/philippines-study/cebu/cia-cebu-international-academy'];
 
 import type {
   QuoteImageInfoItem,
@@ -56,12 +64,14 @@ export type {
 @Component({
   selector: 'app-quote-image-download-button',
   standalone: true,
-  imports: [CommonModule, FormsModule, MatIconModule, QuoteImagePreviewComponent],
+  imports: [CommonModule, FormsModule, MatIconModule, QuoteImagePreviewComponent, SaveQuoteToStudentComponent],
   template: `
     <p *ngIf="!ratesReady" role="status">最新参考汇率暂不可用，人民币金额待更新；汇率更新后可保存报价图片。</p>
     <button type="button" [class]="buttonClass" [disabled]="disabled || isSaving || !ratesReady" (click)="handleButtonClick()">
       <mat-icon *ngIf="icon">{{ icon }}</mat-icon>{{ !ratesReady ? '最新参考汇率待更新' : isSaving ? savingLabel : label }}
     </button>
+    <app-save-quote-to-student *ngIf="canSaveToStudent" [createBlob]="blobForStudent" [fileName]="quote.fileName"
+      [disabled]="disabled || isSaving || !ratesReady" />
 
     <p *ngIf="saveError && !isPreviewOpen" class="quote-email-message error" role="alert">{{ saveError }}</p>
     <app-quote-image-preview *ngIf="isPreviewOpen"
@@ -276,7 +286,7 @@ export type {
     `,
   ],
 })
-export class QuoteImageDownloadButtonComponent implements OnDestroy {
+export class QuoteImageDownloadButtonComponent implements OnInit, OnDestroy {
   private ratesSnapshot: CnyExchangeRateSnapshot = unavailableRates();
   protected get ratesReady(): boolean { return isUsableExchangeRates(this.ratesSnapshot); }
   private readonly rateSubscription = inject(ExchangeRateService).getLatestCnyRates().pipe(takeUntilDestroyed()).subscribe(r => {
@@ -307,6 +317,25 @@ export class QuoteImageDownloadButtonComponent implements OnDestroy {
   private previewFile?: File;
   private saveSequence = 0;
   private destroyed = false;
+  private readonly isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
+  private readonly authService = inject(AuthService);
+  private readonly router = inject(Router);
+  /** Employees (Admin, Manager, Staff) may save a public-page quote straight into a student's file. */
+  protected canSaveToStudent = false;
+  protected readonly blobForStudent = () => this.createQuoteImageBlob();
+
+  ngOnInit(): void {
+    if (!this.isBrowser || this.mode !== 'download') return;
+    const path = this.router.url.split(/[?#]/)[0];
+    // The admin quote-image editor shows sample scenarios, and the CIA page is locked (user decision 2026-11-20).
+    if (path.startsWith('/admin') || STUDENT_SAVE_EXCLUDED_PATHS.some((excluded) => path.startsWith(excluded))) return;
+    try {
+      this.canSaveToStudent = this.authService.isAuthenticated()
+        && this.authService.getRoles().some((role) => EMPLOYEE_ROLES.has(role.toLowerCase()));
+    } catch {
+      this.canSaveToStudent = false;
+    }
+  }
 
   ngOnDestroy(): void {
     this.destroyed = true;
@@ -481,14 +510,16 @@ export class QuoteImageDownloadButtonComponent implements OnDestroy {
     const compareSheet = this.quote.layout === 'plan-compare' ? this.quote.planCompare : undefined;
     if (this.quote.layout === 'plan-compare' && (!compareSheet || !planCompareReady(compareSheet))) throw new Error('对比方案还有需要修改的地方。');
     const ukSheet = this.quote.layout === 'uk-package' ? this.quote.ukSheet : undefined;
-    if (this.quote.layout === 'uk-package' && (!ukSheet || ukSheet.issues.length)) throw new Error('报价还有需要修改的地方。');
+    const ukSheetV2 = this.quote.layout === 'uk-package' && !ukSheet ? this.quote.ukSheetV2 : undefined;
+    const anyUkSheet = ukSheet ?? ukSheetV2;
+    if (this.quote.layout === 'uk-package' && (!anyUkSheet || anyUkSheet.issues.length)) throw new Error('报价还有需要修改的地方。');
     // layoutVersion 2 (CIA so far): only the chosen consultant's QR code is loaded, for the title card.
     const contactCard = this.quote.layoutVersion === 2 ? this.quote.contactCard : undefined;
-    const [logo, hero, consultantAssets, ukQr, contactQr] = await Promise.all([
+    const [logo, hero, consultantAssets, ukQr, contactQr, ukQrsV2] = await Promise.all([
       this.loadCanvasImage(quoteBrandLogoSource(this.quote)),
       this.loadCanvasImage(this.quote.heroSrc),
       Promise.all(
-        (this.quote.layout === 'cia-detailed' || compareSheet || ukSheet ? [] : consultants.slice(0, 3)).map(async (consultant) => ({
+        (this.quote.layout === 'cia-detailed' || compareSheet || anyUkSheet ? [] : consultants.slice(0, 3)).map(async (consultant) => ({
           consultant,
           avatar: await this.loadCanvasImage(consultant.avatarSrc),
           qr: await this.loadCanvasImage(consultant.qrSrc),
@@ -496,6 +527,7 @@ export class QuoteImageDownloadButtonComponent implements OnDestroy {
       ),
       ukSheet ? this.loadCanvasImage(ukSheet.contact.qrSrc) : Promise.resolve(undefined),
       contactCard?.consultant.qrSrc ? this.loadCanvasImage(contactCard.consultant.qrSrc) : Promise.resolve(undefined),
+      Promise.all((ukSheetV2?.contacts ?? []).map(contact => this.loadCanvasImage(contact.qrSrc))),
     ]);
     const width = QUOTE_IMAGE_WIDTH;
     const canvas = document.createElement('canvas');
@@ -509,6 +541,8 @@ export class QuoteImageDownloadButtonComponent implements OnDestroy {
       ? planCompareImageHeight(context, compareSheet, this.quote)
       : ukSheet
         ? ukQuoteImageHeight(context, ukSheet)
+      : ukSheetV2
+        ? ukQuoteImageHeightV2(context, ukSheetV2)
       : this.quote.layout === 'cia-detailed'
         ? detailedQuoteImageHeight(context, this.quote)
         : 1848;
@@ -529,6 +563,8 @@ export class QuoteImageDownloadButtonComponent implements OnDestroy {
             drawPlanCompareImage<HTMLImageElement>(context, this.quote, compareSheet, { logo, hero, contactQr }, width, height);
           } else if (ukSheet) {
             drawUkQuoteImage<HTMLImageElement>(context, ukSheet, { logo, qr: ukQr }, height);
+          } else if (ukSheetV2) {
+            drawUkQuoteImageV2<HTMLImageElement>(context, ukSheetV2, { logo, qrs: ukQrsV2 }, height);
           } else if (this.quote.layout === 'cia-detailed') {
             this.drawDetailedQuoteImage(context, {
               logo, hero, consultants: consultants.slice(0, 5).map(consultant => ({ consultant })), contactQr,
@@ -551,7 +587,7 @@ export class QuoteImageDownloadButtonComponent implements OnDestroy {
       }
       throw failure;
     } finally {
-      for (const image of [logo, hero, ...(ukQr ? [ukQr] : []), ...(contactQr ? [contactQr] : []), ...consultantAssets.flatMap(item => [item.avatar, item.qr])]) image.src = '';
+      for (const image of [logo, hero, ...(ukQr ? [ukQr] : []), ...ukQrsV2, ...(contactQr ? [contactQr] : []), ...consultantAssets.flatMap(item => [item.avatar, item.qr])]) image.src = '';
     }
   }
 

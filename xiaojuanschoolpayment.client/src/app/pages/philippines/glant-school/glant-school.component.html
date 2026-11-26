@@ -130,7 +130,7 @@
           <label>课程 / 房型组合<select [(ngModel)]="selectedPackageId"><option *ngFor="let item of feePackages" [value]="item.id">{{ item.category }} · {{ item.course }} · {{ item.room }}</option></select></label>
           <label>预计入学日<input type="date" [(ngModel)]="selectedStartDate" /></label>
           <button type="button" class="primary-action" (click)="calculateQuote()">更新费用<mat-icon>calculate</mat-icon></button>
-          <p>报价器按公开美元费用表计算课程、住宿、餐食，并加入注册费和接机参考；到校PHP费用另计。</p>
+          <p>报价器按美元价格计算课程、住宿、餐食，并加入注册费和接机参考；到校比索费用另计。</p>
         </div>
         <div class="quote-result-card">
           <div class="quote-result-head">
@@ -160,9 +160,9 @@
 
       <section class="tables-section" id="fee-structure">
         <div>
-          <h2><mat-icon>receipt_long</mat-icon>GLANT公开美元费用参考</h2>
+          <h2><mat-icon>receipt_long</mat-icon>GLANT美元费用参考</h2>
           <p class="table-intro">以下为常用课程与房型的4周课程食宿费用，不含注册费、接机费和到校PHP费用。最终以学校当期报价和空房为准。</p>
-          <div class="data-table glant-fee-table" role="table" aria-label="GLANT 4周公开费用参考">
+          <div class="data-table glant-fee-table" role="table" aria-label="GLANT 4周费用参考">
             <div class="table-row table-head" role="row">
               <span role="columnheader">课程</span>
               <span role="columnheader">4周费用</span>
@@ -181,7 +181,7 @@
             <li>课程食宿费已经包含课程、住宿和餐食。</li>
             <li>注册费USD 100和接机费USD 20已在报价器中单独加入。</li>
             <li>SSP、SSP E-Card、教材、水电、洗衣、押金和签证延长通常到校后另付。</li>
-            <li>公开费用来自2026年GLANT相关费用表，报名时仍需确认学校最新报价与空房。</li>
+            <li>以上为2026年参考价，报名时仍需确认学校最新报价与空房。</li>
           </ul>
         </aside>
       </section>
@@ -205,7 +205,7 @@
           <article>
             <img [src]="galleryImages[6].src" alt="GLANT English Academy餐厅" />
             <h3><mat-icon>restaurant</mat-icon>课程食宿打包</h3>
-            <p>公开费用表为课程、住宿和餐食打包价；餐食内容、清洁、洗衣等以学校当期安排为准。</p>
+            <p>费用为课程、住宿和餐食打包价；餐食内容、清洁、洗衣等以学校当期安排为准。</p>
           </article>
         </div>
       </section>
@@ -225,19 +225,6 @@
         </div>
       </section>
 
-      <section class="cia-section source-section">
-        <div class="section-heading">
-          <h2>资料来源</h2>
-          <p>本页学校定位参考GLANT官方公开页面，费用参考公开GLANT费用表。学校价格、空房和当地费用可能更新，报名前以顾问向学校确认后的正式报价为准。</p>
-        </div>
-        <div class="source-links">
-          <a *ngFor="let source of sourceLinks" [href]="source.url" target="_blank" rel="noopener noreferrer">
-            <mat-icon>open_in_new</mat-icon>
-            {{ source.label }}
-          </a>
-        </div>
-      </section>
-
       <app-sida-why-section
         [schoolName]="'菲律宾宿务GLANT English Academy语言学校'"
         [supportTitle]="'深圳总部 + 宿务驻点支持'"
@@ -252,7 +239,7 @@
         </details>
         <details>
           <summary>GLANT费用表里的价格包含什么？</summary>
-          <p>公开费用表主要是课程、住宿和餐食打包价。注册费、接机、SSP、教材、水电、押金、洗衣和签证延长等需要另行准备。</p>
+          <p>主要是课程、住宿和餐食打包价。注册费、接机、SSP、教材、水电、押金、洗衣和签证延长等需要另行准备。</p>
         </details>
         <details>
           <summary>Regular、Intensive、Premium怎么选？</summary>

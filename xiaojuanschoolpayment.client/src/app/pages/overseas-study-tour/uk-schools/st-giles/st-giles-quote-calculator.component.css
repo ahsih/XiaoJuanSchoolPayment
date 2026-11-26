@@ -1,0 +1,66 @@
+:host { display: block; }
+.bq { --bq-green: #0f4a2f; --bq-green-2: #1d6b45; --bq-line: #dde5df; --bq-orange: #ee7d1a; color: #1f2a24; }
+.bq-programmes { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+.bq-programmes button { text-align: left; border: 1.5px solid var(--bq-line); background: #fff; border-radius: 12px; padding: 12px 14px; cursor: pointer; font: inherit; color: inherit; }
+.bq-programmes button strong { display: block; font-size: 15px; color: var(--bq-green); }
+.bq-programmes button span { display: block; margin-top: 3px; font-size: 12px; color: #6b766f; }
+.bq-programmes button.active { border-color: var(--bq-orange); background: #fff7ef; box-shadow: 0 0 0 2px rgba(238, 125, 26, .15); }
+
+.bq-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 12px 14px; }
+.bq-student { display: flex; align-items: flex-end; gap: 12px 20px; flex-wrap: wrap; margin: 16px 0; padding: 14px; border: 1px solid var(--bq-line); border-radius: 12px; background: #f8faf8; }
+.bq-student label { width: 220px; }
+.bq label { display: flex; flex-direction: column; gap: 5px; font-size: 13px; font-weight: 700; color: var(--bq-green-2); min-width: 0; }
+.bq select, .bq input[type='text'], .bq input[type='number'] { font: inherit; font-size: 14px; font-weight: 400; color: #1f2a24; border: 1px solid #cdd6d0;
+  border-radius: 8px; padding: 9px 10px; background: #fff; min-width: 0; width: 100%; box-sizing: border-box; }
+.bq-checks { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: 8px 18px; }
+.bq label.check { flex-direction: row; align-items: center; gap: 6px; font-weight: 400; color: #1f2a24; font-size: 14px; }
+
+.bq-plans { display: grid; gap: 14px; margin-bottom: 18px; }
+.bq-plans.two { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.bq-plans.two .bq-grid { grid-template-columns: 1fr 1fr; }
+.bq-plans.three { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.bq-plans.three .bq-grid { grid-template-columns: 1fr; }
+.bq-plan { border: 1px solid var(--bq-line); border-radius: 12px; padding: 14px; background: #fff; }
+.bq-plan header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+.bq-plan header strong { color: #fff; background: var(--bq-green); border-radius: 6px; padding: 2px 10px; font-size: 13px; }
+.bq-link { display: inline-flex; align-items: center; gap: 2px; border: none; background: none; color: #8a938d; cursor: pointer; font: inherit; font-size: 13px; }
+.bq-link mat-icon { font-size: 16px; width: 16px; height: 16px; }
+.bq-add { display: inline-flex; align-items: center; justify-content: center; gap: 4px; border: 1.5px dashed #b9c6bd; background: #fbfdfb; color: var(--bq-green-2);
+  border-radius: 12px; padding: 12px; cursor: pointer; font: inherit; font-weight: 700; font-size: 14px; }
+.bq-plans.two .bq-add { grid-column: 1 / -1; }
+
+.bq-extras { margin: 0 0 22px; padding: 12px 16px 14px; border: 1px dashed #cfd6d1; border-radius: 12px; background: #fff; }
+.bq-extras h4 { display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 8px; margin: 0 0 10px; color: var(--bq-green); font-size: 15px; font-weight: 800; }
+.bq-extras h4 span { color: #6b766f; font-size: 12px; font-weight: 400; }
+.bq-extra-transfer { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 18px; padding-bottom: 10px; border-bottom: 1px solid #eef1ef; }
+.bq-extra-transfer .bq-airport { flex-direction: row; align-items: center; gap: 8px; }
+.bq-extra-transfer .bq-airport select { width: auto; min-width: 230px; }
+.bq-extra-transfer small { flex-basis: 100%; color: #8a938d; font-size: 12px; }
+.bq-extra-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 8px 18px; padding-top: 10px; }
+.bq-extra-list b { margin-left: auto; padding-left: 8px; color: #4f5953; font-weight: 700; white-space: nowrap; }
+
+.bq-actions { margin-top: 20px; display: flex; flex-direction: column; align-items: flex-start; gap: 8px; }
+.bq-actions p { margin: 0; font-size: 13px; color: #a23a1f; }
+
+@media (max-width: 1100px) {
+  .bq-plans.three { grid-template-columns: 1fr; }
+  .bq-plans.three .bq-grid { grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); }
+}
+@media (max-width: 760px) {
+  .bq-programmes { grid-template-columns: 1fr; }
+  .bq-plans.two { grid-template-columns: 1fr; }
+  .bq-grid, .bq-plans.two .bq-grid, .bq-plans.three .bq-grid { grid-template-columns: 1fr 1fr; }
+  .bq-student label { width: 100%; }
+}
+@media (max-width: 420px) {
+  .bq-grid, .bq-plans.two .bq-grid, .bq-plans.three .bq-grid { grid-template-columns: 1fr; }
+  .bq-extra-transfer .bq-airport { flex-direction: column; align-items: stretch; width: 100%; }
+  .bq-extra-transfer .bq-airport select { min-width: 0; width: 100%; }
+}
+
+/* St Giles: two programme buttons on campuses without a junior centre; a wide select for long names. */
+.bq-programmes.two { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.bq-grid .bq-wide { grid-column: span 2; }
+.bq-plans.three .bq-grid .bq-wide { grid-column: auto; }
+@media (max-width: 760px) { .bq-programmes.two { grid-template-columns: 1fr; } }
+@media (max-width: 420px) { .bq-grid .bq-wide { grid-column: auto; } }

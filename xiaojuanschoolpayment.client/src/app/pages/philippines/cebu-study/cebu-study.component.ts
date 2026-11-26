@@ -107,7 +107,7 @@ export class CebuStudyComponent {
         'SMEAG Capital',
         'CPILS',
         'Philinter',
-        'Fella',
+        'Fella 第一校区',
         'CELLA Uni',
         'CG斯巴达校区',
       ],
@@ -175,7 +175,7 @@ export class CebuStudyComponent {
         'ICL',
         'IU Academy',
         'CG Banilad',
-        'English Fella',
+        'English Fella 第二校区',
         'ELSA',
         'SMEAG Encanto 海滨校区',
         'Cebu Blue Ocean',
@@ -235,9 +235,9 @@ export class CebuStudyComponent {
       badge: '选择灵活',
       tone: 'orange',
       image: '/assets/fella/campus-main.webp',
-      route: '/philippines-study/cebu/english-fella',
-      description: '双校区选择，课程与管理方式灵活',
-      tags: ['半斯巴达', '环境舒适'],
+      route: '/philippines-study/cebu/english-fella-first-campus',
+      description: '两个校区：第一校区斯巴达，第二校区自律型或半斯巴达',
+      tags: ['斯巴达', '半斯巴达', '保分班'],
     },
   ];
 
@@ -397,14 +397,14 @@ export class CebuStudyComponent {
   schoolSearchQuery = '';
 
   readonly directoryCategorySchools: Record<Exclude<DirectoryCategory, '全部学校'>, string[]> = {
-    雅思名校: ['CIA', 'EV Academy', 'SMEAG Capital', 'CPILS', 'Philinter', 'English Fella', 'CELLA Uni', 'CG斯巴达校区'],
-    斯巴达管理: ['EV Academy', 'CPI', 'SMEAG Capital', 'CPILS', 'CG斯巴达校区', 'Philinter', 'CELLA Uni', "B'Cebu", 'GLC', 'QQEnglish BFC'],
+    雅思名校: ['CIA', 'EV Academy', 'SMEAG Capital', 'CPILS', 'Philinter', 'English Fella 第一校区', 'CELLA Uni', 'CG斯巴达校区'],
+    斯巴达管理: ['EV Academy', 'CPI', 'SMEAG Capital', 'CPILS', 'CG斯巴达校区', 'Philinter', 'CELLA Uni', 'English Fella 第一校区', "B'Cebu", 'GLC', 'QQEnglish BFC'],
     高性价比: ['CPI', 'I.BREEZE', "B'Cebu", 'ICL', 'IU Academy', 'CG Banilad', 'CG斯巴达校区', 'ELSA', 'BTES', 'CELLA Uni', 'Winning 海滨校区', '3D Academy', 'CPILS'],
-    亲子友好: ['EV La Mer', 'CPI', 'CIEC', 'I.BREEZE', "B'Cebu", 'ICL', 'IU Academy', 'CG Banilad', 'English Fella', 'ELSA', 'SMEAG Encanto 海滨校区', 'Cebu Blue Ocean', 'Philinter', 'Genius English', 'EMO', 'HLA', 'QQEnglish BFC', 'BTES', 'CELLA Premium', 'Winning 海滨校区', 'IMS Banilad', 'GLC'],
+    亲子友好: ['EV La Mer', 'CPI', 'CIEC', 'I.BREEZE', "B'Cebu", 'ICL', 'IU Academy', 'CG Banilad', 'English Fella 第二校区', 'ELSA', 'SMEAG Encanto 海滨校区', 'Cebu Blue Ocean', 'Philinter', 'Genius English', 'EMO', 'HLA', 'QQEnglish BFC', 'BTES', 'CELLA Premium', 'Winning 海滨校区', 'IMS Banilad', 'GLC'],
   };
 
   readonly directoryPopularityOrder = [
-    'CIA', 'EV Academy', 'EV La Mer', 'CPI', 'CPILS', 'SMEAG Capital', 'SMEAG Encanto 海滨校区', 'English Fella', 'Philinter', "B'Cebu",
+    'CIA', 'EV Academy', 'EV La Mer', 'CPI', 'CPILS', 'SMEAG Capital', 'SMEAG Encanto 海滨校区', 'English Fella 第一校区', 'English Fella 第二校区', 'Philinter', "B'Cebu",
     'I.BREEZE', 'Cebu Blue Ocean', 'CELLA Uni', 'CG斯巴达校区', 'GLC', 'CELLA Premium', 'CG Banilad',
     'IU Academy', 'Winning 海滨校区', 'QQEnglish BFC', 'ELSA', '3D Academy', 'ICL', 'IMS Banilad',
     'TARGET', 'First English', 'CIEC', 'Genius English', 'STARGATE', 'BTES', 'CIJ Premium',
@@ -425,12 +425,12 @@ export class CebuStudyComponent {
     {
       name: 'CIEC', route: '/philippines-study/cebu/ciec', tag: '亲子青少年专门校',
       location: 'Talamban · Cebu City', summary: '专注低龄英语、国际学校衔接和青少年斯巴达管理。',
-      image: 'https://file.hstatic.net/200000456083/file/tham-quan-truong-anh-ngu-ciec-tai-cebu_88fb4e8e067c49e28c36a7212cee13f5_1024x1024.png', highlights: ['青少年学术英语', '青少年斯巴达', '青少年雅思 / 托福', '国际学校衔接', '家长英语 / 商务英语'],
+      image: '/assets/ciec/campus-entrance.webp', highlights: ['青少年学术英语', '青少年斯巴达', '青少年雅思 / 托福', '国际学校衔接', '家长英语 / 商务英语'],
     },
     {
       name: 'ELSA', route: '/philippines-study/cebu/elsa-international-language-school', tag: '自然度假校区',
-      location: 'Compostela · Cebu', summary: '大面积自然校园，成人英语、幼儿园、青少年和家长课程均有设置。',
-      image: 'https://www.fujiyama-international.com/archives/004/202505/414b2d68d20185f1c1ee5eb61c16eefeada06d16b761aeb08d33328ed32ae346.jpg', highlights: ['成人综合英语', '高尔夫英语', '青少年英语', '英语幼儿园', '家长英语'],
+      location: 'Compostela · Cebu', summary: '宿务北部的度假式校园，课程价含食宿；成人英语、青少年、本地学校随班、幼儿园和家长课程都有。',
+      image: '/assets/elsa/campus/aerial-01.webp', highlights: ['成人一对一英语', '本地学校随班', '青少年英语', '英语幼儿园', '家长陪读'],
     },
     {
       name: 'EMO', route: '/about-sida/contact', tag: '英语幼儿园·亲子型',
@@ -472,7 +472,7 @@ export class CebuStudyComponent {
     {
       name: 'GLC', route: '/philippines-study/cebu/global-language-cebu', tag: '大型综合校',
       location: 'Mabolo · Cebu City', summary: '课程选择丰富、设施完整，覆盖成人考试、商务和亲子路线。',
-      image: 'https://cdn.prod.website-files.com/658a2c561b10d6e75c0e7e74/658a2c561b10d6e75c0e820d_GLC_Campus001.jpg', highlights: ['强化口语', '雅思 / 托业', '商务英语', '亲子 / 青少年英语', '英语 + 实习'],
+      image: '/assets/glc/campus-main.webp', highlights: ['强化口语', '雅思 / 托业', '商务英语', '斯巴达副楼', '亲子 / 青少年英语'],
     },
     {
       name: 'QQEnglish BFC', route: '/philippines-study/cebu/qqenglish-beachfront-campus', tag: '海滨校区',
@@ -531,14 +531,14 @@ export class CebuStudyComponent {
     },
     {
       name: 'SMEAG Encanto 海滨校区', route: '/philippines-study/cebu/smeag-encanto', tag: '麦克坦海滨亲子校区',
-      location: 'Mactan · Lapu-Lapu', summary: '海滨度假型校区，亲子课程、Cambridge体系与家庭住宿是主要特色。',
-      image: '/assets/philippines/smeag-encanto-campus-official.webp', imagePosition: 'center 74%', highlights: ['亲子营', '剑桥综合英语', '综合英语1 / 2', '商务英语'],
-      linkLabel: '查看学校假期与资料',
+      location: 'Mactan · Lapu-Lapu', summary: '麦克坦岛海滨度假村校区：寒暑假全包亲子营，淡季开亲子和成人ESL课程。',
+      image: '/assets/philippines/smeag-encanto-campus-official.webp', imagePosition: 'center 74%', highlights: ['寒暑假亲子营', '淡季亲子', '成人ESL / ESL2', '海滨度假村校区'],
+      linkLabel: '查看课程与在线报价',
     },
     {
       name: 'Genius English', route: '/philippines-study/cebu/genius-english-academy', tag: '海边多国籍',
-      location: 'Maribago · Mactan', summary: '海边度假型学校，多国籍环境，管理强度和家庭课程选择灵活。',
-      image: 'https://cebu-navi.com/photo/school/24/c0db828e2ab95ccc3199fa2614e5fa9f.jpg', highlights: ['综合英语 / 强化口语', '雅思保证班', '托业 / 托福', '商务英语', '亲子课程'],
+      location: 'Maribago · Mactan', summary: '麦克坦岛海边学校，校内有海滩和泳池；本地老师一对一加外教小组课，可选常规、半斯巴达或斯巴达管理。',
+      image: '/assets/genius/campus/common-area-01.webp', highlights: ['一般英语 / 强化口语', '生存英语', '商务 / 托业 / 托福 / 雅思', '亲子课程', '常规 / 半斯巴达 / 斯巴达'],
     },
     {
       name: 'Howdy English', route: '/philippines-study/cebu/howdy-english-academy', tag: '日系酒店型',
@@ -589,7 +589,7 @@ export class CebuStudyComponent {
     {
       name: "B'Cebu", route: '/philippines-study/cebu/bcebu', tag: '麦克坦新校区',
       location: 'Mactan · Lapu-Lapu', summary: '课程从轻量综合英语到雅思斯巴达，并提供丰富亲子与房型选择。',
-      image: 'https://assets.1000-island.com/schools/bcebu-academy/bcebu-academy-campus-01.webp', highlights: ['快速 / 密集综合英语', '雅思斯巴达', 'B式斯巴达', '商务英语', '青少年 / 亲子英语', '熟龄轻量英语'],
+      image: '/assets/bcebu/campus-building.webp', highlights: ['快速 / 密集综合英语', '雅思斯巴达', 'B式斯巴达', '商务英语', '青少年 / 亲子英语', '熟龄轻量英语'],
     },
     {
       name: 'CPILS', route: '/philippines-study/cebu/cpils', tag: '老牌综合校',
@@ -597,14 +597,19 @@ export class CebuStudyComponent {
       image: '/assets/cpils/campus-main.webp', highlights: ['常规综合英语', '强化口语', '雅思', '托业 / 托福', '商务英语', '亲子课程'],
     },
     {
-      name: 'English Fella', route: '/philippines-study/cebu/english-fella', tag: '双校区管理可选',
-      location: 'Talamban · Cebu City', summary: '斯巴达与半斯巴达校区可选，适合考试备考和长期学习。',
-      image: '/assets/fella/campus-main.webp', highlights: ['强化口语', '雅思保证班', '托业 / 托福', '商务英语', '青少年 / 家长英语'],
+      name: 'English Fella 第一校区', route: '/philippines-study/cebu/english-fella-first-campus', tag: '斯巴达校区',
+      location: 'Talamban · Cebu City', summary: '斯巴达管理，每天4–6节一对一，托业和雅思保分班只在这里开设。',
+      image: '/assets/fella-1/campus/aerial.webp', highlights: ['综合英语', '口语强化', '雅思 / 托业保分班', '托福'],
+    },
+    {
+      name: 'English Fella 第二校区', route: '/philippines-study/cebu/english-fella-second-campus', tag: '自律型／半斯巴达',
+      location: 'Talamban · Cebu City', summary: '校园更大，可选自律型或半斯巴达，有商务英语、40岁以上会话课和亲子课程。',
+      image: '/assets/fella-2/campus/aerial.webp', highlights: ['综合英语', '雅思 / 托业 / 托福', '商务英语', '40岁以上会话', '亲子课程'],
     },
     {
       name: 'Philinter', route: '/philippines-study/cebu/philinter-academy', tag: '老牌综合校',
-      location: 'Mactan · Lapu-Lapu', summary: '老牌半斯巴达学校，口语、雅思、商务和家庭课程体系完整。',
-      image: '/assets/philinter/campus-main.webp', highlights: ['常规 / 强化综合英语', '强化口语', '雅思保证班', '托业', '商务 / 行业英语', '青少年英语（12岁起）'],
+      location: 'Mactan · Lapu-Lapu', summary: '2003年创办的老牌学校，斯巴达和半斯巴达课程都有，雅思、托业和口语课程完整。',
+      image: '/assets/philinter/campus-main.webp', highlights: ['强化 / 综合ESL', '强化口语', '雅思保分班', '托业保分班', '商务英语', '青少年英语（7岁起）'],
     },
   ];
 

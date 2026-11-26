@@ -1,0 +1,278 @@
+/* St Giles pages (overview and the five campus pages) on top of the shared CIA/CIEC school-detail layout.
+   Most blocks reuse the Burlington page styles (bt- classes); St Giles additions use sg- classes. */
+.st-giles-page .hero-copy h1 { font-size: clamp(34px, 3.6vw, 54px); line-height: 1.12; }
+
+/* Hero: one large photo and a column of three thumbnails; no headline price. */
+.st-giles-page .hero-media { grid-template-columns: minmax(0, 1fr) 210px; align-items: stretch; }
+.st-giles-page .hero-media .media-strip { grid-template-rows: repeat(3, minmax(0, 1fr)); }
+.st-giles-page .hero-media .media-strip figure { display: flex; flex-direction: column; }
+.st-giles-page .hero-media .media-strip img { flex: 1; min-height: 110px; height: auto; object-fit: cover; }
+
+.st-giles-page .bt-subheading { margin: 30px 0 12px; color: #102033; font-size: 18px; font-weight: 900; }
+.st-giles-page .bt-subheading.bt-first { margin-top: 6px; }
+.st-giles-page .bt-note { margin: 10px 0 0; color: #64748b; font-size: 13px; line-height: 1.7; }
+.st-giles-page .bt-reference { color: #8a6d3b; }
+.st-giles-page .bt-check-list { margin: 0; padding-left: 18px; color: #40506a; font-size: 14px; line-height: 1.75; }
+
+
+/* Programme zones: adult (green) and junior (blue), each opened by a text banner. */
+.st-giles-page .bt-zone { --zone: #0f4a2f; --zone-2: #1d6b45; --zone-soft: #eaf3ec; display: grid; grid-template-columns: minmax(0, 1fr); gap: 24px; }
+.st-giles-page .bt-zone--junior { --zone: #1d4f91; --zone-2: #2f6fb8; --zone-soft: #e8f0fb; }
+.st-giles-page .bt-zone-banner { padding: 26px 28px; border-radius: 12px; background: linear-gradient(135deg, var(--zone), var(--zone-2)); color: #fff; }
+.st-giles-page .bt-zone-pill, .st-giles-page .section-heading .bt-eyebrow { display: inline-flex; align-items: center; gap: 8px; margin: 0;
+  padding: 4px 12px 4px 4px; border-radius: 999px; font-size: 14px; font-weight: 800; line-height: 1.4; }
+.st-giles-page .bt-zone-pill { background: rgba(255, 255, 255, 0.16); color: #fff; }
+.st-giles-page .bt-zone-pill b, .st-giles-page .bt-eyebrow b { padding: 3px 12px; border-radius: 999px; font-weight: 900; }
+.st-giles-page .bt-zone-pill b { background: #fff; color: var(--zone); }
+.st-giles-page .section-heading .bt-eyebrow { background: var(--zone-soft); color: var(--zone); }
+.st-giles-page .bt-eyebrow b { background: var(--zone); color: #fff; }
+.st-giles-page .bt-zone-copy h2 { margin: 12px 0 8px; color: #fff; font-size: clamp(24px, 2.6vw, 34px); font-weight: 950; line-height: 1.2; }
+.st-giles-page .bt-zone-copy > p { max-width: 920px; margin: 0; color: rgba(255, 255, 255, 0.9); font-size: 15px; line-height: 1.8; }
+.st-giles-page .bt-zone-facts { display: flex; flex-wrap: wrap; gap: 6px 22px; margin: 14px 0 0; padding: 0; list-style: none; }
+.st-giles-page .bt-zone-facts li { display: flex; align-items: center; gap: 6px; font-size: 14px; font-weight: 700; }
+.st-giles-page .bt-zone-facts mat-icon { flex: none; color: #f7c873; font-size: 18px; width: 18px; height: 18px; }
+.st-giles-page .bt-zone-links { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
+.st-giles-page .bt-zone-links a { display: inline-flex; align-items: center; gap: 4px; padding: 7px 12px; border-radius: 8px; background: #fff;
+  color: var(--zone); font-size: 14px; font-weight: 800; text-decoration: none; }
+.st-giles-page .bt-zone-links mat-icon { font-size: 16px; width: 16px; height: 16px; }
+.st-giles-page .bt-zone-section { border-left: 5px solid var(--zone); }
+.st-giles-page .bt-zone-section .bt-subheading[id] { }
+.st-giles-page .bt-card-link { display: inline-flex; align-items: center; gap: 4px; margin-top: 12px; color: #0f4a2f; font-size: 14px; font-weight: 800; text-decoration: none; }
+.st-giles-page .bt-card-link mat-icon { font-size: 18px; width: 18px; height: 18px; }
+
+/* Highlights. */
+.st-giles-page .bt-highlight-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+.st-giles-page .bt-highlight-grid article { display: flex; gap: 12px; padding: 16px; border: 1px solid #dce8ee; border-radius: 10px; background: #fff; }
+.st-giles-page .bt-highlight-grid mat-icon { flex: none; width: 36px; height: 36px; padding: 6px; box-sizing: border-box; border-radius: 8px; background: #fff3e6; color: #ee7d1a; font-size: 24px; }
+.st-giles-page .bt-highlight-grid strong { display: block; color: #102033; font-size: 16px; }
+.st-giles-page .bt-highlight-grid p { margin: 6px 0 0; color: #40506a; font-size: 14px; line-height: 1.65; }
+
+/* Tables. */
+.st-giles-page .bt-table-wrap { overflow-x: auto; border: 1px solid #dce8ee; border-radius: 8px; background: #fff; -webkit-overflow-scrolling: touch; }
+.st-giles-page .bt-table { width: 100%; border-collapse: collapse; font-size: 14px; }
+.st-giles-page .bt-table.bt-wide { min-width: 680px; }
+.st-giles-page .bt-table th, .st-giles-page .bt-table td { padding: 12px 14px; border-top: 1px solid #e8eef3; text-align: left; vertical-align: top; color: #40506a; line-height: 1.5; }
+.st-giles-page .bt-table thead th { border-top: 0; background: #0f4a2f; color: #fff; font-weight: 800; }
+.st-giles-page .bt-table tbody th { color: #102033; font-weight: 800; background: #f8fbf9; white-space: nowrap; }
+.st-giles-page .bt-table .bt-strong { color: #102033; font-weight: 800; }
+.st-giles-page .bt-table .bt-rate { color: #ee7d1a; font-size: 16px; white-space: nowrap; }
+.st-giles-page .bt-table .bt-muted { color: #a3aaa5; }
+
+/* Adult course types. */
+.st-giles-page .bt-course-types { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; margin-bottom: 4px; }
+.st-giles-page .bt-course-types article { display: flex; flex-direction: column; padding: 14px; border: 1px solid #dce8ee; border-radius: 10px; background: #fff; }
+.st-giles-page .bt-course-types h3 { margin: 0 0 8px; color: #0f4a2f; font-size: 17px; font-weight: 900; }
+.st-giles-page .bt-course-types h3 small { display: block; color: #8a938d; font-size: 12px; font-weight: 600; }
+.st-giles-page .bt-course-types dl { margin: 0; }
+.st-giles-page .bt-course-types dl div { display: flex; gap: 8px; padding: 5px 0; border-top: 1px solid #eef2f5; font-size: 13px; }
+.st-giles-page .bt-course-types dt { flex: none; width: 34px; color: #8a938d; }
+.st-giles-page .bt-course-types dd { margin: 0; color: #40506a; }
+.st-giles-page .bt-course-types dd.bt-strong { color: #ee7d1a; font-weight: 900; }
+.st-giles-page .bt-course-types p { margin: 8px 0 0; color: #64748b; font-size: 13px; line-height: 1.6; }
+
+/* Accommodation and dining. */
+.st-giles-page .bt-room-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; margin-top: 14px; }
+.st-giles-page .bt-room-grid.bt-first-grid { margin-top: 0; }
+.st-giles-page .bt-room-card { padding: 16px; border: 1px solid #dce8ee; border-radius: 8px; background: #fff; }
+.st-giles-page .bt-room-card h3 { display: flex; align-items: center; gap: 6px; margin: 0 0 10px; color: #0f4a2f; font-size: 16px; }
+.st-giles-page .bt-room-card p { margin: 10px 0 0; color: #64748b; font-size: 13px; line-height: 1.7; }
+.st-giles-page .bt-price-list { margin: 0; padding: 0; list-style: none; }
+.st-giles-page .bt-price-list li { display: flex; justify-content: space-between; gap: 12px; padding: 8px 0; border-top: 1px solid #eef2f5; font-size: 14px; color: #40506a; }
+.st-giles-page .bt-price-list li:first-child { border-top: 0; }
+.st-giles-page .bt-price-list b { color: #102033; white-space: nowrap; }
+
+
+.st-giles-page .bt-fee-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+
+/* School facts. */
+.st-giles-page .bt-info-list { margin: 0; border: 1px solid #dce8ee; border-radius: 8px; background: #fff; }
+.st-giles-page .bt-info-list div { display: grid; grid-template-columns: 120px minmax(0, 1fr); gap: 12px; padding: 12px 16px; border-top: 1px solid #eef2f5; }
+.st-giles-page .bt-info-list div:first-child { border-top: 0; }
+.st-giles-page .bt-info-list dt { color: #0f4a2f; font-weight: 800; font-size: 14px; }
+.st-giles-page .bt-info-list dd { margin: 0; color: #40506a; font-size: 14px; line-height: 1.65; }
+
+/* Sida service steps. */
+.st-giles-page .bt-service-steps { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin: 0; padding: 0; list-style: none; }
+.st-giles-page .bt-service-steps li { display: flex; gap: 12px; padding: 16px; border: 1px solid #dce8ee; border-radius: 10px; background: #fff; }
+.st-giles-page .bt-step-no { flex: none; display: grid; place-items: center; width: 30px; height: 30px; border-radius: 50%; background: #0f4a2f; color: #fff; font-weight: 900; font-size: 14px; }
+.st-giles-page .bt-service-steps strong { display: flex; align-items: center; gap: 6px; color: #102033; font-size: 16px; }
+.st-giles-page .bt-service-steps strong mat-icon { color: #ee7d1a; font-size: 20px; width: 20px; height: 20px; }
+.st-giles-page .bt-service-steps p { margin: 6px 0 0; color: #40506a; font-size: 14px; line-height: 1.65; }
+
+/* Review and the three consultants. */
+.st-giles-page .bt-review { position: relative; padding: 26px 28px; border-radius: 12px; background: #0f2a20; color: #e7efe9; }
+.st-giles-page .bt-review span { display: inline-block; padding: 3px 12px; border: 1px solid rgba(255, 255, 255, 0.3); border-radius: 999px; font-size: 13px; font-weight: 800; color: #fff; }
+.st-giles-page .bt-review h2 { margin: 12px 0 10px; color: #fff; font-size: clamp(24px, 2.4vw, 32px); font-weight: 900; line-height: 1.25; }
+.st-giles-page .bt-review p { max-width: 920px; margin: 8px 0 0; font-size: 15px; line-height: 1.85; }
+.st-giles-page .bt-consultants-head { margin: 22px 0 12px; }
+.st-giles-page .bt-consultants-head h3 { margin: 0; color: #102033; font-size: 20px; font-weight: 900; }
+.st-giles-page .bt-consultants-head p { margin: 4px 0 0; color: #64748b; font-size: 14px; }
+.st-giles-page .bt-consultants { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+.st-giles-page .bt-consultant { display: flex; flex-direction: column; padding: 18px; border: 1px solid #dce8ee; border-radius: 12px; background: #fff; box-shadow: 0 8px 20px rgba(16, 32, 51, 0.05); }
+.st-giles-page .bt-consultant-top { display: flex; align-items: center; gap: 12px; }
+.st-giles-page .bt-avatar { flex: none; width: 64px; height: 64px; overflow: hidden; border-radius: 50%; border: 2px solid #eaf3ec; background: #f3f5f4; }
+.st-giles-page .bt-avatar img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.st-giles-page .bt-consultant-top strong { display: block; color: #0f4a2f; font-size: 20px; font-weight: 900; }
+.st-giles-page .bt-consultant-top span { display: block; margin-top: 2px; color: #64748b; font-size: 13px; font-weight: 700; }
+.st-giles-page .bt-consultant > p { flex: 1; margin: 12px 0 0; color: #40506a; font-size: 14px; line-height: 1.65; }
+.st-giles-page .bt-phone { display: inline-flex; align-items: center; gap: 6px; margin-top: 12px; color: #102033; font-size: 17px; font-weight: 900; text-decoration: none; }
+.st-giles-page .bt-phone mat-icon { color: #ee7d1a; font-size: 20px; width: 20px; height: 20px; }
+.st-giles-page .bt-qr { margin: 14px 0 0; padding: 12px; border: 1px solid #eef2f5; border-radius: 10px; background: #f8fbf9; text-align: center; }
+.st-giles-page .bt-qr img { display: block; width: 100%; max-width: 168px; aspect-ratio: 1; margin: 0 auto; object-fit: contain; background: #fff; border-radius: 6px; }
+.st-giles-page .bt-qr figcaption { margin-top: 8px; color: #64748b; font-size: 12px; }
+
+
+/* Quick-jump bar: eight anchors in one row (four per row on tablets; scrolls on phones). */
+.st-giles-page .mobile-anchor-nav { grid-template-columns: repeat(9, minmax(0, 1fr)); padding: 0 8px; }
+.st-giles-page .mobile-anchor-nav a { gap: 6px; white-space: nowrap; }
+/* Jump targets stop below the sticky site header and this bar instead of under them. */
+.st-giles-page [id] { scroll-margin-top: 150px; }
+
+/* The side card no longer shows a price. */
+.st-giles-page .side-card p { margin: 6px 0 12px; }
+
+/* St Giles additions --------------------------------------------------------------------- */
+
+/* Links between the five campus pages and the overview page. */
+.st-giles-page .sg-campus-switch { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin: 0 0 18px; padding: 12px 14px;
+  border: 1px solid #dce8ee; border-radius: 10px; background: #fff; }
+.st-giles-page .sg-campus-switch span { margin-right: 4px; color: #64748b; font-size: 13px; font-weight: 800; }
+.st-giles-page .sg-campus-switch a { padding: 6px 12px; border: 1px solid #dce8ee; border-radius: 999px; color: #0f4a2f; font-size: 14px;
+  font-weight: 700; text-decoration: none; background: #f8fbf9; }
+.st-giles-page .sg-campus-switch a.active { border-color: #0f4a2f; background: #0f4a2f; color: #fff; }
+.st-giles-page .sg-campus-switch a:last-child { margin-left: auto; border-color: #ee7d1a; background: #fff7ef; color: #b45c0f; }
+
+/* Campus facts. */
+.st-giles-page .sg-facts { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; margin: 0; }
+.st-giles-page .sg-facts div { padding: 12px 14px; border: 1px solid #dce8ee; border-radius: 8px; background: #fff; }
+.st-giles-page .sg-facts dt { color: #64748b; font-size: 13px; }
+.st-giles-page .sg-facts dd { margin: 4px 0 0; color: #102033; font-size: 17px; font-weight: 900; }
+
+/* Special courses: name and price on one line, dates below. */
+.st-giles-page .sg-special { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+.st-giles-page .sg-special article { padding: 12px 14px; border: 1px solid #dce8ee; border-radius: 8px; background: #fff; }
+.st-giles-page .sg-special div { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 4px 12px; align-items: baseline; }
+.st-giles-page .sg-special strong { color: #102033; font-size: 15px; }
+.st-giles-page .sg-special b { color: #ee7d1a; font-size: 14px; }
+.st-giles-page .sg-special p { margin: 6px 0 0; color: #40506a; font-size: 13px; line-height: 1.65; }
+.st-giles-page .bt-price-list b.sg-price { color: #ee7d1a; }
+.st-giles-page .bt-room-card .bt-price-list b { text-align: right; }
+.st-giles-page .sg-rooms { margin-top: 8px; padding-top: 4px; border-top: 1px solid #dce8ee; }
+
+/* Junior summer centres and family courses. */
+.st-giles-page .sg-includes { display: flex; flex-wrap: wrap; gap: 6px 18px; margin: 0 0 14px; padding: 0; list-style: none; }
+.st-giles-page .sg-includes li { display: flex; align-items: center; gap: 6px; color: #40506a; font-size: 14px; }
+.st-giles-page .sg-includes mat-icon { color: #1d4f91; font-size: 18px; width: 18px; height: 18px; }
+.st-giles-page .sg-junior-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+.st-giles-page .sg-junior { display: flex; flex-direction: column; padding: 16px; border: 1px solid #dce8ee; border-top: 4px solid #1d4f91; border-radius: 10px; background: #fff; }
+.st-giles-page .sg-junior h3 { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin: 0 0 10px; color: #1d4f91; font-size: 18px; font-weight: 900; }
+.st-giles-page .sg-junior h3 em { padding: 2px 8px; border-radius: 999px; background: #ee7d1a; color: #fff; font-size: 12px; font-style: normal; }
+.st-giles-page .sg-mini-facts { margin: 0; }
+.st-giles-page .sg-mini-facts div { display: grid; grid-template-columns: 64px minmax(0, 1fr); gap: 8px; padding: 6px 0; border-top: 1px solid #eef2f5; font-size: 14px; }
+.st-giles-page .sg-mini-facts div:first-child { border-top: 0; }
+.st-giles-page .sg-mini-facts dt { color: #64748b; }
+.st-giles-page .sg-mini-facts dd { margin: 0; color: #40506a; line-height: 1.6; }
+.st-giles-page .sg-junior-prices { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 14px; margin: 10px 0 0; }
+.st-giles-page .sg-junior-prices strong { color: #ee7d1a; font-size: 17px; font-weight: 900; }
+.st-giles-page .sg-junior-prices span { color: #40506a; font-size: 14px; font-weight: 700; }
+.st-giles-page .sg-junior details { margin-top: 10px; border-top: 1px dashed #dce8ee; padding-top: 8px; }
+.st-giles-page .sg-junior summary { cursor: pointer; color: #1d4f91; font-size: 14px; font-weight: 800; }
+.st-giles-page .sg-junior details p { margin: 6px 0 0; color: #40506a; font-size: 13px; line-height: 1.65; }
+.st-giles-page .sg-junior .bt-card-link { color: #1d4f91; margin-top: auto; padding-top: 10px; }
+/* A campus with one summer centre: the card spans the row and its facts sit in two columns. */
+.st-giles-page .sg-junior-grid.sg-single { grid-template-columns: minmax(0, 1fr); }
+.st-giles-page .sg-single .sg-mini-facts { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 28px; }
+.st-giles-page .sg-single .sg-mini-facts div:nth-child(2) { border-top: 0; }
+.st-giles-page .sg-family { display: grid; grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr); gap: 16px; align-items: start; }
+.st-giles-page .sg-family > * { padding: 12px 16px; border: 1px solid #dce8ee; border-radius: 8px; background: #fff; }
+.st-giles-page .sg-family .bt-price-list b { color: #ee7d1a; }
+.st-giles-page .bt-zone--junior .bt-table thead th { background: #1d4f91; }
+.st-giles-page .bt-zone--junior .bt-table tbody th { background: #f5f8fd; }
+.st-giles-page .bt-table th a { color: inherit; }
+.st-giles-page .bt-note a { color: #1d4f91; font-weight: 800; }
+
+/* Overview page: campus cards, comparison table and junior photos. */
+.st-giles-page .sg-campus-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+.st-giles-page .sg-campus-card { display: flex; flex-direction: column; overflow: hidden; border: 1px solid #dce8ee; border-radius: 12px; background: #fff;
+  color: inherit; text-decoration: none; transition: box-shadow .2s, transform .2s; }
+.st-giles-page .sg-campus-card:hover { box-shadow: 0 10px 24px rgba(16, 32, 51, 0.1); transform: translateY(-2px); }
+.st-giles-page .sg-campus-card img { display: block; width: 100%; aspect-ratio: 16 / 9; object-fit: cover; }
+.st-giles-page .sg-campus-card > div { display: flex; flex: 1; flex-direction: column; padding: 14px 16px 16px; }
+.st-giles-page .sg-campus-card h3 { margin: 0; color: #0f4a2f; font-size: 20px; font-weight: 900; }
+.st-giles-page .sg-campus-card h3 small { margin-left: 8px; color: #8a938d; font-size: 13px; font-weight: 600; }
+.st-giles-page .sg-tags { display: flex; flex-wrap: wrap; gap: 6px; margin: 8px 0 0; padding: 0; list-style: none; }
+.st-giles-page .sg-tags li { padding: 2px 8px; border-radius: 999px; background: #eaf3ec; color: #0f4a2f; font-size: 12px; font-weight: 800; }
+.st-giles-page .sg-campus-card p { flex: 1; margin: 10px 0 0; color: #40506a; font-size: 14px; line-height: 1.65; }
+.st-giles-page .sg-campus-card strong { margin-top: 10px; color: #ee7d1a; font-size: 15px; }
+.st-giles-page .sg-more { display: inline-flex; align-items: center; gap: 4px; margin-top: 10px; color: #0f4a2f; font-size: 14px; font-weight: 800; }
+.st-giles-page .sg-more mat-icon { font-size: 18px; width: 18px; height: 18px; }
+.st-giles-page .sg-compare { min-width: 860px; }
+.st-giles-page .sg-photo-row { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 10px; margin-top: 16px; }
+.st-giles-page .sg-photo-row figure { margin: 0; overflow: hidden; border: 1px solid #dce8ee; border-radius: 8px; background: #fff; }
+.st-giles-page .sg-photo-row img { display: block; width: 100%; aspect-ratio: 4 / 3; object-fit: cover; }
+.st-giles-page .sg-photo-row figcaption { padding: 6px 8px; color: #40506a; font-size: 12px; }
+
+/* Videos: two landscape players side by side; nothing downloads until play is pressed. */
+.st-giles-page .sg-videos { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+.st-giles-page .sg-videos figure { margin: 0; overflow: hidden; border: 1px solid #dce8ee; border-radius: 8px; background: #fff; }
+.st-giles-page .sg-videos video { display: block; width: 100%; aspect-ratio: 16 / 9; background: #0f1d16; }
+.st-giles-page .sg-videos figcaption { padding: 10px 12px; }
+.st-giles-page .sg-videos strong { display: flex; justify-content: space-between; gap: 8px; color: #102033; font-size: 15px; }
+.st-giles-page .sg-videos em { font-style: normal; color: #64748b; font-weight: 400; font-size: 12px; }
+.st-giles-page .sg-videos span { display: block; margin-top: 4px; color: #526176; font-size: 13px; line-height: 1.5; }
+.st-giles-page .sg-video-tag { display: inline-block; margin-bottom: 6px; padding: 2px 8px; border-radius: 999px; background: #eef2f5; color: #40506a;
+  font-size: 12px; font-style: normal; font-weight: 800; }
+.st-giles-page .sg-video-tag.adult { background: #0f4a2f; color: #fff; }
+.st-giles-page .sg-video-tag.junior { background: #1d4f91; color: #fff; }
+
+@media (max-width: 1260px) {
+  .st-giles-page .bt-course-types { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .st-giles-page .sg-photo-row { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+@media (max-width: 980px) {
+  .st-giles-page .sg-junior-grid, .st-giles-page .sg-family, .st-giles-page .sg-special { grid-template-columns: 1fr; }
+  .st-giles-page .sg-facts { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 640px) {
+  .st-giles-page .sg-campus-grid, .st-giles-page .sg-videos, .st-giles-page .sg-single .sg-mini-facts { grid-template-columns: 1fr; }
+  .st-giles-page .sg-single .sg-mini-facts div:nth-child(2) { border-top: 1px solid #eef2f5; }
+  .st-giles-page .sg-campus-switch a:last-child { margin-left: 0; }
+  .st-giles-page .sg-photo-row { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .st-giles-page .sg-facts dd { font-size: 15px; }
+}
+@media (max-width: 1040px) {
+  /* One scrolling row instead of two wrapped rows, so the sticky bar stays short. */
+  .st-giles-page .mobile-anchor-nav { display: flex; overflow-x: auto; scrollbar-width: none; }
+  .st-giles-page .mobile-anchor-nav::-webkit-scrollbar { display: none; }
+  .st-giles-page .mobile-anchor-nav a { flex: 1 0 auto; padding: 0 12px; }
+  .st-giles-page .hero-media { grid-template-columns: 1fr; }
+  .st-giles-page .hero-media .media-strip { grid-template-columns: repeat(3, minmax(0, 1fr)); grid-template-rows: none; }
+  .st-giles-page .hero-media .media-strip img { flex: none; height: 120px; }
+}
+@media (max-width: 980px) {
+  .st-giles-page .bt-consultants { grid-template-columns: 1fr; }
+  .st-giles-page .bt-consultant { display: grid; grid-template-columns: minmax(0, 1fr) 150px; column-gap: 16px; }
+  .st-giles-page .bt-consultant > * { grid-column: 1; }
+  .st-giles-page .bt-consultant .bt-qr { grid-column: 2; grid-row: 1 / span 3; margin: 0; align-self: start; }
+  .st-giles-page .bt-highlight-grid, .st-giles-page .bt-service-steps { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .st-giles-page .bt-fee-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 640px) {
+  .st-giles-page .mobile-anchor-nav { padding: 10px 14px; }
+  .st-giles-page .mobile-anchor-nav a { flex: 0 0 auto; padding: 0 14px; }
+  /* On phones only the site header stays on screen. */
+  .st-giles-page [id] { scroll-margin-top: 80px; }
+  .st-giles-page .hero-media .media-strip img { height: 86px; }
+  .st-giles-page .bt-zone-banner { padding: 20px 16px; }
+  .st-giles-page .bt-zone-section { border-left-width: 4px; }
+  .st-giles-page .section-heading .bt-eyebrow { flex-wrap: wrap; border-radius: 14px; }
+  .st-giles-page .bt-highlight-grid, .st-giles-page .bt-service-steps, .st-giles-page .bt-course-types,
+  .st-giles-page .bt-room-grid,
+  .st-giles-page .bt-fee-grid { grid-template-columns: 1fr; }
+  .st-giles-page .bt-consultant { grid-template-columns: minmax(0, 1fr) 112px; column-gap: 12px; padding: 14px; }
+  .st-giles-page .bt-qr { padding: 8px; }
+  .st-giles-page .bt-info-list div { grid-template-columns: 1fr; gap: 2px; }
+  .st-giles-page .bt-review { padding: 20px 18px; }
+  .st-giles-page .bt-table th, .st-giles-page .bt-table td { padding: 10px; font-size: 13px; }
+  .st-giles-page .bt-table tbody th { white-space: normal; }
+}
