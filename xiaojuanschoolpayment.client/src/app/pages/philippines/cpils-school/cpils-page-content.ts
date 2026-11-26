@@ -469,6 +469,9 @@ export const cpilsVideoPoster = (video: CpilsVideo) => `/assets/cpils/videos/pos
 /**
  * The school film plus the clips the user supplied on 2026-11-24 (CPILS 视频号). Five of them were landscape footage
  * inside a vertical frame with caption bars and are cropped to the footage; the vertical ones keep their captions.
+ * Five more come from CPILS's own YouTube channels (2026-11-27): two student interviews, the 25th-anniversary party,
+ * the Sinulog dance and a regular triple room. Shots with the British Council / IELTS / TOEIC sign are frozen over or
+ * pixelated, and the party film's caption calling CPILS Cebu's first English academy is cut.
  */
 export const CPILS_VIDEOS: CpilsVideo[] = [
   {
@@ -481,6 +484,7 @@ export const CPILS_VIDEOS: CpilsVideo[] = [
   { name: 'cpils-pool-gym', title: '泳池与健身房', duration: '0:21', orientation: 'landscape', label: 'POOL & GYM', description: '校内泳池，以及有跑步机、动感单车和力量器械的健身房。' },
   { name: 'cpils-study-lounge', title: '自习室与休息区', duration: '0:12', orientation: 'portrait', description: '带隔板的自习座位，以及摆着竹木桌椅的休息区。' },
   { name: 'cpils-twin-room', title: '双人间', duration: '0:23', orientation: 'landscape', label: 'TWIN ROOM', description: '普通双人间：两张单人床、书桌、窗户和独立卫浴。' },
+  { name: 'cpils-triple-room', title: '三人间', duration: '0:31', orientation: 'portrait', description: '普通三人间：三张单人床、书桌、衣柜和独立卫浴；这间是瓷砖地面，不同楼层布置可能不同。' },
   { name: 'cpils-quad-room', title: '四人间', duration: '0:17', orientation: 'portrait', description: '普通四人间：单人床、书桌、窗户和独立卫浴。' },
   { name: 'cpils-premium-twin', title: '高级双人间', duration: '0:26', orientation: 'portrait', description: '高级双人间：木地板、壁挂电视、衣柜、书桌和独立卫浴。' },
   { name: 'cpils-premium-triple', title: '高级三人间', duration: '0:12', orientation: 'portrait', description: '高级三人间：木地板、壁挂电视、衣柜和大窗户。' },
@@ -489,6 +493,19 @@ export const CPILS_VIDEOS: CpilsVideo[] = [
   { name: 'cpils-ielts-resource-centre', title: '雅思资源中心', duration: '0:09', orientation: 'portrait', description: '雅思备考资料室，有沙发座位和讨论桌。' },
   { name: 'cpils-graduation', title: '毕业典礼演讲', duration: '0:11', orientation: 'landscape', label: 'GRADUATION', description: '结业学员在毕业典礼上发言。' },
   { name: 'cpils-dining', title: '餐厅自助餐', duration: '0:23', orientation: 'portrait', description: '学生餐厅的自助餐：米饭、炒面、蔬菜、肉菜和汤。' },
+  {
+    name: 'cpils-anniversary-party', title: '25周年校庆派对', duration: '1:43', orientation: 'landscape', label: 'CPILS 25TH',
+    description: '2026年学校25周年活动：舞蹈比赛、Mr & Ms CPILS评选和夜晚的泳池泡沫派对。',
+  },
+  { name: 'cpils-sinulog-dance', title: '圣婴节舞蹈', duration: '1:16', orientation: 'portrait', description: '2026年1月宿务圣婴节（Sinulog），学校的Green Strikers队在校园里跳节日舞。' },
+  {
+    name: 'cpils-student-henry-ielts', title: '越南学员 Henry：12周雅思', duration: '1:34', orientation: 'landscape', label: 'STUDENT INTERVIEW',
+    description: '越南学员Henry读了12周雅思：每天的一对一口语练习、老师的纠音反馈，还有课后健身、游泳和周末出游（英文字幕）。',
+  },
+  {
+    name: 'cpils-student-andy-toeic', title: '中国台湾学员 Andy：ESL和托业怎么选', duration: '0:48', orientation: 'landscape', label: 'STUDENT INTERVIEW',
+    description: '中国台湾学员Andy读了11周，先上ESL再转托业，讲两种课程的区别和怎么选（英文字幕）。',
+  },
 ];
 
 const cpilsVideo = (name: string) => CPILS_VIDEOS.find(video => video.name === name) as CpilsVideo;
@@ -526,9 +543,10 @@ export const CPILS_LIFE_VIDEOS: CiaShortVideo[] = CPILS_VIDEOS.filter(video => v
 /** Videos of the hero album (compact layout), one chip per topic; the school film opens it. */
 export const CPILS_VIDEO_TABS: PhVideoTab[] = [
   { label: '校园视频', icon: 'videocam', items: ['cpils-intro-2027', 'cpils-campus-tour', 'cpils-campus', 'cpils-pool-gym', 'cpils-study-lounge'].map(albumVideo) },
-  { label: '宿舍视频', icon: 'videocam', items: ['cpils-twin-room', 'cpils-quad-room', 'cpils-premium-twin', 'cpils-premium-triple'].map(albumVideo) },
+  { label: '宿舍视频', icon: 'videocam', items: ['cpils-twin-room', 'cpils-triple-room', 'cpils-quad-room', 'cpils-premium-twin', 'cpils-premium-triple'].map(albumVideo) },
   { label: '课堂视频', icon: 'videocam', items: ['cpils-classes', 'cpils-ielts-test-centre', 'cpils-ielts-resource-centre', 'cpils-graduation'].map(albumVideo) },
-  { label: '餐厅视频', icon: 'videocam', items: ['cpils-dining'].map(albumVideo) },
+  { label: '生活视频', icon: 'videocam', items: ['cpils-dining', 'cpils-anniversary-party', 'cpils-sinulog-dance'].map(albumVideo) },
+  { label: '访谈视频', icon: 'videocam', items: ['cpils-student-henry-ielts', 'cpils-student-andy-toeic'].map(albumVideo) },
 ];
 
 /**
@@ -537,6 +555,7 @@ export const CPILS_VIDEO_TABS: PhVideoTab[] = [
  */
 export const CPILS_ROOM_VIDEOS: Record<string, PhVideoItem> = {
   twin: albumVideo('cpils-twin-room'),
+  triple: albumVideo('cpils-triple-room'),
   quad: albumVideo('cpils-quad-room'),
 };
 

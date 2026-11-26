@@ -66,6 +66,13 @@ The user supplied two CPILS packs (`2026 年优惠活动.zip`, `2027价格调整
   - student score posters;
   - trailing black frames.
 - The 11 older WebP files in `assets/cpils/` are untouched because the Cebu directory uses them.
+- Official YouTube clips (2026-11-27, 720p H.264 with posters, 59 MB in all), each checked frame by frame:
+  - `cpils-student-henry-ielts.mp4` (YouTube `3JsozRNyseg`, 1:34): starts after the logo intro; the 2-second shot of the British Council / IELTS / TOEIC sign over the entrance is covered by freezing the previous classroom frame, with the voice unbroken.
+  - `cpils-student-andy-toeic.mp4` (`zesQN7-zAUg`, 0:48): uncut. He says he is from Taiwan; the page calls him 中国台湾学员.
+  - `cpils-anniversary-party.mp4` (`fIXB4NDESkE`, 1:43): the 6.7 seconds whose captions call CPILS "the pioneer and very first English language academy in Cebu" are cut. The small test-centre sign on the stage wall stays, as in the 视频号 resource-centre clip.
+  - `cpils-sinulog-dance.mp4` (`oa0BQyrC-SI`, 1:16): the sign over the door is pixelated for its 3-second shot.
+  - `cpils-triple-room.mp4` (`SsdPVbJaRn8`, from CPILS's Vietnamese channel, 0:31): uncut, no captions. It shows a tiled floor, unlike the triple-room photos.
+- Left out: the other Vietnamese interviews (Vietnamese captions only; one shows the Taiwan authorities' flag as a country and says "best choice"), shorts covered in stickers, a hotel-branded seafood boat trip and Taiwan-market videos with Traditional-Chinese captions.
 - Taiwan wording rule (2026-11-21): the student-source lines say 中国大陆 and 中国台湾 and 国家和地区. The lobby photo `gallery/campus-lobby.webp` shows a world map made of flags, so the Taiwan island on it is covered with a small gray mosaic. The same map appears briefly in the intro video, but there it is only one or two pixels and cannot be read.
 
 ## Verification
