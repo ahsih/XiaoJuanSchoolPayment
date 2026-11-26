@@ -28,7 +28,9 @@ export const LA_MER_QUOTE_IMAGE_HERO = '/assets/la-mer/campus/pool-sunset.webp';
 export const LA_MER_FAMILY_PREFIX = 'family-';
 export const LA_MER_FAMILY_ROOM_ID = 'family-room';
 const FAMILY_ROOM: QuotePlanOption = { id: LA_MER_FAMILY_ROOM_ID, name: '家庭房（含在亲子套餐内）', details: '亲子套餐整包价已含住宿和三餐' };
-const FAMILY_DETAILS = '孩子每天5节一对一；监护人每天3节一对一＋2节团体课；整包价含住宿、三餐和列明的学杂费';
+const FAMILY_DETAILS = '孩子每天5节一对一＋2节选修课；监护人每天3节一对一＋2节团体课；整包价含住宿、三餐和列明的学杂费，不打折';
+/** One shared empty list, so the course option cache is not rebuilt on every check when packages are off. */
+const NO_FAMILY_OPTIONS: QuotePlanOption[] = [];
 const DEFAULT_COURSE = 'esl-classic';
 const DEFAULT_ROOM = 'double';
 const DAY = 86400000;
@@ -64,7 +66,7 @@ export function laMerPriceMultiplier(weeks: number, ratios: Record<string, numbe
 /** The family packages as course choices, one per room and family size; cached per policy object. */
 const familyOptionCache = new WeakMap<LaMerPolicy, QuotePlanOption[]>();
 function familyOptions(policy: LaMerPolicy | undefined): QuotePlanOption[] {
-  if (!policy) return [];
+  if (!policy) return NO_FAMILY_OPTIONS;
   let options = familyOptionCache.get(policy);
   if (!options) {
     const seen = new Map<string, LaMerFamilyPrice>();
@@ -115,7 +117,7 @@ export class LaMerPageStudent implements PhPageStudent {
 
   private courseOptions(): QuotePlanOption[] {
     const courses = this.pricing.courseFees ?? [];
-    const families = this.allowFamily ? familyOptions(this.pricing.laMerPolicy) : [];
+    const families = this.allowFamily ? familyOptions(this.pricing.laMerPolicy) : NO_FAMILY_OPTIONS;
     if (this.courseSource !== courses || this.familySource !== families) {
       this.courseSource = courses;
       this.familySource = families;
@@ -218,8 +220,7 @@ export class LaMerPageStudent implements PhPageStudent {
     const days = Array.from({ length: weeks * 7 }, (_, index) => addDays(start, index));
     if (days.some(day => this.versionAt(day)?.id !== version.id)) return '这个方案跨越两个亲子价格期，请调整日期或联系顾问核价。';
     if (days.some(day => version.exclusions.some(range => day >= range.start && day <= range.end))) return '学校在这段日期不开放亲子套餐，请调整入学日期。';
-    const season = this.seasonAt(start, version);
-    if (days.some(day => this.seasonAt(day, version) !== season)) return '这个方案跨淡旺季，学校没有混合价格，请调整日期或联系顾问核价。';
+    // The season is the arrival date's (family sheet: 旺季以实际入学时期为准), so a stay across seasons is fine.
     const price = this.familyPackage?.prices[String(weeks)];
     if (!(typeof price === 'number' && price > 0)) return '这个日期没有该房型和人数的亲子套餐，请换房型或联系顾问。';
     return '';
@@ -264,22 +265,25 @@ export class LaMerPageStudent implements PhPageStudent {
   }
   get seasonalSurcharge(): number { return round(this.peakWeeks * this.pricing.seasonalFeePerWeek); }
 
-  /** The school offer: per course week (per family member), when the first class Monday falls in its window. */
+  /**
+   * The school offer: per course week, when the first class Monday falls in its window. Family packages take no
+   * discount at all (colleague correction 2026-11-25: the package price is final, with no peak surcharge either).
+   */
   get schoolDiscount(): number {
+    if (this.isFamily) return 0;
     const rule = enabledRule(this.pricing, 'lamer-course-start');
     const plan = this.quotePlan;
     const monday = addDays(plan.courses[0]?.startDate ?? '', 1);
     const weeks = plan.courseWeeks;
     if (!rule || !monday || (rule.arrivalStart && monday < rule.arrivalStart) || (rule.arrivalEnd && monday > rule.arrivalEnd)
       || weeks < (rule.minimumCourseWeeks || 0)) return 0;
-    const people = this.isFamily ? this.familyPeople : 1;
-    return round(Math.min(this.tuition + this.accommodation, people * weeks * rule.discountValue));
+    return round(Math.min(this.tuition + this.accommodation, weeks * rule.discountValue));
   }
 
-  /** 思达启航 rate on the course and room (or the whole package) after the school offer. */
+  /** 思达启航 rate on the course and room after the school offer; never on a family package. */
   get sidaDiscount(): number {
     const rule = enabledRule(this.pricing, 'lamer-after-school');
-    if (!rule) return 0;
+    if (!rule || this.isFamily) return 0;
     return round((this.tuition + this.accommodation - this.schoolDiscount) * rule.discountValue / 100);
   }
 
@@ -299,7 +303,6 @@ export class LaMerPageStudent implements PhPageStudent {
     const school = enabledRule(this.pricing, 'lamer-course-start');
     const sida = enabledRule(this.pricing, 'lamer-after-school');
     const plan = this.quotePlan;
-    const people = this.isFamily ? this.familyPeople : 1;
     const ranges = this.pricing.peakSeasonRanges.filter(range =>
       range.enabled !== false && plan.overlapWeeks(range.start, range.end, [...plan.courses, ...plan.rooms]) > 0);
     return [
@@ -309,12 +312,12 @@ export class LaMerPageStudent implements PhPageStudent {
       }] : []),
       ...(school && this.schoolDiscount ? [{
         icon: '惠', label: school.name, value: -this.schoolDiscount,
-        note: `${slash(addDays(plan.courses[0].startDate, 1))}开课，每${people > 1 ? '位成员' : '人'}每周${school.discountValue}美元${people > 1 ? ` × ${people}人` : ''} × ${plan.courseWeeks}周`,
+        note: `${slash(addDays(plan.courses[0].startDate, 1))}开课，每人每周${school.discountValue}美元 × ${plan.courseWeeks}周`,
         promotionKey: school.id,
       }] : []),
       ...(sida && this.sidaDiscount ? [{
         icon: '惠', label: sida.name, value: -this.sidaDiscount,
-        note: this.isFamily ? `亲子套餐整包价在学校优惠后再打${(100 - sida.discountValue) / 10}折` : `课程和住宿在学校优惠后再打${(100 - sida.discountValue) / 10}折；注册费和旺季附加费不打折`,
+        note: `课程和住宿在学校优惠后再打${(100 - sida.discountValue) / 10}折；注册费和旺季附加费不打折`,
         promotionKey: sida.id,
       }] : []),
     ];

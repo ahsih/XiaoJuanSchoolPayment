@@ -216,6 +216,7 @@ Keep `/admin` under `RoleGuard`, use the narrowest server role set required by t
 
 ## Conventions and safe-edit rules
 
+- A `<select>` whose options come from a method or getter that builds new objects (for example `optionGroups()` in `school-quote-plan.component`) needs `trackBy`, or Angular rebuilds every `<option>` on the next check and desktop browsers, including PC WeChat, close the open list at once (colleague report 2026-11-25; phones were unaffected).
 - Quote-image export and layout conventions: `docs/agents/quote-images.md`.
 - SEO tags, JSON-LD, `llms.txt` and build-time prerendering: `docs/agents/seo-and-brand.md`. Pages listed in `prerender-routes.txt` / `prerender-school-routes.txt` must not touch `window`, `localStorage`, `navigator` or `document` during their first render. Never remove the `baidu-site-verification` meta tag.
 - The home page footer shows the site's ICP filing number `粤ICP备2026144654号` linked to `https://beian.miit.gov.cn/`; filed mainland-China sites must display it at the bottom of the home page, so keep it there. Home page styles are loaded from `public/assets/home-page.css` (linked at the top of `home.component.html`); `home.component.css` and `home.component.compact.css` are not referenced by the component, so edits there have no effect.

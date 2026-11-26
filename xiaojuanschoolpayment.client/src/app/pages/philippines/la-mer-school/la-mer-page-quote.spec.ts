@@ -1,5 +1,7 @@
 // La Mer quote on the shared Philippine school page: the same amounts the earlier La Mer calculator produced
 // (ordinary courses, the Monday-start school offer, the Sida rate, local fees and the exact family packages).
+import { TestBed } from '@angular/core/testing';
+import { SchoolQuotePlanComponent } from '../../../components/school-quote-plan.component';
 import type { CiaContentConfig } from '../cia-school/cia-content-config';
 import { createCiaQuotePricing } from '../cia-school/cia-quote-engine';
 import { cloneLaMerContentConfig, createDefaultLaMerContentConfig, isLaMerSchool, LA_MER_POLICY_VERSION } from './la-mer-content-config';
@@ -106,16 +108,18 @@ describe('La Mer page quote', () => {
     expect(ordinary('2026-09-20', 4).extraPaymentNote).toBe('');
   });
 
-  it('prices the newer family package with both discounts and the included fees', () => {
+  it('prices the newer family package without any discount, with the included fees', () => {
     const student = family('2026-09-20', 4);
     expect(student.quoteError).toBe('');
     expect(student.quotePlan.rooms.map(row => row.optionId)).toEqual([LA_MER_FAMILY_ROOM_ID]);
     expect(student.tuition).toBe(4400);
     expect(student.accommodation).toBe(0);
     expect(student.registration).toBe(0);
-    expect(student.schoolDiscount).toBe(400);
-    expect(student.sidaDiscount).toBe(200);
-    expect(student.quoteUsd).toBe(3800);
+    expect(student.schoolDiscount).toBe(0);
+    expect(student.sidaDiscount).toBe(0);
+    expect(student.seasonalSurcharge).toBe(0);
+    expect(student.quoteUsd).toBe(4400);
+    expect(student.paymentLines).toEqual([]);
     expect(student.roomDeposit).toBe(6000);
     expect(sum(student)).toBe(0);
     expect(student.registrationNote).toContain('1000美元');
@@ -129,35 +133,43 @@ describe('La Mer page quote', () => {
     });
   });
 
-  it('counts every family member in the offer and the deposit', () => {
+  it('counts every family member in the deposit, and none in a discount', () => {
     const three = family('2026-09-20', 4, 'family-triple-3');
     expect(three.quoteError).toBe('');
-    expect(three.schoolDiscount).toBe(600);
+    expect(three.promotionDiscountTotal).toBe(0);
     expect(three.roomDeposit).toBe(9000);
     const four = family('2026-09-20', 4, 'family-quad-4');
-    expect(four.schoolDiscount).toBe(800);
+    expect(four.promotionDiscountTotal).toBe(0);
     expect(four.roomDeposit).toBe(12000);
   });
 
-  it('keeps the Sida rate on a peak family package without the school offer', () => {
+  it('charges the peak family price as it is, with no surcharge', () => {
     const student = family('2027-01-03', 4);
     expect(student.tuition).toBe(5200);
-    expect(student.schoolDiscount).toBe(0);
-    expect(student.quoteUsd).toBe(4940);
+    expect(student.promotionDiscountTotal).toBe(0);
+    expect(student.quoteUsd).toBe(5200);
   });
 
   it('uses the older family version before the newer one starts', () => {
     const student = family('2026-05-03', 4);
     expect(student.quoteError).toBe('');
     expect(student.tuition).toBe(5100);
-    expect(student.quoteUsd).toBe(4845);
+    expect(student.quoteUsd).toBe(5100);
   });
 
-  it('blocks family weeks, dates and seasons without a published price', () => {
+  it('takes the season of the arrival date for a stay across seasons', () => {
+    const intoPeak = family('2026-12-20', 4);
+    expect(intoPeak.quoteError).toBe('');
+    expect(intoPeak.tuition).toBe(4400);
+    const outOfPeak = family('2027-02-14', 4);
+    expect(outOfPeak.quoteError).toBe('');
+    expect(outOfPeak.tuition).toBe(5200);
+  });
+
+  it('blocks family weeks and dates without a published price', () => {
     const five = family('2026-09-20', 4);
     five.quotePlan.setStayWeeks(5);
     expect(five.quoteError).toContain('整包价');
-    expect(family('2026-12-20', 4).quoteError).toContain('跨淡旺季');
     expect(family('2026-08-16', 4).quoteError).toContain('价格期');
     expect(family('2027-12-12', 4).quoteError).not.toBe('');
     expect(family('2026-06-21', 1).quoteError).toContain('不开放');
@@ -167,7 +179,7 @@ describe('La Mer page quote', () => {
     const student = family('2026-09-20', 8);
     expect(sum(student, '签证续签')).toBe(10860);
     expect(student.tuition).toBe(8400);
-    expect(student.quoteUsd).toBe(7220);
+    expect(student.quoteUsd).toBe(8400);
     expect(student.registrationNote).toContain('余款在出发前4周付清');
     expect(student.localFees.some(fee => fee.note.includes('。；'))).toBeFalse();
   });
@@ -194,7 +206,7 @@ describe('La Mer page quote', () => {
     content.quoteSettings.laMer!.familyVersions[1].packages.find(item => item.id === 'double' && item.season === 'off')!.prices['4'] = 4600;
     const pricing = pricingFor(cloneLaMerContentConfig(content));
     expect(ordinary('2026-09-20', 4, pricing).quoteUsd).toBe(1765);
-    expect(family('2026-09-20', 4, 'family-double-2', pricing).quoteUsd).toBe(3780);
+    expect(family('2026-09-20', 4, 'family-double-2', pricing).quoteUsd).toBe(4600);
   });
 
   it('builds a v2 quote image with the family registration note', () => {
@@ -236,6 +248,19 @@ describe('La Mer content upgrade', () => {
     expect(again.rooms[0].group).toBe('校内住宿');
   });
 
+  it('moves untouched version-1 offer wording, which still discounted family packages, onto version 2', () => {
+    const saved = createDefaultLaMerContentConfig();
+    (saved.quoteSettings as { laMerPolicyVersion?: number }).laMerPolicyVersion = 1;
+    saved.quoteSettings.promotions[0].description = '我们自己写的学校优惠说明';
+    saved.quoteSettings.promotions[1].description = '课程和住宿在学校优惠后享95折；亲子套餐在学校优惠后整包享95折。注册费、旺季附加费和到校学杂费不参与。';
+    saved.courses[1].name = '我们自己改的名字';
+    const upgraded = cloneLaMerContentConfig(saved);
+    expect(upgraded.quoteSettings.promotions[0].description).toBe('我们自己写的学校优惠说明');
+    expect(upgraded.quoteSettings.promotions[1].description).toContain('亲子套餐、注册费');
+    expect(upgraded.courses[1].name).toBe('我们自己改的名字');
+    expect((upgraded.quoteSettings as { laMerPolicyVersion?: number }).laMerPolicyVersion).toBe(2);
+  });
+
   it('moves an untouched week-9 ACR note to the first-extension wording once', () => {
     const saved = createDefaultLaMerContentConfig();
     const oldNote = '停留满9周（超过59天）时办理一次。';
@@ -253,5 +278,22 @@ describe('La Mer content upgrade', () => {
     const other = createDefaultLaMerContentConfig();
     other.schoolCode = 'EV';
     expect(cloneLaMerContentConfig(other).schoolCode).toBe('EV-LAMER');
+  });
+});
+
+describe('La Mer course list on desktop', () => {
+  beforeEach(() => TestBed.configureTestingModule({ imports: [SchoolQuotePlanComponent] }));
+
+  // Rebuilding the <option> elements on every check closed an open course list in desktop WeChat at once.
+  it('keeps the same option elements when the page checks again', () => {
+    const fixture = TestBed.createComponent(SchoolQuotePlanComponent);
+    fixture.componentInstance.plan = ordinary('2026-09-20', 4).quotePlan;
+    fixture.componentInstance.singleStay = true;
+    fixture.detectChanges();
+    const options = () => Array.from(fixture.nativeElement.querySelectorAll('label.type select option')) as HTMLOptionElement[];
+    const before = options();
+    expect(before.length).toBeGreaterThan(5);
+    fixture.detectChanges();
+    expect(options().every((option, index) => option === before[index])).toBeTrue();
   });
 });
