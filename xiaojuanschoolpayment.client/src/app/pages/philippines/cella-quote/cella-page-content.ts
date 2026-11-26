@@ -192,7 +192,7 @@ export const CELLA_PAGE_CONTENT: Record<CellaCampus, CellaPageContent> = {
     videoTabs: [
       { label: '校园视频', videos: ['uni-campus-tour', 'uni-campus-walk', 'uni-pool', 'uni-dining'] },
       { label: '宿舍视频', videos: ['uni-single-room', 'uni-twin-room', 'uni-triple-room', 'uni-quad-room'] },
-      { label: '学员访谈', videos: ['uni-student-interview'] },
+      { label: '学员访谈', videos: ['uni-student-interview', 'uni-sparta-ielts-interview'] },
     ],
     videos: {
       'uni-campus-tour': video('uni', 'uni-campus-tour', 'CELLA Uni 校园导览', '跟着镜头看教室、各类课程、宿舍、餐厅、泳池和健身房。', '3:15'),
@@ -206,6 +206,9 @@ export const CELLA_PAGE_CONTENT: Record<CellaCampus, CellaPageContent> = {
       // CELLA's own YouTube, 2026-01 (user request 2026-11-26). She talks about the Sparta program, so it is Uni Sparta.
       // The opening with her full name was cut, and the website and Instagram strip at the top is blurred.
       'uni-student-interview': video('uni', 'uni-student-interview', '蒙古学员采访', '蒙古学员讲为什么来菲律宾、斯巴达课程和在CELLA的生活（英文）。', '2:06', 'tall'),
+      // CELLA's own YouTube, 2026-03 (user request 2026-11-27). She calls herself a Sparta IELTS student, so it is Uni
+      // Sparta. The opening card with her full name was cut, and the website and social strip at the bottom is blurred.
+      'uni-sparta-ielts-interview': video('uni', 'uni-sparta-ielts-interview', '韩国学员采访（雅思）', '韩国学员讲为什么选斯巴达雅思课程、严格的作息和作业制度，以及备考雅思机考的经验（英文）。', '2:52', 'tall'),
     },
     roomVideos: {
       'uni-single': 'uni-single-room',
@@ -360,7 +363,7 @@ export const CELLA_PAGE_CONTENT: Record<CellaCampus, CellaPageContent> = {
       { label: '校园视频', videos: ['premium-campus-tour', 'premium-campus-walk'] },
       { label: '宿舍视频', videos: ['premium-single-twin-room', 'premium-semi-single-room', 'premium-quad-room'] },
       { label: '课程视频', videos: ['premium-family-course'] },
-      { label: '活动视频', videos: ['premium-christmas-party-2025'] },
+      { label: '活动视频', videos: ['premium-quiz-bee', 'premium-island-hopping', 'premium-christmas-party-2025'] },
     ],
     videos: {
       'premium-campus-tour': video('premium', 'premium-campus-tour', 'CELLA Premium 校园导览', '跟着镜头看学习区、教室、宿舍、餐厅和泳池。', '3:05'),
@@ -373,6 +376,13 @@ export const CELLA_PAGE_CONTENT: Record<CellaCampus, CellaPageContent> = {
       // the answers stay whole; the party video lost a speaker close-up that showed its brand.
       'premium-family-course': video('premium', 'premium-family-course', '亲子课程', '在Premium校区上亲子课程的一家人，孩子和家长讲上课和进步（英文）。', '2:52'),
       'premium-christmas-party-2025': video('premium', 'premium-christmas-party-2025', '2025圣诞派对', '学校给Premium校区学员办的圣诞派对。', '2:15'),
+      // CELLA's own YouTube, 2026-01 (user request 2026-11-27). Green-chair classroom, CELLA neon room and industrial
+      // ceiling match Premium's own tour videos. A 5-second shot captioned "only here at CELLA" was cut.
+      'premium-quiz-bee': video('premium', 'premium-quiz-bee', '英语知识竞赛（Quiz Bee）', '学校在Premium校区办的英语知识竞赛，学员分组上台答题。', '2:00'),
+      // CELLA's own YouTube, 2025-11 (user decision 2026-11-27 to show this outside trip). The junior camp sets off from
+      // the Premium entrance. Every shot with the tour operator's name (office wall, close-up life jackets, staff shirt
+      // backs with its website and staff names) or another tour boat's name was cut; 8 clean parts remain.
+      'premium-island-hopping': video('premium', 'premium-island-hopping', '跳岛游', '学校给Premium校区青少年营学员组织的跳岛游：出海浮潜、船上用餐和游戏；活动安排和费用以学校当期通知为准。', '2:14'),
     },
     roomVideos: {
       'premium-single': 'premium-single-twin-room',
