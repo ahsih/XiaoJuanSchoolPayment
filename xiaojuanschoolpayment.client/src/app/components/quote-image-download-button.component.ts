@@ -478,7 +478,7 @@ export class QuoteImageDownloadButtonComponent implements OnDestroy {
     const consultants = this.quote.consultants?.length ? this.quote.consultants : [this.quote.contact];
     const ukSheet = this.quote.layout === 'uk-package' ? this.quote.ukSheet : undefined;
     if (this.quote.layout === 'uk-package' && (!ukSheet || ukSheet.issues.length)) throw new Error('报价还有需要修改的地方。');
-    const [logo, hero, consultantAssets, ukQr] = await Promise.all([
+    const [logo, hero, consultantAssets, ukQrs] = await Promise.all([
       this.loadCanvasImage(quoteBrandLogoSource(this.quote)),
       this.loadCanvasImage(this.quote.heroSrc),
       Promise.all(
@@ -488,7 +488,7 @@ export class QuoteImageDownloadButtonComponent implements OnDestroy {
           qr: await this.loadCanvasImage(consultant.qrSrc),
         })),
       ),
-      ukSheet ? this.loadCanvasImage(ukSheet.contact.qrSrc) : Promise.resolve(undefined),
+      Promise.all((ukSheet?.contacts ?? []).map(contact => this.loadCanvasImage(contact.qrSrc))),
     ]);
     const width = QUOTE_IMAGE_WIDTH;
     const canvas = document.createElement('canvas');
@@ -517,7 +517,7 @@ export class QuoteImageDownloadButtonComponent implements OnDestroy {
           context.imageSmoothingEnabled = true;
           context.imageSmoothingQuality = 'high';
           if (ukSheet) {
-            drawUkQuoteImage<HTMLImageElement>(context, ukSheet, { logo, qr: ukQr }, height);
+            drawUkQuoteImage<HTMLImageElement>(context, ukSheet, { logo, qrs: ukQrs }, height);
           } else if (this.quote.layout === 'cia-detailed') {
             this.drawDetailedQuoteImage(context, {
               logo, hero, consultants: consultants.slice(0, 5).map(consultant => ({ consultant })),
@@ -540,7 +540,7 @@ export class QuoteImageDownloadButtonComponent implements OnDestroy {
       }
       throw failure;
     } finally {
-      for (const image of [logo, hero, ...(ukQr ? [ukQr] : []), ...consultantAssets.flatMap(item => [item.avatar, item.qr])]) image.src = '';
+      for (const image of [logo, hero, ...ukQrs, ...consultantAssets.flatMap(item => [item.avatar, item.qr])]) image.src = '';
     }
   }
 

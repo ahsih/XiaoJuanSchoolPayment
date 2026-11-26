@@ -5,16 +5,19 @@ import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { ExchangeRateService, isUsableExchangeRates } from '../../../../../services/exchange-rate.service';
 import { QuoteImageCardData, QuoteImageDownloadButtonComponent } from '../../../../components/quote-image-download-button.component';
-import { SIDA_PHILIPPINES_CONSULTANTS } from '../../../../components/sida-consultants';
 import { UkQuoteSheetComponent } from '../../../../components/uk-quote/uk-quote-sheet.component';
-import { UkQuoteSheet, ukAddDays, ukDateText, ukShortDateText } from '../../../../components/uk-quote/uk-quote-sheet';
+import { UK_QUOTE_PLAN_TAGS, UkQuoteSheet, ukAddDays, ukDateText, ukShortDateText } from '../../../../components/uk-quote/uk-quote-sheet';
+import { BURLINGTON_CONSULTANTS } from './burlington-page-content';
 import {
   BURLINGTON_ADULT_COURSES,
   BURLINGTON_AIRPORTS,
   BURLINGTON_APARTMENT_ROOMS,
+  BURLINGTON_CASTLE,
   BURLINGTON_COURSE_FOCUS,
+  BURLINGTON_FEES,
   BURLINGTON_HOMESTAY_BOARDS,
   BURLINGTON_HOMESTAY_TIERS,
+  BURLINGTON_JUNIOR,
   BURLINGTON_JUNIOR_PACKAGES,
   BURLINGTON_JUNIOR_SEASONS,
   BURLINGTON_MAX_COURSE_WEEKS,
@@ -22,7 +25,9 @@ import {
   BURLINGTON_SUMMER_RESIDENCE,
 } from './burlington-pricing';
 import {
+  BURLINGTON_MAX_PLANS,
   BURLINGTON_PROGRAMMES,
+  BurlingtonExtras,
   BurlingtonPlanInput,
   BurlingtonProgramme,
   BurlingtonQuoteInput,
@@ -30,6 +35,7 @@ import {
   burlingtonNextSunday,
   defaultBurlingtonPlan,
   defaultBurlingtonQuote,
+  nextBurlingtonPlan,
 } from './burlington-quote';
 
 function localToday(): string {
@@ -42,6 +48,8 @@ function sundays(from: string, lastArrival: string): string[] {
   for (let date = from; date <= lastArrival; date = ukAddDays(date, 7)) list.push(date);
   return list;
 }
+
+type ExtraFlag = Exclude<keyof BurlingtonExtras, 'airport'>;
 
 @Component({
   selector: 'app-burlington-quote-calculator',
@@ -62,18 +70,22 @@ export class BurlingtonQuoteCalculatorComponent {
   readonly homestayTiers = BURLINGTON_HOMESTAY_TIERS;
   readonly homestayBoards = BURLINGTON_HOMESTAY_BOARDS;
   readonly airports = BURLINGTON_AIRPORTS;
-  readonly consultants = SIDA_PHILIPPINES_CONSULTANTS;
   readonly juniorAges = [11, 12, 13, 14, 15, 16, 17];
   readonly adultWeeks = Array.from({ length: BURLINGTON_MAX_COURSE_WEEKS }, (_, index) => index + 1);
   readonly adultArrivals = sundays(burlingtonNextSunday(this.today), ukAddDays(burlingtonNextSunday(this.today), 7 * 78));
   readonly residenceArrivals = sundays(BURLINGTON_SUMMER_RESIDENCE.start, ukAddDays(BURLINGTON_SUMMER_RESIDENCE.end, -14));
   readonly residenceWeeks = [2, 3, 4, 5, 6, 7, 8];
-  readonly planTags = ['方案一', '方案二'];
+  readonly maxPlans = BURLINGTON_MAX_PLANS;
+  readonly planTags = UK_QUOTE_PLAN_TAGS;
   readonly dateText = ukShortDateText;
   readonly fullDateText = ukDateText;
+  /** Plans store the Sunday; without accommodation the form shows the Monday the course starts. */
+  readonly addDays = ukAddDays;
+  readonly fees = BURLINGTON_FEES;
+  readonly junior = BURLINGTON_JUNIOR;
+  readonly castle = BURLINGTON_CASTLE;
 
-  input: BurlingtonQuoteInput = defaultBurlingtonQuote(this.today, 'junior');
-  consultantName = this.consultants[0].name;
+  input: BurlingtonQuoteInput = defaultBurlingtonQuote(this.today, 'adult-course');
 
   private gbpToCny: number | null = null;
   private rateDate = '';
@@ -84,14 +96,9 @@ export class BurlingtonQuoteCalculatorComponent {
     this.rateDate = usable ? snapshot.date : '';
   });
 
-  get contact() {
-    return this.consultants.find(item => item.name === this.consultantName) ?? this.consultants[0];
-  }
-
   get sheet(): UkQuoteSheet {
-    const contact = this.contact;
     return buildBurlingtonSheet(this.input, this.quoteDateText, { gbpToCny: this.gbpToCny, date: this.rateDate },
-      { name: contact.name, title: contact.title, phone: contact.phone, qrSrc: contact.qrSrc });
+      BURLINGTON_CONSULTANTS.map(item => ({ name: item.name, title: item.title, phone: item.phone, qrSrc: item.qrSrc })));
   }
 
   get quoteDateText(): string {
@@ -106,7 +113,7 @@ export class BurlingtonQuoteCalculatorComponent {
 
   get quoteImage(): QuoteImageCardData {
     const sheet = this.sheet;
-    const contact = this.contact;
+    const first = BURLINGTON_CONSULTANTS[0];
     return {
       layout: 'uk-package',
       ukSheet: sheet,
@@ -120,34 +127,71 @@ export class BurlingtonQuoteCalculatorComponent {
       updatedAtText: sheet.quoteDate,
       studentItems: [],
       paymentItems: [],
-      totalLabel: '必付合计',
+      totalLabel: sheet.totalLabel,
       totalUsd: '',
       totalCny: '',
       localFeeAmount: '',
       localFeeDescription: '',
       localFeeNote: '',
       note: '',
-      contact: { name: contact.name, phone: contact.phone, avatarSrc: contact.avatarSrc, qrSrc: contact.qrSrc },
+      contact: { name: first.name, phone: first.phone, avatarSrc: first.avatarSrc, qrSrc: first.qrSrc },
     };
+  }
+
+  /** Optional services that apply to at least one current plan, shown as tick boxes. */
+  get extraOptions(): Array<{ key: ExtraFlag; label: string; price: string }> {
+    const { programme, plans } = this.input;
+    const options: Array<{ key: ExtraFlag; label: string; price: string }> = [];
+    if (programme === 'junior') {
+      options.push({ key: 'travelCard', label: '伦敦交通卡（1–3区）', price: `${this.junior.travelCardPerWeek}英镑/周` });
+      if (plans.some(plan => plan.juniorPackage === 'homestay')) {
+        options.push({ key: 'chaperone', label: '寄宿家庭往返学校陪同', price: `${this.junior.chaperonePerWeek}英镑/周` });
+      }
+      if (plans.some(plan => plan.juniorPackage === 'day')) {
+        options.push({ key: 'saturdayTrip', label: '周六全天出游', price: `${this.junior.daySaturdayTrip}英镑/周` });
+      }
+      const castlePrices = [...new Set(plans.map(plan => this.seasonOf(plan).castleUpgrade))];
+      options.push({ key: 'castle', label: '巴斯城堡两晚', price: `${castlePrices.join(' / ')}英镑` });
+    } else {
+      const freeCastle = (plan: BurlingtonPlanInput) => plan.weeks >= this.castle.adultFreeFromWeeks
+        && (programme === 'summer-residence' || plan.course !== 'one-to-one');
+      const castlePrices = [...new Set(plans.map(plan => freeCastle(plan) ? this.castle.adultPremiumUpgrade : this.castle.adultShortStay))];
+      options.push({
+        key: 'castle',
+        label: plans.every(freeCastle) ? '巴斯城堡升级高级版' : plans.some(freeCastle) ? '巴斯城堡（满4周升级高级版／不满4周两晚＋高级版）' : '巴斯城堡两晚＋高级版',
+        price: `${castlePrices.join(' / ')}英镑`,
+      });
+      if (plans.some(plan => plan.courseFocus !== 'general')) {
+        options.push({ key: 'exam', label: '雅思／剑桥考试报名费', price: `${this.fees.examFee}英镑` });
+      }
+    }
+    options.push({ key: 'bankCharge', label: '国际汇款手续费', price: `${this.fees.bankCharge}英镑` });
+    return options;
+  }
+
+  get transferPrice(): number {
+    return (this.airports.find(item => item.id === this.input.extras.airport) ?? this.airports[0]).price;
+  }
+
+  get transferChosen(): boolean {
+    return this.input.extras.arrivalTransfer || this.input.extras.departureTransfer;
+  }
+
+  get unaccompanied(): boolean {
+    return this.input.programme === 'junior' && this.input.juniorAge < this.junior.unaccompaniedMinorAge;
   }
 
   selectProgramme(programme: BurlingtonProgramme): void {
     if (programme === this.input.programme) return;
-    this.input = {
-      ...this.input,
-      programme,
-      plans: this.input.plans.map(() => defaultBurlingtonPlan(programme, this.today)),
-    };
+    // Keep the number of compared plans; the extra plans differ from the first one again.
+    let next: BurlingtonQuoteInput = { ...this.input, programme, plans: [defaultBurlingtonPlan(programme, this.today)] };
+    while (next.plans.length < this.input.plans.length) next = { ...next, plans: [...next.plans, nextBurlingtonPlan(next)] };
+    this.input = next;
   }
 
   addPlan(): void {
-    if (this.input.plans.length >= 2) return;
-    const first = this.input.plans[0];
-    const second: BurlingtonPlanInput = { ...first };
-    if (this.input.programme === 'junior') second.juniorPackage = first.juniorPackage === 'residence' ? 'homestay' : 'residence';
-    if (this.input.programme === 'adult-course') second.accommodation = first.accommodation === 'onsite' ? 'homestay' : 'onsite';
-    if (this.input.programme === 'summer-residence') second.intensiveUpgrade = !first.intensiveUpgrade;
-    this.input.plans = [first, second];
+    if (this.input.plans.length >= this.maxPlans) return;
+    this.input.plans = [...this.input.plans, nextBurlingtonPlan(this.input)];
   }
 
   removePlan(index: number): void {
@@ -180,5 +224,10 @@ export class BurlingtonQuoteCalculatorComponent {
 
   trackIndex(index: number): number {
     return index;
+  }
+
+  /** The option list is rebuilt on every check; keep each checkbox (and its ngModel) alive by key. */
+  trackExtra(_index: number, option: { key: ExtraFlag }): string {
+    return option.key;
   }
 }

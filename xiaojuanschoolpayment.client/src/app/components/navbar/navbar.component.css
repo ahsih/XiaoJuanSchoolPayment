@@ -629,6 +629,24 @@ a.philippines-city-link:focus-visible {
   color: #08183a;
 }
 
+/* Between the hamburger breakpoint and about 1640px the logo, tagline, eight menu items and the
+   account buttons do not fit on one row, and the centred menu spilled over the tagline and the
+   login link. Hide the decorative tagline and tighten the menu there. */
+@media (min-width: 1441px) and (max-width: 1720px) {
+  .site-header {
+    padding-inline: 20px;
+    gap: 1rem;
+  }
+
+  .brand-tagline {
+    display: none;
+  }
+
+  .nav-link {
+    padding: 0 0.5rem;
+  }
+}
+
 @media (max-width: 1440px) {
   .site-header {
     padding-inline: 16px;

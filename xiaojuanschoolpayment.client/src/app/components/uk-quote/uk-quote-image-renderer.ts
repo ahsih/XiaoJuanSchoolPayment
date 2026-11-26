@@ -1,7 +1,8 @@
 // Quote image for UK schools ("uk-package" layout), drawn on any 2D canvas context.
-// Sections: brand header, title band, student/school/date cards, 01 required fees with the
-// highlighted total, 02 what the fees include, 03 optional reference prices (never totalled),
-// 04 notes, consultant card with QR code, footer. QuoteImageDownloadButtonComponent draws it
+// Sections: brand header, title band, school/requirement/date cards, 01 fees for up to three plans,
+// each row explaining what it covers (included items read 已含, ticked optional services are tagged
+// 自选), with the highlighted total, 02 optional reference prices that were not ticked, 03 notes,
+// the consultants with their WeChat QR codes, footer. QuoteImageDownloadButtonComponent draws it
 // with a browser canvas. Keep this file free of Angular, DOM types and regex lookbehind so the
 // WeChat mini program can bundle it like quote-image-detailed-renderer.ts.
 import {
@@ -66,6 +67,11 @@ function richLines(context: TextContext, text: string, maxWidth: number, size: n
 function plainLines(context: TextContext, text: string, maxWidth: number, size: number, weight = 400): string[] {
   return richLines(context, text.split('{{').join('').split('}}').join(''), maxWidth, size, weight)
     .map(line => line.map(run => run.text).join(''));
+}
+
+/** Plan column headers such as 标准课程 ＋ 校内宿舍单人间 break after the plus sign, not mid-word. */
+function headerTitle(title: string): string {
+  return title.split(' ＋ ').join(' ＋\n');
 }
 
 class UkPainter<TImage extends QuoteCanvasImage> {
@@ -152,8 +158,14 @@ class UkPainter<TImage extends QuoteCanvasImage> {
   }
 }
 
+export interface UkQuoteImageAssets<TImage> {
+  logo?: TImage;
+  /** WeChat QR codes in the order of `sheet.contacts`; a missing one leaves its frame empty. */
+  qrs?: Array<TImage | undefined>;
+}
+
 function layout<TImage extends QuoteCanvasImage>(painter: UkPainter<TImage>, sheet: UkQuoteSheet,
-  assets: { logo?: TImage; qr?: TImage }, height: number): number {
+  assets: UkQuoteImageAssets<TImage>, height: number): number {
   const p = painter;
   const plans = Math.max(1, sheet.plans.length);
   const cardTop = 20;
@@ -187,7 +199,7 @@ function layout<TImage extends QuoteCanvasImage>(painter: UkPainter<TImage>, she
   p.rounded(right - 92, cardTop + 26, 92, 32, 6, '#ffffff', COLORS.green);
   p.text('报 价 单', right - 46, cardTop + 48, 15, 800, COLORS.green, 'center');
   p.text(`报价日期：${sheet.quoteDate}`, right, cardTop + 80, 13, 400, COLORS.muted, 'right');
-  p.text(`官网 ${sheet.contact.website}`, right, cardTop + 100, 13, 700, COLORS.green2, 'right');
+  p.text(`官网 ${sheet.website}`, right, cardTop + 100, 13, 700, COLORS.green2, 'right');
 
   // Title band.
   let y = cardTop + 124;
@@ -223,14 +235,16 @@ function layout<TImage extends QuoteCanvasImage>(painter: UkPainter<TImage>, she
 
   // 01 Required fees.
   y += 18;
-  y += p.sectionHeading('01', '必付费用', `单位：${sheet.currencyLabel}`, y) + 6;
-  const planWidth = plans === 1 ? 250 : 220;
+  y += p.sectionHeading('01', sheet.feesTitle, `单位：${sheet.currencyLabel}`, y) + 6;
+  // Amounts are short, so their columns stay narrow and what each fee covers gets the width.
+  const planWidth = plans === 1 ? 190 : plans === 2 ? 170 : 152;
   const labelWidth = CW - planWidth * plans;
+  const noteWidth = labelWidth - 52;
   const columnRight = (index: number) => X0 + labelWidth + planWidth * (index + 1) - 20;
   const headerHeight = Math.max(58, ...sheet.plans.map(plan =>
-    (plan.tag ? 22 : 8) + plainLines(p.context, plan.title, planWidth - 30, 15, 700).length * 21 + 16));
-  const rows = sheet.requiredRows.map(row => Math.max(56,
-    20 + 22 + (row.note ? plainLines(p.context, row.note, labelWidth - 36, 13).length * 19 : 0) + 12));
+    (plan.tag ? 22 : 8) + plainLines(p.context, headerTitle(plan.title), planWidth - 30, 15, 700).length * 21 + 16));
+  const rows = sheet.requiredRows.map(row => Math.max(60,
+    (row.note ? 54 + p.richHeight(row.note, noteWidth, 14, 23) : 0)));
   const totalHeight = 88;
   const tableHeight = headerHeight + rows.reduce((sum, value) => sum + value, 0) + totalHeight;
   const tableTop = y;
@@ -242,30 +256,36 @@ function layout<TImage extends QuoteCanvasImage>(painter: UkPainter<TImage>, she
   p.rect(X0, y, CW, headerHeight, COLORS.green);
   p.text('项目', X0 + 18, y + headerHeight / 2 + 6, 16, 700, '#ffffff');
   sheet.plans.forEach((plan, index) => {
-    const block = (plan.tag ? 20 : 0) + plainLines(p.context, plan.title, planWidth - 30, 15, 700).length * 21;
+    const block = (plan.tag ? 20 : 0) + plainLines(p.context, headerTitle(plan.title), planWidth - 30, 15, 700).length * 21;
     let top = y + (headerHeight - block) / 2;
     if (plan.tag) { p.text(plan.tag, columnRight(index), top + 12, 12, 400, '#bfe0c9', 'right'); top += 20; }
-    p.paragraph(plan.title, columnRight(index), top + 16, planWidth - 30, 15, 21, '#ffffff', 700, 'right');
+    p.paragraph(headerTitle(plan.title), columnRight(index), top + 16, planWidth - 30, 15, 21, '#ffffff', 700, 'right');
   });
   y += headerHeight;
   sheet.requiredRows.forEach((row, rowIndex) => {
     const rowHeight = rows[rowIndex];
     p.line(X0, y, X0 + CW, y);
-    p.text(row.label, X0 + 18, y + 30, 16, 700, COLORS.ink);
-    if (row.note) p.paragraph(row.note, X0 + 18, y + 52, labelWidth - 36, 13, 19, COLORS.muted);
+    p.text(row.label, X0 + 18, y + 32, 16, 700, COLORS.ink);
+    if (row.optional) {
+      const tagX = X0 + 26 + p.width(row.label, 16, 700);
+      p.rounded(tagX, y + 17, p.width('自选', 11) + 12, 19, 4, '#fffaf2', '#e6cfa7');
+      p.text('自选', tagX + 6, y + 31, 11, 400, '#9a6b2b');
+    }
+    // What the fee covers, under its name; the amounts line up with the name.
+    if (row.note) p.rich(row.note, X0 + 18, y + 57, noteWidth, 14, 23, '#5f6a63');
     row.amounts.forEach((amount, index) => {
       const text = ukAmountText(amount);
       const numeric = typeof amount === 'number';
-      p.text(text, columnRight(index), y + rowHeight / 2 + 7, numeric ? 19 : 15, numeric ? 800 : 700,
+      p.text(text, columnRight(index), y + 33, numeric ? 19 : 15, numeric ? 800 : 700,
         numeric ? COLORS.ink : amount === 'included' ? COLORS.green2 : '#9aa49d', 'right');
     });
     y += rowHeight;
   });
   p.rect(X0, y, CW, totalHeight, COLORS.orangeSoft);
   p.line(X0, y, X0 + CW, y, '#f2d9bf');
-  p.text('必付合计', X0 + 18, y + 40, 19, 800, COLORS.orangeDark);
+  p.text(sheet.totalLabel, X0 + 18, y + 40, 19, 800, COLORS.orangeDark);
   sheet.requiredTotals.forEach((total, index) => {
-    p.text(total === null ? '待确认' : ukMoney(total), columnRight(index), y + 42, total === null ? 18 : 27, 800, COLORS.orange, 'right');
+    p.text(total === null ? '待确认' : ukMoney(total), columnRight(index), y + 42, total === null ? 18 : plans === 3 ? 24 : 27, 800, COLORS.orange, 'right');
     const cny = sheet.requiredTotalsCny[index];
     p.text(cny === null ? '人民币待更新' : `约 ${ukMoney(cny)} 元人民币`, columnRight(index), y + 68, 13, 400, COLORS.muted, 'right');
   });
@@ -276,57 +296,6 @@ function layout<TImage extends QuoteCanvasImage>(painter: UkPainter<TImage>, she
   }
   y += 12;
   y += p.paragraph(sheet.rateNote, X0, y + 14, CW, 13, 20, COLORS.muted);
-
-  // 02 Included.
-  y += 26;
-  y += p.sectionHeading('02', '费用包含', '', y) + 6;
-  const incLabel = 130;
-  const incWidth = (CW - incLabel) / plans;
-  const incHeader = Math.max(54, ...sheet.plans.map(plan =>
-    (plan.tag ? 22 : 8) + plainLines(p.context, plan.title, incWidth - 32, 15, 700).length * 21 + 14));
-  const incRows = sheet.includeRows.map(row => {
-    const widths = row.values.length === 1 ? [CW - incLabel] : row.values.map(() => incWidth);
-    return Math.max(52, ...row.values.map((value, index) => p.richHeight(value, widths[index] - 32, 15, 23) + 26));
-  });
-  const incTop = y;
-  const incHeight = incHeader + incRows.reduce((sum, value) => sum + value, 0);
-  if (p.draw) {
-    p.context.save();
-    roundedRectPath(p.context, X0, incTop, CW, incHeight, 12);
-    p.context.clip();
-  }
-  p.rect(X0, y, CW, incHeader, COLORS.green);
-  p.text('内容', X0 + 18, y + incHeader / 2 + 6, 16, 700, '#ffffff');
-  sheet.plans.forEach((plan, index) => {
-    const x = X0 + incLabel + index * incWidth + 16;
-    const block = (plan.tag ? 20 : 0) + plainLines(p.context, plan.title, incWidth - 32, 15, 700).length * 21;
-    let top = y + (incHeader - block) / 2;
-    if (plan.tag) { p.text(plan.tag, x, top + 12, 12, 400, '#bfe0c9'); top += 20; }
-    p.paragraph(plan.title, x, top + 16, incWidth - 32, 15, 21, '#ffffff', 700);
-  });
-  y += incHeader;
-  sheet.includeRows.forEach((row, rowIndex) => {
-    const rowHeight = incRows[rowIndex];
-    p.rect(X0, y, incLabel, rowHeight, COLORS.soft);
-    p.line(X0, y, X0 + CW, y);
-    p.text(row.label, X0 + 18, y + rowHeight / 2 + 6, 15, 700, COLORS.green);
-    if (row.values.length === 1) {
-      const height = p.richHeight(row.values[0], CW - incLabel - 32, 15, 23);
-      p.rich(row.values[0], X0 + incLabel + 16, y + (rowHeight - height) / 2 + 17, CW - incLabel - 32, 15, 23, COLORS.ink);
-    } else {
-      row.values.forEach((value, index) => {
-        const height = p.richHeight(value, incWidth - 32, 15, 23);
-        const muted = value === '不含';
-        p.rich(value, X0 + incLabel + index * incWidth + 16, y + (rowHeight - height) / 2 + 17, incWidth - 32, 15, 23,
-          muted ? '#a3aaa5' : COLORS.ink);
-      });
-    }
-    y += rowHeight;
-  });
-  if (p.draw) {
-    p.context.restore();
-    drawRoundedRect(p.context, X0, incTop, CW, incHeight, 12, 'rgba(0,0,0,0)', COLORS.line);
-  }
 
   if (sheet.examples.length) {
     y += 14;
@@ -346,10 +315,10 @@ function layout<TImage extends QuoteCanvasImage>(painter: UkPainter<TImage>, she
     y += boxHeight;
   }
 
-  // 03 Optional (reference only).
+  // 02 Optional (reference only).
   if (sheet.optionalRows.length) {
     y += 30;
-    y += p.sectionHeading('03', '可选费用', sheet.optionalNote, y) + 6;
+    y += p.sectionHeading('02', '可选费用', sheet.optionalNote, y) + 6;
     const priceWidth = Math.max(...sheet.optionalRows.map(row => p.width(row.price, 14))) + 8;
     const textWidth = CW - 40 - priceWidth - 24;
     const optionalRows = sheet.optionalRows.map(row => 22 + (row.note ? plainLines(p.context, row.note, textWidth, 13).length * 20 : 0) + 14);
@@ -376,9 +345,9 @@ function layout<TImage extends QuoteCanvasImage>(painter: UkPainter<TImage>, she
     y += boxHeight;
   }
 
-  // 04 Notes.
+  // 03 Notes (02 when nothing optional is left).
   y += 30;
-  y += p.sectionHeading(sheet.optionalRows.length ? '04' : '03', '报价说明', '', y) + 8;
+  y += p.sectionHeading(sheet.optionalRows.length ? '03' : '02', '报价说明', '', y) + 8;
   sheet.notes.forEach((note, index) => {
     p.rounded(X0, y, 22, 22, 11, COLORS.greenSoft);
     p.text(String(index + 1), X0 + 11, y + 16, 12, 800, COLORS.green, 'center');
@@ -386,27 +355,45 @@ function layout<TImage extends QuoteCanvasImage>(painter: UkPainter<TImage>, she
     y += Math.max(26, height + 6);
   });
 
-  // Consultant card.
-  y += 22;
-  const contactHeight = 178;
-  p.rounded(X0, y, CW, contactHeight, 14, '#f6faf6', COLORS.line);
-  p.rounded(X0 + 22, y + 18, 142, 142, 10, '#ffffff', COLORS.line);
-  if (p.draw && assets.qr) drawImageContain(p.context, assets.qr, X0 + 30, y + 26, 126, 126);
-  const cx = X0 + 192;
-  p.text('联系顾问 · 预留学位', cx, y + 40, 13, 800, COLORS.orange);
-  p.text(sheet.contact.name, cx, y + 74, 23, 800, COLORS.green);
-  p.text(sheet.contact.title, cx + p.width(sheet.contact.name, 23, 800) + 12, y + 73, 14, 700, COLORS.muted);
-  [['电话', sheet.contact.phone], ['微信', '扫左侧二维码添加'], ['官网', sheet.contact.website]].forEach(([label, value], index) => {
-    p.text(label, cx, y + 106 + index * 26, 15, 400, COLORS.muted);
-    p.text(value, cx + 46, y + 106 + index * 26, 16, 700, COLORS.ink);
-  });
-  y += contactHeight + 28;
+  // Consultants: one card each, side by side, with a scannable WeChat QR code.
+  if (sheet.contacts.length) {
+    y += 22;
+    const count = sheet.contacts.length;
+    const cardGap = 12;
+    const innerX = X0 + 18;
+    const innerWidth = CW - 36;
+    const cardWidth = (innerWidth - cardGap * (count - 1)) / count;
+    const qrSize = count >= 3 ? 112 : 126;
+    const textWidth = cardWidth - qrSize - 38;
+    const titleLines = sheet.contacts.map(contact => plainLines(p.context, contact.title, textWidth, 13).length);
+    const cardHeight = Math.max(qrSize + 28, 28 + 26 + Math.max(...titleLines) * 19 + 58);
+    const blockHeight = 52 + cardHeight + 18;
+    p.rounded(X0, y, CW, blockHeight, 14, '#f6faf6', COLORS.line);
+    p.text('联系思达顾问 · 预留学位', innerX, y + 34, 15, 800, COLORS.orange);
+    p.text('扫码添加微信，发学生年龄、出发时间和预算', innerX + p.width('联系思达顾问 · 预留学位', 15, 800) + 14, y + 33, 13, 400, COLORS.muted);
+    sheet.contacts.forEach((contact, index) => {
+      const x = innerX + index * (cardWidth + cardGap);
+      const top = y + 52;
+      p.rounded(x, top, cardWidth, cardHeight, 12, '#ffffff', COLORS.line);
+      p.rounded(x + 12, top + 14, qrSize, qrSize, 8, '#ffffff', COLORS.line);
+      const qr = assets.qrs?.[index];
+      if (p.draw && qr) drawImageContain(p.context, qr, x + 16, top + 18, qrSize - 8, qrSize - 8);
+      const tx = x + qrSize + 26;
+      p.text(contact.name, tx, top + 40, 21, 800, COLORS.green);
+      const titleHeight = p.paragraph(contact.title, tx, top + 62, textWidth, 13, 19, COLORS.muted, 700);
+      p.text('电话', tx, top + 62 + titleHeight + 18, 12, 400, COLORS.muted);
+      p.text(contact.phone, tx, top + 62 + titleHeight + 38, 15, 800, COLORS.ink);
+    });
+    y += blockHeight + 28;
+  } else {
+    y += 28;
+  }
 
   // Footer.
   const footerHeight = 60;
   p.rect(CARD_X, y, CARD_W, footerHeight, COLORS.green);
   p.text('思达启航教育', X0, y + 37, 16, 800, '#ffffff');
-  p.text(`官网 ${sheet.contact.website}　电话 ${sheet.contact.phone}`, X0 + 116, y + 37, 14, 400, '#d9e9de');
+  p.text(`官网 ${sheet.website}`, X0 + 116, y + 37, 14, 400, '#d9e9de');
   p.text('从思达启航，走向更美好的未来', X0 + CW, y + 37, 14, 400, COLORS.gold, 'right');
   y += footerHeight;
   if (p.draw) p.context.restore();
@@ -419,6 +406,6 @@ export function ukQuoteImageHeight(context: TextContext, sheet: UkQuoteSheet): n
 }
 
 export function drawUkQuoteImage<TImage extends QuoteCanvasImage>(context: Context<TImage>, sheet: UkQuoteSheet,
-  assets: { logo?: TImage; qr?: TImage }, height: number): void {
+  assets: UkQuoteImageAssets<TImage>, height: number): void {
   layout(new UkPainter(context, true), sheet, assets, height);
 }

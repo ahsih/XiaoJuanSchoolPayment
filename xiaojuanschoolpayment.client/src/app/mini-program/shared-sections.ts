@@ -1,6 +1,6 @@
 // Building blocks shared by every school page exported to the WeChat mini program.
 // Pure data code (bundled and run in Node by scripts/export-mini-program-content.cjs).
-import { SIDA_PHILIPPINES_CONSULTANTS } from '../components/sida-consultants';
+import { SIDA_PHILIPPINES_CONSULTANTS, SidaConsultant } from '../components/sida-consultants';
 import { SidaWhyOptions, sidaWhyContent } from '../components/sida-why-content';
 import { MiniBlock, MiniSection } from './school-mini-page';
 
@@ -54,17 +54,48 @@ export function contactSection(
         : []),
       miniHeading(cta.title),
       miniText(cta.text),
+      consultantsBlock(SIDA_PHILIPPINES_CONSULTANTS),
+    ],
+  };
+}
+
+/** Consultant cards; the mini program's bottom "加顾问微信" button also uses these QR codes. */
+export function consultantsBlock(people: SidaConsultant[]): MiniBlock {
+  return {
+    type: 'consultants',
+    items: people.map(person => ({
+      name: person.name,
+      title: person.title,
+      text: person.description,
+      phone: person.phone,
+      avatar: miniAsset(person.avatarSrc),
+      qr: miniAsset(person.qrSrc),
+    })),
+  };
+}
+
+/**
+ * The "思达保障与联系顾问" part for a school outside the Philippines, whose page explains Sida's
+ * service in its own words (the shared sidaWhyContent text describes the Philippine support team).
+ */
+export function serviceContactSection(
+  service: { eyebrow: string; title: string; intro: string; steps: Array<{ title: string; text: string }> },
+  cta: { title: string; text: string },
+  people: SidaConsultant[],
+): MiniSection {
+  return {
+    kind: 'contact',
+    blocks: [
+      miniHeading(service.title, service.eyebrow),
+      miniText(service.intro),
       {
-        type: 'consultants',
-        items: SIDA_PHILIPPINES_CONSULTANTS.map(person => ({
-          name: person.name,
-          title: person.title,
-          text: person.description,
-          phone: person.phone,
-          avatar: miniAsset(person.avatarSrc),
-          qr: miniAsset(person.qrSrc),
-        })),
+        type: 'cards',
+        layout: 'list',
+        items: service.steps.map((step, index) => ({ badge: String(index + 1).padStart(2, '0'), title: step.title, text: step.text })),
       },
+      miniHeading(cta.title),
+      miniText(cta.text),
+      consultantsBlock(people),
     ],
   };
 }

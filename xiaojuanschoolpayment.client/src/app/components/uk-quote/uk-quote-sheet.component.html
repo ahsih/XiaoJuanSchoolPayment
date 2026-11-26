@@ -9,10 +9,10 @@
   </div>
 
   <div class="uk-heading">
-    <span class="uk-no">01</span><h3>必付费用</h3><small>单位：{{ sheet.currencyLabel }}</small>
+    <span class="uk-no">01</span><h3>{{ sheet.feesTitle }}</h3><small>单位：{{ sheet.currencyLabel }}</small>
   </div>
   <div class="uk-table-wrap">
-    <table class="uk-table uk-fees" [class.two-plans]="sheet.plans.length > 1">
+    <table class="uk-table uk-fees" [class.two-plans]="sheet.plans.length > 1" [class.three-plans]="sheet.plans.length > 2">
       <thead>
         <tr>
           <th>项目</th>
@@ -23,11 +23,14 @@
       </thead>
       <tbody>
         <tr *ngFor="let row of sheet.requiredRows">
-          <td><strong>{{ row.label }}</strong><span class="note" *ngIf="row.note">{{ row.note }}</span></td>
+          <td>
+            <strong>{{ row.label }}<i class="tag" *ngIf="row.optional">自选</i></strong>
+            <span class="note" *ngIf="row.note"><span class="line" *ngFor="let line of lines(row.note)"><ng-container *ngFor="let run of line"><em *ngIf="run.emphasis">{{ run.text }}</em><ng-container *ngIf="!run.emphasis">{{ run.text }}</ng-container></ng-container></span></span>
+          </td>
           <td *ngFor="let amount of row.amounts" [class]="amountClass(amount)">{{ amountText(amount) }}</td>
         </tr>
         <tr class="total">
-          <td><strong>必付合计</strong></td>
+          <td><strong>{{ sheet.totalLabel }}</strong></td>
           <td class="amount" *ngFor="let total of sheet.requiredTotals; let index = index">
             <b>{{ total === null ? '待确认' : money(total) }}</b>
             <span class="cny">{{ sheet.requiredTotalsCny[index] === null ? '人民币待更新' : '约 ' + money(sheet.requiredTotalsCny[index]!) + ' 元人民币' }}</span>
@@ -38,26 +41,6 @@
   </div>
   <p class="uk-rate">{{ sheet.rateNote }}</p>
 
-  <div class="uk-heading"><span class="uk-no">02</span><h3>费用包含</h3></div>
-  <div class="uk-table-wrap">
-    <table class="uk-table uk-includes" [class.two-plans]="sheet.plans.length > 1">
-      <thead>
-        <tr>
-          <th>内容</th>
-          <th *ngFor="let plan of sheet.plans"><span class="plan-tag" *ngIf="plan.tag">{{ plan.tag }}</span>{{ plan.title }}</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let row of sheet.includeRows">
-          <th scope="row">{{ row.label }}</th>
-          <td *ngFor="let value of row.values" [attr.colspan]="row.values.length === 1 ? sheet.plans.length : null"
-            [class.muted]="value === '不含'">
-            <span class="line" *ngFor="let line of lines(value)"><ng-container *ngFor="let run of line"><em *ngIf="run.emphasis">{{ run.text }}</em><ng-container *ngIf="!run.emphasis">{{ run.text }}</ng-container></ng-container></span>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
   <div class="uk-examples" *ngIf="sheet.examples.length">
     <strong>{{ sheet.examplesTitle }}</strong>
     <p *ngFor="let example of sheet.examples"><b>{{ example.label }}：</b>{{ example.text }}</p>

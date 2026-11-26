@@ -1,16 +1,68 @@
-/* Burlington additions on top of the shared CIA/CIEC school-detail layout. */
+/* Burlington additions on top of the shared CIA/CIEC school-detail layout. The page has its own
+   order (adult programmes first, one contact block at the end), so several shared blocks are
+   replaced here rather than reused. */
 .burlington-page .hero-copy h1 { font-size: clamp(34px, 3.6vw, 54px); line-height: 1.12; }
+
+/* Hero: one large photo and a column of three thumbnails; no headline price. */
+.burlington-page .hero-media { grid-template-columns: minmax(0, 1fr) 210px; align-items: stretch; }
+.burlington-page .hero-media .media-strip { grid-template-rows: repeat(3, minmax(0, 1fr)); }
+.burlington-page .hero-media .media-strip figure { display: flex; flex-direction: column; }
+.burlington-page .hero-media .media-strip img { flex: 1; min-height: 110px; height: auto; object-fit: cover; }
+
 .burlington-page .timeline { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-.burlington-page .course-grid.bt-programme-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-.burlington-page .bt-programme ul { margin: 10px 0 0; padding-left: 18px; color: #40506a; font-size: 14px; line-height: 1.7; }
-.burlington-page .bt-dates { display: flex; gap: 6px; align-items: flex-start; color: #0f4a2f; font-weight: 700; }
-.burlington-page .bt-dates mat-icon { flex: none; font-size: 18px; width: 18px; height: 18px; margin-top: 2px; }
-.burlington-page .bt-weeks, .burlington-page .bt-sub { color: #64748b; font-size: 13px; }
-.burlington-page .bt-price { display: block; margin-top: 10px; color: #ee7d1a; font-size: 18px; font-weight: 900; }
-
 .burlington-page .bt-subheading { margin: 30px 0 12px; color: #102033; font-size: 18px; font-weight: 900; }
+.burlington-page .bt-subheading.bt-first { margin-top: 6px; }
 .burlington-page .bt-note { margin: 10px 0 0; color: #64748b; font-size: 13px; line-height: 1.7; }
+.burlington-page .bt-reference { color: #8a6d3b; }
+.burlington-page .bt-check-list { margin: 0; padding-left: 18px; color: #40506a; font-size: 14px; line-height: 1.75; }
 
+/* Programme overview cards. */
+.burlington-page .bt-programme-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+.burlington-page .bt-programme { display: flex; flex-direction: column; padding: 18px; border: 1px solid #dce8ee; border-top: 4px solid #0f4a2f; border-radius: 10px; background: #fff; }
+.burlington-page .bt-programme.bt-junior { border-top-color: #1d4f91; }
+.burlington-page .bt-type { align-self: flex-start; padding: 2px 10px; border-radius: 999px; background: #0f4a2f; color: #fff; font-size: 12px; font-weight: 800; }
+.burlington-page .bt-programme.bt-junior .bt-type { background: #1d4f91; }
+.burlington-page .bt-programme.bt-junior .bt-dates, .burlington-page .bt-programme.bt-junior .bt-card-link { color: #1d4f91; }
+
+/* Programme zones: adult (green) and junior (blue), each opened by a text banner. */
+.burlington-page .bt-zone { --zone: #0f4a2f; --zone-2: #1d6b45; --zone-soft: #eaf3ec; display: grid; grid-template-columns: minmax(0, 1fr); gap: 24px; }
+.burlington-page .bt-zone--junior { --zone: #1d4f91; --zone-2: #2f6fb8; --zone-soft: #e8f0fb; }
+.burlington-page .bt-zone-banner { padding: 26px 28px; border-radius: 12px; background: linear-gradient(135deg, var(--zone), var(--zone-2)); color: #fff; }
+.burlington-page .bt-zone-pill, .burlington-page .section-heading .bt-eyebrow { display: inline-flex; align-items: center; gap: 8px; margin: 0;
+  padding: 4px 12px 4px 4px; border-radius: 999px; font-size: 14px; font-weight: 800; line-height: 1.4; }
+.burlington-page .bt-zone-pill { background: rgba(255, 255, 255, 0.16); color: #fff; }
+.burlington-page .bt-zone-pill b, .burlington-page .bt-eyebrow b { padding: 3px 12px; border-radius: 999px; font-weight: 900; }
+.burlington-page .bt-zone-pill b { background: #fff; color: var(--zone); }
+.burlington-page .section-heading .bt-eyebrow { background: var(--zone-soft); color: var(--zone); }
+.burlington-page .bt-eyebrow b { background: var(--zone); color: #fff; }
+.burlington-page .bt-zone-copy h2 { margin: 12px 0 8px; color: #fff; font-size: clamp(24px, 2.6vw, 34px); font-weight: 950; line-height: 1.2; }
+.burlington-page .bt-zone-copy > p { max-width: 920px; margin: 0; color: rgba(255, 255, 255, 0.9); font-size: 15px; line-height: 1.8; }
+.burlington-page .bt-zone-facts { display: flex; flex-wrap: wrap; gap: 6px 22px; margin: 14px 0 0; padding: 0; list-style: none; }
+.burlington-page .bt-zone-facts li { display: flex; align-items: center; gap: 6px; font-size: 14px; font-weight: 700; }
+.burlington-page .bt-zone-facts mat-icon { flex: none; color: #f7c873; font-size: 18px; width: 18px; height: 18px; }
+.burlington-page .bt-zone-links { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
+.burlington-page .bt-zone-links a { display: inline-flex; align-items: center; gap: 4px; padding: 7px 12px; border-radius: 8px; background: #fff;
+  color: var(--zone); font-size: 14px; font-weight: 800; text-decoration: none; }
+.burlington-page .bt-zone-links mat-icon { font-size: 16px; width: 16px; height: 16px; }
+.burlington-page .bt-zone-section { border-left: 5px solid var(--zone); }
+.burlington-page .bt-zone-section .bt-subheading[id] { }
+.burlington-page .bt-programme h3 { margin: 10px 0 6px; color: #102033; font-size: 20px; font-weight: 900; }
+.burlington-page .bt-dates { display: flex; gap: 6px; align-items: flex-start; margin: 0; color: #0f4a2f; font-size: 14px; font-weight: 700; }
+.burlington-page .bt-dates mat-icon { flex: none; font-size: 18px; width: 18px; height: 18px; margin-top: 1px; }
+.burlington-page .bt-price { display: block; margin-top: 12px; color: #ee7d1a; font-size: 20px; font-weight: 900; }
+.burlington-page .bt-sub { margin: 4px 0 10px; color: #64748b; font-size: 13px; line-height: 1.6; }
+.burlington-page .bt-programme .bt-check-list { flex: 1; }
+.burlington-page .bt-card-link { display: inline-flex; align-items: center; gap: 4px; margin-top: 12px; color: #0f4a2f; font-size: 14px; font-weight: 800; text-decoration: none; }
+.burlington-page .bt-card-link mat-icon { font-size: 18px; width: 18px; height: 18px; }
+
+/* Highlights. */
+.burlington-page .bt-highlight-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+.burlington-page .bt-highlight-grid article { display: flex; gap: 12px; padding: 16px; border: 1px solid #dce8ee; border-radius: 10px; background: #fff; }
+.burlington-page .bt-highlight-grid mat-icon { flex: none; width: 36px; height: 36px; padding: 6px; box-sizing: border-box; border-radius: 8px; background: #fff3e6; color: #ee7d1a; font-size: 24px; }
+.burlington-page .bt-highlight-grid strong { display: block; color: #102033; font-size: 16px; }
+.burlington-page .bt-highlight-grid p { margin: 6px 0 0; color: #40506a; font-size: 14px; line-height: 1.65; }
+
+/* Tables. */
 .burlington-page .bt-table-wrap { overflow-x: auto; border: 1px solid #dce8ee; border-radius: 8px; background: #fff; -webkit-overflow-scrolling: touch; }
 .burlington-page .bt-table { width: 100%; border-collapse: collapse; font-size: 14px; }
 .burlington-page .bt-table.bt-wide { min-width: 680px; }
@@ -18,17 +70,25 @@
 .burlington-page .bt-table thead th { border-top: 0; background: #0f4a2f; color: #fff; font-weight: 800; }
 .burlington-page .bt-table tbody th { color: #102033; font-weight: 800; background: #f8fbf9; white-space: nowrap; }
 .burlington-page .bt-table .bt-strong { color: #102033; font-weight: 800; }
+.burlington-page .bt-table .bt-rate { color: #ee7d1a; font-size: 16px; white-space: nowrap; }
 .burlington-page .bt-table .bt-muted { color: #a3aaa5; }
+.burlington-page .bt-age-table td:nth-child(2) { white-space: nowrap; color: #0f4a2f; font-weight: 700; }
 
-.burlington-page .bt-extra-grid, .burlington-page .bt-service-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin-top: 14px; }
-.burlington-page .bt-service-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
-.burlington-page .bt-extra-grid article, .burlington-page .bt-service-grid article { padding: 14px; border: 1px solid #dce8ee; border-radius: 8px; background: #fff; }
-.burlington-page .bt-extra-grid span { color: #64748b; font-size: 13px; font-weight: 700; }
-.burlington-page .bt-extra-grid strong, .burlington-page .bt-service-grid strong { display: block; margin-top: 4px; color: #102033; }
-.burlington-page .bt-extra-grid p, .burlington-page .bt-service-grid p { margin: 6px 0 0; color: #40506a; font-size: 13px; line-height: 1.6; }
-.burlington-page .bt-service-grid mat-icon { color: #ee7d1a; }
+/* Adult course types. */
+.burlington-page .bt-course-types { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; margin-bottom: 4px; }
+.burlington-page .bt-course-types article { display: flex; flex-direction: column; padding: 14px; border: 1px solid #dce8ee; border-radius: 10px; background: #fff; }
+.burlington-page .bt-course-types h3 { margin: 0 0 8px; color: #0f4a2f; font-size: 17px; font-weight: 900; }
+.burlington-page .bt-course-types h3 small { display: block; color: #8a938d; font-size: 12px; font-weight: 600; }
+.burlington-page .bt-course-types dl { margin: 0; }
+.burlington-page .bt-course-types dl div { display: flex; gap: 8px; padding: 5px 0; border-top: 1px solid #eef2f5; font-size: 13px; }
+.burlington-page .bt-course-types dt { flex: none; width: 34px; color: #8a938d; }
+.burlington-page .bt-course-types dd { margin: 0; color: #40506a; }
+.burlington-page .bt-course-types dd.bt-strong { color: #ee7d1a; font-weight: 900; }
+.burlington-page .bt-course-types p { margin: 8px 0 0; color: #64748b; font-size: 13px; line-height: 1.6; }
 
-.burlington-page .bt-room-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+/* Accommodation and dining. */
+.burlington-page .bt-room-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; margin-top: 14px; }
+.burlington-page .bt-room-grid.bt-first-grid { margin-top: 0; }
 .burlington-page .bt-room-card { padding: 16px; border: 1px solid #dce8ee; border-radius: 8px; background: #fff; }
 .burlington-page .bt-room-card h3 { display: flex; align-items: center; gap: 6px; margin: 0 0 10px; color: #0f4a2f; font-size: 16px; }
 .burlington-page .bt-room-card p { margin: 10px 0 0; color: #64748b; font-size: 13px; line-height: 1.7; }
@@ -36,19 +96,30 @@
 .burlington-page .bt-price-list li { display: flex; justify-content: space-between; gap: 12px; padding: 8px 0; border-top: 1px solid #eef2f5; font-size: 14px; color: #40506a; }
 .burlington-page .bt-price-list li:first-child { border-top: 0; }
 .burlington-page .bt-price-list b { color: #102033; white-space: nowrap; }
-.burlington-page .bt-supplements { margin-top: 12px; padding: 4px 16px; border: 1px solid #dce8ee; border-radius: 8px; background: #fff; }
+/* The canteen image is a row of four dishes; keep its 3:1 shape so no dish is cropped. */
+.burlington-page .bt-dining img { display: block; width: 100%; height: auto; aspect-ratio: 1400 / 466; margin-bottom: 10px; border-radius: 6px; object-fit: cover; }
+.burlington-page .bt-homestay-types { margin: 0; }
+.burlington-page .bt-homestay-types div { padding: 8px 0; border-top: 1px solid #eef2f5; }
+.burlington-page .bt-homestay-types div:first-child { border-top: 0; padding-top: 0; }
+.burlington-page .bt-homestay-types dt { color: #102033; font-weight: 800; font-size: 14px; }
+.burlington-page .bt-homestay-types dd { margin: 3px 0 0; color: #40506a; font-size: 14px; line-height: 1.65; }
+.burlington-page .bt-homestay-extra { display: grid; grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr); gap: 14px; margin-top: 12px; align-items: start; }
+.burlington-page .bt-supplements { padding: 4px 16px; border: 1px solid #dce8ee; border-radius: 8px; background: #fff; }
 
-.burlington-page .bt-tier-row { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
-.burlington-page .bt-tier-row div { padding: 16px; border-radius: 8px; background: #eaf3ec; text-align: center; }
-.burlington-page .bt-tier-row div.active { background: #0f4a2f; color: #fff; }
-.burlington-page .bt-tier-row span { display: block; font-size: 13px; font-weight: 800; letter-spacing: 1px; }
-.burlington-page .bt-tier-row strong { display: block; margin-top: 4px; font-size: 22px; font-weight: 900; }
-.burlington-page .bt-tier-row em { display: block; margin-top: 2px; font-style: normal; font-size: 12px; color: #f7c873; }
-.burlington-page .bt-include-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin-top: 14px; }
-.burlington-page .bt-include-grid article { padding: 14px 16px; border: 1px solid #dce8ee; border-radius: 8px; background: #fff; }
-.burlington-page .bt-include-grid h3 { margin: 0 0 8px; color: #0f4a2f; font-size: 16px; }
-.burlington-page .bt-include-grid ul { margin: 0; padding-left: 18px; color: #40506a; font-size: 14px; line-height: 1.7; }
+/* Summer residence: one price table, then everything the weekly price includes. */
+.burlington-page .bt-residence-price h3 { margin: 0 0 10px; color: #102033; font-size: 16px; font-weight: 900; }
+.burlington-page .bt-include-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+.burlington-page .bt-include-grid article { padding: 14px 16px; border: 1px solid #dce8ee; border-radius: 8px; background: #f8fbf9; }
+.burlington-page .bt-include-grid h4 { margin: 0 0 8px; color: #0f4a2f; font-size: 15px; }
 
+/* Junior. */
+.burlington-page .bt-junior-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; margin-top: 16px; }
+.burlington-page .bt-lead-note { margin: 0 0 8px !important; }
+/* Project topics are sentences, not prices: let them wrap so the card fits a phone screen. */
+.burlington-page .bt-junior-grid .bt-price-list span { flex: none; white-space: nowrap; }
+.burlington-page .bt-junior-grid .bt-price-list b { white-space: normal; text-align: right; }
+
+/* Castle. */
 .burlington-page .bt-castle { display: grid; grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr); gap: 16px; align-items: start; }
 .burlington-page .bt-castle img { width: 100%; border-radius: 8px; object-fit: cover; aspect-ratio: 4 / 3; }
 .burlington-page .bt-castle-options { display: grid; gap: 10px; }
@@ -60,18 +131,44 @@
 
 .burlington-page .bt-fee-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 
-.burlington-page .bt-calendar { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
-.burlington-page .bt-calendar article { padding: 12px 14px; border-left: 4px solid #ee7d1a; border-radius: 6px; background: #fff; box-shadow: 0 1px 0 #e8eef3; }
-.burlington-page .bt-calendar time { display: block; color: #0f4a2f; font-weight: 800; font-size: 14px; }
-.burlington-page .bt-calendar strong { display: block; margin-top: 2px; color: #102033; }
-.burlington-page .bt-calendar span { color: #64748b; font-size: 13px; }
+/* School facts. */
+.burlington-page .bt-info-list { margin: 0; border: 1px solid #dce8ee; border-radius: 8px; background: #fff; }
+.burlington-page .bt-info-list div { display: grid; grid-template-columns: 120px minmax(0, 1fr); gap: 12px; padding: 12px 16px; border-top: 1px solid #eef2f5; }
+.burlington-page .bt-info-list div:first-child { border-top: 0; }
+.burlington-page .bt-info-list dt { color: #0f4a2f; font-weight: 800; font-size: 14px; }
+.burlington-page .bt-info-list dd { margin: 0; color: #40506a; font-size: 14px; line-height: 1.65; }
 
-.burlington-page .bt-contact { display: flex; gap: 18px; align-items: center; margin-top: 16px; padding: 16px; border: 1px solid #dce8ee; border-radius: 8px; background: #f6faf6; }
-.burlington-page .bt-contact-qr { flex: none; width: 128px; height: 128px; object-fit: cover; object-position: 50% 52%; border-radius: 8px; background: #fff; }
-.burlington-page .bt-contact span { color: #ee7d1a; font-size: 13px; font-weight: 800; }
-.burlington-page .bt-contact strong { display: block; margin-top: 2px; color: #0f4a2f; font-size: 18px; }
-.burlington-page .bt-contact p { margin: 6px 0 10px; color: #40506a; font-size: 14px; line-height: 1.6; }
+/* Sida service steps. */
+.burlington-page .bt-service-steps { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin: 0; padding: 0; list-style: none; }
+.burlington-page .bt-service-steps li { display: flex; gap: 12px; padding: 16px; border: 1px solid #dce8ee; border-radius: 10px; background: #fff; }
+.burlington-page .bt-step-no { flex: none; display: grid; place-items: center; width: 30px; height: 30px; border-radius: 50%; background: #0f4a2f; color: #fff; font-weight: 900; font-size: 14px; }
+.burlington-page .bt-service-steps strong { display: flex; align-items: center; gap: 6px; color: #102033; font-size: 16px; }
+.burlington-page .bt-service-steps strong mat-icon { color: #ee7d1a; font-size: 20px; width: 20px; height: 20px; }
+.burlington-page .bt-service-steps p { margin: 6px 0 0; color: #40506a; font-size: 14px; line-height: 1.65; }
 
+/* Review and the three consultants. */
+.burlington-page .bt-review { position: relative; padding: 26px 28px; border-radius: 12px; background: #0f2a20; color: #e7efe9; }
+.burlington-page .bt-review span { display: inline-block; padding: 3px 12px; border: 1px solid rgba(255, 255, 255, 0.3); border-radius: 999px; font-size: 13px; font-weight: 800; color: #fff; }
+.burlington-page .bt-review h2 { margin: 12px 0 10px; color: #fff; font-size: clamp(24px, 2.4vw, 32px); font-weight: 900; line-height: 1.25; }
+.burlington-page .bt-review p { max-width: 920px; margin: 8px 0 0; font-size: 15px; line-height: 1.85; }
+.burlington-page .bt-consultants-head { margin: 22px 0 12px; }
+.burlington-page .bt-consultants-head h3 { margin: 0; color: #102033; font-size: 20px; font-weight: 900; }
+.burlington-page .bt-consultants-head p { margin: 4px 0 0; color: #64748b; font-size: 14px; }
+.burlington-page .bt-consultants { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+.burlington-page .bt-consultant { display: flex; flex-direction: column; padding: 18px; border: 1px solid #dce8ee; border-radius: 12px; background: #fff; box-shadow: 0 8px 20px rgba(16, 32, 51, 0.05); }
+.burlington-page .bt-consultant-top { display: flex; align-items: center; gap: 12px; }
+.burlington-page .bt-avatar { flex: none; width: 64px; height: 64px; overflow: hidden; border-radius: 50%; border: 2px solid #eaf3ec; background: #f3f5f4; }
+.burlington-page .bt-avatar img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.burlington-page .bt-consultant-top strong { display: block; color: #0f4a2f; font-size: 20px; font-weight: 900; }
+.burlington-page .bt-consultant-top span { display: block; margin-top: 2px; color: #64748b; font-size: 13px; font-weight: 700; }
+.burlington-page .bt-consultant > p { flex: 1; margin: 12px 0 0; color: #40506a; font-size: 14px; line-height: 1.65; }
+.burlington-page .bt-phone { display: inline-flex; align-items: center; gap: 6px; margin-top: 12px; color: #102033; font-size: 17px; font-weight: 900; text-decoration: none; }
+.burlington-page .bt-phone mat-icon { color: #ee7d1a; font-size: 20px; width: 20px; height: 20px; }
+.burlington-page .bt-qr { margin: 14px 0 0; padding: 12px; border: 1px solid #eef2f5; border-radius: 10px; background: #f8fbf9; text-align: center; }
+.burlington-page .bt-qr img { display: block; width: 100%; max-width: 168px; aspect-ratio: 1; margin: 0 auto; object-fit: contain; background: #fff; border-radius: 6px; }
+.burlington-page .bt-qr figcaption { margin-top: 8px; color: #64748b; font-size: 12px; }
+
+/* Videos. */
 .burlington-page .bt-video-featured { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
 .burlington-page .bt-video-shorts { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 12px; margin-top: 14px; }
 .burlington-page .bt-video-featured figure, .burlington-page .bt-video-shorts figure { margin: 0; overflow: hidden; border: 1px solid #dce8ee; border-radius: 8px; background: #fff; }
@@ -82,29 +179,61 @@
 .burlington-page .bt-video-shorts strong { font-size: 14px; }
 .burlington-page .bt-video-featured em, .burlington-page .bt-video-shorts em { font-style: normal; color: #64748b; font-weight: 400; font-size: 12px; }
 .burlington-page .bt-video-featured span, .burlington-page .bt-video-shorts span { display: block; margin-top: 4px; color: #526176; font-size: 13px; line-height: 1.5; }
-.burlington-page .bt-junior-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; margin-top: 16px; }
-.burlington-page .bt-lead-note { margin: 0 0 8px !important; }
-.burlington-page .bt-check-list { margin: 0; padding-left: 18px; color: #40506a; font-size: 14px; line-height: 1.75; }
-.burlington-page .bt-vetting { margin-top: 12px; }
+/* Each video names the programme it shows; adult and junior tags use their zone colours. */
+.burlington-page .bt-video-tag { display: inline-block; margin-bottom: 6px; padding: 2px 8px; border-radius: 999px; background: #eef2f5; color: #40506a; font-size: 12px; font-style: normal; font-weight: 800; }
+.burlington-page .bt-video-tag.adult { background: #0f4a2f; color: #fff; }
+.burlington-page .bt-video-tag.junior { background: #1d4f91; color: #fff; }
 
-.burlington-page .bt-reference { color: #8a6d3b; }
+/* Quick-jump bar: eight anchors in one row (four per row on tablets; scrolls on phones). */
+.burlington-page .mobile-anchor-nav { grid-template-columns: repeat(8, minmax(0, 1fr)); padding: 0 8px; }
+.burlington-page .mobile-anchor-nav a { gap: 6px; white-space: nowrap; }
+/* Jump targets stop below the sticky site header and this bar instead of under them. */
+.burlington-page [id] { scroll-margin-top: 150px; }
 
+/* The side card no longer shows a price. */
+.burlington-page .side-card p { margin: 6px 0 12px; }
+
+@media (max-width: 1260px) {
+  .burlington-page .bt-course-types { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 1040px) {
+  /* One scrolling row instead of two wrapped rows, so the sticky bar stays short. */
+  .burlington-page .mobile-anchor-nav { display: flex; overflow-x: auto; scrollbar-width: none; }
+  .burlington-page .mobile-anchor-nav::-webkit-scrollbar { display: none; }
+  .burlington-page .mobile-anchor-nav a { flex: 1 0 auto; padding: 0 12px; }
+  .burlington-page .hero-media { grid-template-columns: 1fr; }
+  .burlington-page .hero-media .media-strip { grid-template-columns: repeat(3, minmax(0, 1fr)); grid-template-rows: none; }
+  .burlington-page .hero-media .media-strip img { flex: none; height: 120px; }
+}
 @media (max-width: 980px) {
+  .burlington-page .bt-programme-grid, .burlington-page .bt-consultants { grid-template-columns: 1fr; }
+  .burlington-page .bt-consultant { display: grid; grid-template-columns: minmax(0, 1fr) 150px; column-gap: 16px; }
+  .burlington-page .bt-consultant > * { grid-column: 1; }
+  .burlington-page .bt-consultant .bt-qr { grid-column: 2; grid-row: 1 / span 3; margin: 0; align-self: start; }
+  .burlington-page .bt-highlight-grid, .burlington-page .bt-service-steps { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .burlington-page .bt-video-shorts { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-  .burlington-page .bt-service-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .burlington-page .bt-calendar, .burlington-page .bt-fee-grid, .burlington-page .bt-extra-grid, .burlington-page .bt-include-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .burlington-page .bt-fee-grid, .burlington-page .bt-include-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 @media (max-width: 640px) {
-  .burlington-page .bt-video-featured, .burlington-page .bt-junior-grid { grid-template-columns: 1fr; }
+  .burlington-page .mobile-anchor-nav { padding: 10px 14px; }
+  .burlington-page .mobile-anchor-nav a { flex: 0 0 auto; padding: 0 14px; }
+  /* On phones only the site header stays on screen. */
+  .burlington-page [id] { scroll-margin-top: 80px; }
+  .burlington-page .bt-dining img { aspect-ratio: 4 / 3; }
+  .burlington-page .hero-media .media-strip img { height: 86px; }
+  .burlington-page .bt-zone-banner { padding: 20px 16px; }
+  .burlington-page .bt-zone-section { border-left-width: 4px; }
+  .burlington-page .section-heading .bt-eyebrow { flex-wrap: wrap; border-radius: 14px; }
+  .burlington-page .bt-video-featured, .burlington-page .bt-junior-grid, .burlington-page .timeline { grid-template-columns: 1fr; }
   .burlington-page .bt-video-shorts { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .burlington-page .timeline { grid-template-columns: 1fr; }
-  .burlington-page .course-grid.bt-programme-grid, .burlington-page .bt-room-grid, .burlington-page .bt-castle,
-  .burlington-page .bt-calendar, .burlington-page .bt-fee-grid, .burlington-page .bt-extra-grid,
-  .burlington-page .bt-include-grid, .burlington-page .bt-service-grid { grid-template-columns: 1fr; }
-  .burlington-page .bt-tier-row { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; }
-  .burlington-page .bt-tier-row div { padding: 10px 4px; }
-  .burlington-page .bt-tier-row strong { font-size: 15px; }
+  .burlington-page .bt-highlight-grid, .burlington-page .bt-service-steps, .burlington-page .bt-course-types,
+  .burlington-page .bt-room-grid, .burlington-page .bt-homestay-extra, .burlington-page .bt-castle,
+  .burlington-page .bt-fee-grid, .burlington-page .bt-include-grid { grid-template-columns: 1fr; }
+  .burlington-page .bt-consultant { grid-template-columns: minmax(0, 1fr) 112px; column-gap: 12px; padding: 14px; }
+  .burlington-page .bt-qr { padding: 8px; }
+  .burlington-page .bt-info-list div { grid-template-columns: 1fr; gap: 2px; }
+  .burlington-page .bt-review { padding: 20px 18px; }
   .burlington-page .bt-table th, .burlington-page .bt-table td { padding: 10px; font-size: 13px; }
   .burlington-page .bt-table tbody th { white-space: normal; }
-  .burlington-page .bt-contact { flex-direction: column; align-items: flex-start; }
+  .burlington-page .bt-age-table td:nth-child(2) { white-space: normal; }
 }

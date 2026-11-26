@@ -5,7 +5,11 @@ import {
 } from '../../pages/overseas-study-tour/uk-schools/burlington-school/burlington-quote';
 import { drawUkQuoteImage, ukQuoteImageHeight } from './uk-quote-image-renderer';
 
-const CONTACT = { name: 'Jenny', title: '英爱留学规划', phone: '132 4982 7686', qrSrc: '/assets/contact/jenny-wechat-qr.png' };
+const CONTACTS = [
+  { name: 'Lemon', title: '多国家方案规划', phone: '132 9852 9856', qrSrc: '/assets/contact/lemon-wechat-qr.png' },
+  { name: 'Perrin', title: '菲律宾与东南亚游学', phone: '153 6765 9331', qrSrc: '/assets/contact/penin-wechat-qr.png' },
+  { name: 'Jenny', title: '英爱留学规划', phone: '132 4982 7686', qrSrc: '/assets/contact/jenny-wechat-qr.png' },
+];
 
 function sheet(plans: number, programme: 'junior' | 'adult-course' | 'summer-residence' = 'junior') {
   const input = defaultBurlingtonQuote('2026-11-19', programme);
@@ -14,7 +18,7 @@ function sheet(plans: number, programme: 'junior' | 'adult-course' | 'summer-res
     arrival: programme === 'adult-course' ? '2027-01-03' : programme === 'junior' ? '2027-08-01' : '2027-06-27',
     juniorPackage: index === 0 ? 'residence' as const : 'homestay' as const,
   }));
-  return buildBurlingtonSheet(input, '2026年11月19日', { gbpToCny: 9.5, date: '2026-11-18' }, CONTACT);
+  return buildBurlingtonSheet(input, '2026年11月19日', { gbpToCny: 9.5, date: '2026-11-18' }, CONTACTS);
 }
 
 describe('UK quote image renderer', () => {
@@ -28,9 +32,9 @@ describe('UK quote image renderer', () => {
     expect(ukQuoteImageHeight(context(), sheet(1, 'adult-course'))).toBeGreaterThan(1500);
   });
 
-  for (const programme of ['junior', 'adult-course', 'summer-residence'] as const) {
-    it(`draws a complete ${programme} image down to the footer`, () => {
-      const data = sheet(2, programme);
+  for (const [programme, plans] of [['junior', 2], ['adult-course', 3], ['summer-residence', 2]] as const) {
+    it(`draws a complete ${programme} image with ${plans} plans down to the footer`, () => {
+      const data = sheet(plans, programme);
       const canvas = document.createElement('canvas');
       const height = ukQuoteImageHeight(canvas.getContext('2d')!, data);
       canvas.width = 1032;

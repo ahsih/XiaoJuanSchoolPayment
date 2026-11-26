@@ -13,15 +13,27 @@
 .uk-heading small { color: var(--uk-muted); font-size: 13px; }
 .uk-no { background: var(--uk-orange); color: #fff; font-weight: 800; font-size: 13px; border-radius: 6px; padding: 1px 8px; }
 
-.uk-table-wrap { border: 1px solid var(--uk-line); border-radius: 12px; overflow: hidden; }
+.uk-table-wrap { border: 1px solid var(--uk-line); border-radius: 12px; overflow: hidden; overflow-x: auto; -webkit-overflow-scrolling: touch; }
 .uk-table { width: 100%; border-collapse: collapse; font-size: 15px; }
 .uk-table th, .uk-table td { padding: 12px 14px; border-bottom: 1px solid var(--uk-line); vertical-align: middle; text-align: left; }
 .uk-table tbody tr:last-child td, .uk-table tbody tr:last-child th { border-bottom: none; }
 .uk-table thead th { background: var(--uk-green); color: #fff; font-size: 15px; font-weight: 700; }
 .plan-tag { display: block; font-size: 12px; font-weight: 400; color: #bfe0c9; }
-.uk-fees th.num, .uk-fees td.amount, .uk-fees td.amount.na, .uk-fees td.amount.included { text-align: right; width: 200px; }
+/* Amounts are short, so their columns stay narrow and what each fee covers gets the width. */
+.uk-fees th.num, .uk-fees td.amount, .uk-fees td.amount.na, .uk-fees td.amount.included { text-align: right; width: 150px; }
 .uk-fees td strong { display: block; }
-.uk-fees .note { display: block; margin-top: 3px; font-size: 13px; color: var(--uk-muted); line-height: 1.5; }
+.uk-fees .tag { font-style: normal; font-size: 11px; font-weight: 400; color: #9a6b2b; border: 1px solid #e6cfa7; background: #fffaf2;
+  border-radius: 4px; padding: 0 5px; margin-left: 6px; vertical-align: 2px; }
+.uk-fees.three-plans th.num, .uk-fees.three-plans td.amount, .uk-fees.three-plans td.amount.na,
+.uk-fees.three-plans td.amount.included { width: 132px; }
+.uk-fees.three-plans tr.total b { font-size: 21px; }
+/* Each fee lists what it covers under its name; the amount lines up with the name. */
+.uk-fees tbody td { vertical-align: baseline; padding-top: 15px; padding-bottom: 15px; }
+.uk-fees tbody td:first-child { padding-left: 18px; padding-right: 24px; }
+.uk-fees .note { display: block; margin-top: 6px; font-size: 14px; color: #5f6a63; line-height: 1.75; }
+.uk-fees .note .line { display: block; }
+.uk-fees .note .line + .line { margin-top: 3px; }
+.uk-fees .note em { font-style: normal; font-weight: 800; color: var(--uk-orange); }
 .uk-fees td.amount { font-weight: 800; font-size: 17px; font-variant-numeric: tabular-nums; white-space: nowrap; }
 .uk-fees td.amount.included { color: var(--uk-green-2); font-size: 14px; }
 .uk-fees td.amount.na { color: #9aa49d; font-weight: 400; font-size: 14px; }
@@ -30,12 +42,6 @@
 .uk-fees tr.total b { display: block; color: var(--uk-orange); font-size: 24px; }
 .uk-fees tr.total .cny { display: block; font-size: 12px; font-weight: 400; color: var(--uk-muted); }
 .uk-rate { margin: 8px 2px 0; font-size: 12px; color: var(--uk-muted); }
-
-.uk-includes tbody th { width: 110px; background: var(--uk-soft); color: var(--uk-green); font-weight: 700; font-size: 14px; }
-.uk-includes td { font-size: 14px; line-height: 1.65; }
-.uk-includes td .line { display: block; }
-.uk-includes td em { font-style: normal; font-weight: 800; color: var(--uk-orange); }
-.uk-includes td.muted { color: #a3aaa5; }
 
 .uk-examples { margin-top: 12px; background: var(--uk-soft); border: 1px solid var(--uk-line); border-radius: 12px; padding: 12px 16px; font-size: 13px; line-height: 1.7; }
 .uk-examples strong { color: var(--uk-green-2); font-size: 13px; }
@@ -53,15 +59,29 @@
 @media (max-width: 640px) {
   .uk-table { font-size: 14px; }
   .uk-table th, .uk-table td { padding: 10px; }
-  .uk-fees th.num, .uk-fees td.amount, .uk-fees td.amount.na, .uk-fees td.amount.included { width: auto; }
+  .uk-fees th.num, .uk-fees td.amount, .uk-fees td.amount.na, .uk-fees td.amount.included,
+  .uk-fees.three-plans th.num, .uk-fees.three-plans td.amount, .uk-fees.three-plans td.amount.na,
+  .uk-fees.three-plans td.amount.included { width: auto; }
   .uk-fees.two-plans td.amount { font-size: 15px; }
+  .uk-fees.three-plans tr.total b { font-size: 18px; }
   .uk-fees tr.total b { font-size: 20px; }
-  .uk-includes, .uk-includes tbody, .uk-includes tr, .uk-includes th, .uk-includes td { display: block; width: auto; }
-  .uk-includes thead { display: none; }
-  .uk-includes tbody th { border-bottom: none; padding-bottom: 2px; background: transparent; }
-  .uk-includes.two-plans td:not([colspan])::before { display: block; font-size: 12px; color: var(--uk-muted); }
-  .uk-includes.two-plans td:not([colspan]):nth-of-type(1)::before { content: '方案一'; }
-  .uk-includes.two-plans td:not([colspan]):nth-of-type(2)::before { content: '方案二'; }
-  .uk-includes td { border-bottom: none; padding-top: 2px; }
-  .uk-includes tr { border-bottom: 1px solid var(--uk-line); padding-bottom: 6px; }
+  /* Phones: name and amounts on one line, what the fee covers on the full width below them. */
+  .uk-fees, .uk-fees thead, .uk-fees tbody { display: block; }
+  .uk-fees tr { display: grid; grid-template-columns: minmax(0, 1fr) 112px; align-items: baseline;
+    border-bottom: 1px solid var(--uk-line); }
+  .uk-fees.two-plans tr { grid-template-columns: minmax(0, 1fr) 96px 96px; }
+  /* Three plans fit the phone width, so what each fee covers never needs sideways scrolling. */
+  .uk-fees.three-plans tr { grid-template-columns: minmax(0, 1fr) repeat(3, 76px); }
+  .uk-fees.three-plans thead th, .uk-fees.three-plans td.amount { padding-left: 4px; padding-right: 8px; font-size: 14px; }
+  .uk-fees.three-plans td.amount:not(.na):not(.included) { font-size: 15px; }
+  .uk-fees tbody tr:last-child { border-bottom: none; }
+  .uk-fees th, .uk-fees td { border-bottom: none; }
+  .uk-fees thead tr { align-items: center; background: var(--uk-green); }
+  .uk-fees tbody td:first-child { display: contents; }
+  .uk-fees tbody td:first-child strong { grid-column: 1; grid-row: 1; padding: 10px 10px 4px; }
+  .uk-fees tbody td:first-child .note { grid-column: 1 / -1; grid-row: 2; margin: 0; padding: 0 10px 10px; }
+  .uk-fees tbody td.amount { grid-row: 1; padding-top: 10px; padding-bottom: 4px; }
+  .uk-fees tbody tr.total td.amount { padding-bottom: 12px; }
+  .uk-fees tr.total { background: #fff3e6; }
+  .uk-fees tr.total .cny { white-space: normal; }
 }

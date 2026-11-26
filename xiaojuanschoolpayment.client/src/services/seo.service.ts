@@ -43,8 +43,8 @@ export const SEO_PAGES: Record<string, SeoPage> = {
   },
   '/overseas-study-tour/uk/burlington-school': {
     title: '英国伦敦Burlington School语言学校｜课程住宿费用与在线报价',
-    description: '伦敦Burlington School介绍：青少年春夏秋冬季全包项目、成人英语课程、成人暑期公寓套餐、校内宿舍与寄宿家庭价格和巴斯城堡体验，可在线计算2027年费用并保存报价图片；思达启航提供英国游学选校与报名咨询。',
-    keywords: 'Burlington School, 伦敦语言学校, 英国游学, 英国暑期游学, 伦敦青少年夏校, 英国语言学校费用, Burlington报价',
+    description: '伦敦Burlington School介绍：成人英语课程全年每周开课、成人暑期公寓套餐、青少年春夏秋冬季全包项目，校内宿舍、食堂、寄宿家庭和公寓价格，巴斯城堡体验，可在线计算2027年费用并保存报价图片；思达启航提供英国游学选校与报名咨询。',
+    keywords: 'Burlington School, 伦敦语言学校, 英国游学, 伦敦成人英语课程, 英国暑期游学, 伦敦青少年夏校, 英国语言学校费用, Burlington报价',
     image: '/assets/burlington/campus-courtyard.jpg',
   },
   '/philippines-study/cebu/ev-la-mer': {

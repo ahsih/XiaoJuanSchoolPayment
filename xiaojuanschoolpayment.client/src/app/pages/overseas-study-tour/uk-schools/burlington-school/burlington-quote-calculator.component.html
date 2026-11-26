@@ -6,10 +6,7 @@
     </button>
   </div>
 
-  <div class="bq-grid bq-student">
-    <label>学生称呼（可选）
-      <input type="text" [(ngModel)]="input.studentName" maxlength="20" placeholder="例如：张同学" />
-    </label>
+  <div class="bq-student">
     <label *ngIf="input.programme === 'junior'">入学时年龄
       <select [(ngModel)]="input.juniorAge"><option *ngFor="let age of juniorAges" [ngValue]="age">{{ age }}岁</option></select>
     </label>
@@ -19,15 +16,9 @@
         <option ngValue="minor">16–17岁</option>
       </select>
     </label>
-    <label>接送机地点（参考价）
-      <select [(ngModel)]="input.airport"><option *ngFor="let airport of airports" [ngValue]="airport.id">{{ airport.name }}</option></select>
-    </label>
-    <label>报价顾问
-      <select [(ngModel)]="consultantName"><option *ngFor="let item of consultants" [ngValue]="item.name">{{ item.name }} · {{ item.title }}</option></select>
-    </label>
   </div>
 
-  <div class="bq-plans" [class.two]="input.plans.length > 1">
+  <div class="bq-plans" [class.two]="input.plans.length === 2" [class.three]="input.plans.length === 3">
     <section class="bq-plan" *ngFor="let plan of input.plans; let index = index; trackBy: trackIndex">
       <header>
         <strong>{{ input.plans.length > 1 ? planTags[index] : '报价方案' }}</strong>
@@ -51,8 +42,10 @@
           <label *ngIf="plan.juniorPackage === 'homestay'">寄宿家庭房间
             <select [(ngModel)]="plan.juniorHomestayRoom"><option ngValue="single">单人间</option><option ngValue="twin">双人间</option></select>
           </label>
-          <label>入住日期（周日）
-            <select [(ngModel)]="plan.arrival"><option *ngFor="let date of juniorArrivals(plan)" [ngValue]="date">{{ dateText(date) }}</option></select>
+          <label>{{ plan.juniorPackage === 'day' ? '开课日期（周一）' : '入住日期（周日）' }}
+            <select [(ngModel)]="plan.arrival">
+              <option *ngFor="let date of juniorArrivals(plan)" [ngValue]="date">{{ dateText(plan.juniorPackage === 'day' ? addDays(date, 1) : date) }}</option>
+            </select>
           </label>
           <label>周数
             <select [(ngModel)]="plan.weeks"><option *ngFor="let weeks of juniorWeeks(plan)" [ngValue]="weeks">{{ weeks }}周</option></select>
@@ -71,8 +64,10 @@
           <label *ngIf="plan.course !== 'one-to-one'">课程方向
             <select [(ngModel)]="plan.courseFocus"><option *ngFor="let focus of focuses" [ngValue]="focus.id">{{ focus.name }}</option></select>
           </label>
-          <label>入住日期（周日）
-            <select [(ngModel)]="plan.arrival"><option *ngFor="let date of adultArrivals" [ngValue]="date">{{ fullDateText(date) }}</option></select>
+          <label>{{ plan.accommodation === 'none' ? '开课日期（周一）' : '入住日期（周日）' }}
+            <select [(ngModel)]="plan.arrival">
+              <option *ngFor="let date of adultArrivals" [ngValue]="date">{{ fullDateText(plan.accommodation === 'none' ? addDays(date, 1) : date) }}</option>
+            </select>
           </label>
           <label>课程周数
             <select [ngModel]="plan.weeks" (ngModelChange)="changeAdultWeeks(plan, $event)"><option *ngFor="let weeks of adultWeeks" [ngValue]="weeks">{{ weeks }}周</option></select>
@@ -82,7 +77,7 @@
           </label>
           <label>住宿
             <select [(ngModel)]="plan.accommodation">
-              <option ngValue="onsite">校内宿舍（含周一至五早晚餐）</option>
+              <option ngValue="onsite">校内宿舍（含工作日早晚餐）</option>
               <option ngValue="homestay">寄宿家庭</option>
               <option ngValue="apartment">Wandsworth公寓（18岁以上）</option>
               <option ngValue="none">不需要住宿</option>
@@ -135,9 +130,29 @@
       </ng-container>
     </section>
 
-    <button type="button" class="bq-add" *ngIf="input.plans.length < 2" (click)="addPlan()">
-      <mat-icon>add</mat-icon>添加方案二，并排对比
+    <button type="button" class="bq-add" *ngIf="input.plans.length < maxPlans" (click)="addPlan()">
+      <mat-icon>add</mat-icon>添加{{ planTags[input.plans.length] }}，并排对比
     </button>
+  </div>
+
+  <div class="bq-extras" role="group" aria-label="可选费用">
+    <h4>可选费用<span>勾选后计入合计</span></h4>
+    <div class="bq-extra-transfer">
+      <label class="check"><input type="checkbox" [(ngModel)]="input.extras.arrivalTransfer" />接机</label>
+      <label class="check"><input type="checkbox" [(ngModel)]="input.extras.departureTransfer" />送机</label>
+      <label class="bq-airport" *ngIf="transferChosen">机场
+        <select [(ngModel)]="input.extras.airport">
+          <option *ngFor="let airport of airports" [ngValue]="airport.id">{{ airport.name }} · 单程{{ airport.price }}英镑</option>
+        </select>
+      </label>
+      <small *ngIf="transferChosen && unaccompanied">14岁以下接送机须加无人陪伴费，每程{{ junior.unaccompaniedMinorFee }}英镑，已计入。</small>
+      <small *ngIf="!transferChosen">单程140–190英镑，按机场计价。</small>
+    </div>
+    <div class="bq-extra-list">
+      <label class="check" *ngFor="let option of extraOptions; trackBy: trackExtra">
+        <input type="checkbox" [(ngModel)]="input.extras[option.key]" />{{ option.label }}<b>{{ option.price }}</b>
+      </label>
+    </div>
   </div>
 
   <app-uk-quote-sheet [sheet]="sheet"></app-uk-quote-sheet>
