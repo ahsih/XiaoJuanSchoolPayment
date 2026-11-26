@@ -40,13 +40,12 @@ import { SchoolQuotePlan, QuotePlanKind, quoteMoney } from '../../components/sch
 import { SchoolQuotePlanComponent } from '../../components/school-quote-plan.component';
 import { TargetStudentQuote } from './target-school/target-student-quote';
 import { TargetSchoolComponent } from './target-school/target-school.component';
-import { CipQuoteCalculatorComponent } from './cip-school/cip-quote-calculator.component';
+import { CipSchoolPageComponent } from './cip-school/cip-school-page.component';
 import { LaMerSchoolPageComponent } from './la-mer-school/la-mer-school-page.component';
 import { PhilippinesQuoteImageExporterComponent } from '../../components/philippines-quote-image-exporter.component';
-const imageAlias = (page: any) => { Object.defineProperty(page, 'quoteImageData', { get: () => page.quoteImage }); return page; };
 const schools = [
   { name: 'TARGET', create: () => new TargetSchoolComponent() },
-  { name: 'CIP', create: () => imageAlias(new CipQuoteCalculatorComponent()) },
+  { name: 'CIP', create: () => new CipSchoolPageComponent() },
   { name: 'EV La Mer', create: () => new LaMerSchoolPageComponent() },
   { name: 'PINES IELTS', create: () => { const p = new PinesSchoolPageComponent(); p.students[0].quotePlan.courses[0].optionId = 'pre-ielts'; return p; } },
   { name: 'BECI Sparta', create: () => { const p = new BeciQuoteCalculatorComponent(); p.campus = 'sparta'; return p; } },
