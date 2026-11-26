@@ -71,6 +71,12 @@ const IBREEZE_COPY: PhPageCopy = {
     suitableTitle: '适合谁',
     notSuitableTitle: '报名前想清楚',
   },
+  authorization: {
+    title: '思达启航是 I.BREEZE 官方授权招生代理',
+    text: 'I.BREEZE 校方向思达启航颁发了官方招生代理授权书（Certificate of Representation），学生可以通过思达启航直接向学校报名。',
+    image: 'assets/ibreeze/sida-representation-certificate.webp',
+    alt: 'I.BREEZE 颁发给思达启航的官方招生代理授权书',
+  },
   campus: {
     eyebrow: 'CAMPUS AT A GLANCE',
     title: 'I.BREEZE 校园介绍',

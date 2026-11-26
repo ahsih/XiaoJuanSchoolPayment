@@ -204,6 +204,7 @@
         </div>
         <small>{{ copy.license.note }}</small>
       </aside>
+      <ng-container *ngTemplateOutlet="schoolAuthorization"></ng-container>
       <p class="section-reference-note" *ngIf="overviewReferenceNote && copy.referenceNote"><mat-icon>info</mat-icon>{{ copy.referenceNote }}</p>
     </section>
 
@@ -255,6 +256,20 @@
       </div>
       <small>{{ copy.license.note }}</small>
     </aside>
+    <ng-container *ngIf="!compactLayout"><ng-container *ngTemplateOutlet="schoolAuthorization"></ng-container></ng-container>
+
+    <ng-template #schoolAuthorization>
+      <aside class="school-authorization" *ngIf="copy.authorization as auth" [attr.aria-label]="auth.title">
+        <div class="school-authorization-image">
+          <app-expandable-image [src]="auth.image" [alt]="auth.alt" [title]="auth.title" previewFit="contain"></app-expandable-image>
+        </div>
+        <div class="school-authorization-text">
+          <strong><mat-icon>workspace_premium</mat-icon>{{ auth.title }}</strong>
+          <p>{{ auth.text }}</p>
+          <small><mat-icon>zoom_in</mat-icon>点击图片查看授权书原图</small>
+        </div>
+      </aside>
+    </ng-template>
 
     <section class="cia-section campus-introduction campus-introduction--compact" id="campus-introduction" *ngIf="copy.campus && !compactLayout">
       <div class="section-heading section-heading-row">

@@ -303,3 +303,17 @@
     aspect-ratio: 4 / 3;
   }
 }
+
+/* Optional certificate naming 思达启航 the school's official representative (copy.authorization), under the advisor review. */
+:host .school-authorization { display: grid; grid-template-columns: minmax(0, 260px) minmax(0, 1fr); gap: 18px; align-items: center; margin: 18px 0 0; padding: 14px 18px 14px 14px; border: 1px solid #e7d7a8; border-radius: 12px; background: linear-gradient(135deg, #fffaf0 0%, #ffffff 70%); }
+:host .compact-overview .school-authorization { margin: 0; }
+:host .school-authorization-image { min-width: 0; overflow: hidden; border: 1px solid #eadfbf; border-radius: 8px; background: #ffffff; box-shadow: 0 6px 16px rgba(120, 90, 20, 0.1); }
+:host .school-authorization-text { display: grid; gap: 6px; min-width: 0; }
+:host .school-authorization-text strong { display: flex; gap: 6px; align-items: center; color: #043f2d; font-size: 17px; font-weight: 950; line-height: 1.4; }
+:host .school-authorization-text strong mat-icon { flex: none; width: 22px; height: 22px; color: #b7791f; font-size: 22px; }
+:host .school-authorization-text p { margin: 0; color: #334155; font-size: 14px; line-height: 1.65; }
+:host .school-authorization-text small { display: flex; gap: 4px; align-items: center; color: #8a6d1f; font-size: 12.5px; font-weight: 800; }
+:host .school-authorization-text small mat-icon { width: 16px; height: 16px; font-size: 16px; }
+@media (max-width: 640px) {
+  :host .school-authorization { grid-template-columns: minmax(0, 1fr); gap: 12px; padding: 12px; }
+}

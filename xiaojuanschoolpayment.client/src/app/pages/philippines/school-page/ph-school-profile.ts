@@ -45,6 +45,8 @@ export interface PhPageCopy {
   overview: CiaCopy['overview'];
   advisorReview: CiaCopy['advisorReview'];
   license?: CiaCopy['license'];
+  /** A school's certificate naming 思达启航 its official representative, shown under the advisor review. CIA leaves it out (styles: ph-school-page-options.css). */
+  authorization?: { title: string; text: string; image: string; alt: string };
   campus?: Optional<CiaCopy['campus'], 'studentCapacity' | 'teacherCount' | 'ruleTitle' | 'ruleText'>;
   gallery: CiaCopy['gallery'];
   courses: Optional<
