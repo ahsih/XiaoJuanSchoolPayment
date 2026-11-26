@@ -453,14 +453,12 @@ const routes: Routes = [
       {
         path: 'philippines-study/baguio/beci-eop-campus',
         loadComponent: () =>
-          import('./pages/philippines/beci-school/beci-school-detail.component').then((m) => m.BeciSchoolDetailComponent),
-        data: { campus: 'eop' },
+          import('./pages/philippines/beci-school/beci-eop-school.component').then((m) => m.BeciEopSchoolComponent),
       },
       {
         path: 'philippines-study/baguio/beci-sparta-campus',
         loadComponent: () =>
-          import('./pages/philippines/beci-school/beci-school-detail.component').then((m) => m.BeciSchoolDetailComponent),
-        data: { campus: 'sparta' },
+          import('./pages/philippines/beci-school/beci-sparta-school.component').then((m) => m.BeciSpartaSchoolComponent),
       },
       {
         path: 'philippines-study/baguio/beci-international-language-academy',
@@ -470,9 +468,7 @@ const routes: Routes = [
       {
         path: 'philippines-study/baguio/api-beci-city-campus',
         loadComponent: () =>
-          import('./pages/philippines/api-beci-city-school/api-beci-city-school.component').then(
-            (m) => m.ApiBeciCitySchoolComponent,
-          ),
+          import('./pages/philippines/beci-school/beci-city-school.component').then((m) => m.BeciCitySchoolComponent),
       },
       {
         path: 'philippines-study/baguio/baguio-jic-challenger',

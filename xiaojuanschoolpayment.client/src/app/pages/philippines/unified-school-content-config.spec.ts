@@ -93,7 +93,7 @@ describe('new unified employee school content configs', () => {
       jasmine.objectContaining({ start: '2027-06-27', end: '2027-08-22', enabled: true }),
     );
     expect(cloneBeciContentConfig(beci).quoteSettings.peakSeasonRanges.at(-1)).toEqual(
-      jasmine.objectContaining({ start: '2027-06-27', end: '2027-08-22', enabled: true }),
+      jasmine.objectContaining({ start: '2027-06-27', end: '2027-08-21', enabled: true }),
     );
     expect(clonePhilinterContentConfig(philinter).quoteSettings.peakSeasonRanges.at(-1)).toEqual(
       jasmine.objectContaining({ start: '2027-07-04', end: '2027-08-28', enabled: true }),

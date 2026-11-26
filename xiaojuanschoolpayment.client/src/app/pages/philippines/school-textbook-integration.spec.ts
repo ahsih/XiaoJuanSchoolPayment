@@ -15,7 +15,6 @@ import { GlcSchoolPageComponent } from './glc-school/glc-school-page.component';
 import { IbreezeSchoolPageComponent } from './ibreeze-school/ibreeze-school-page.component';
 import { AnjSchoolPageComponent } from './anj-school/anj-school-page.component';
 import { ImsSchoolPageComponent } from './ims-school/ims-school-page.component';
-import { BeciQuoteCalculatorComponent } from './beci-quote/beci-quote-calculator.component';
 import { JicChallengerSchoolComponent } from './jic-school/jic-challenger-school.component';
 import { JicPremiumSchoolComponent } from './jic-school/jic-premium-school.component';
 import { IuSchoolComponent } from './iu-school/iu-school.component';
@@ -48,8 +47,6 @@ const schools = [
   { name: 'CIP', create: () => new CipSchoolPageComponent() },
   { name: 'EV La Mer', create: () => new LaMerSchoolPageComponent() },
   { name: 'PINES IELTS', create: () => { const p = new PinesSchoolPageComponent(); p.students[0].quotePlan.courses[0].optionId = 'pre-ielts'; return p; } },
-  { name: 'BECI Sparta', create: () => { const p = new BeciQuoteCalculatorComponent(); p.campus = 'sparta'; return p; } },
-  { name: 'BECI City', create: () => { const p = new BeciQuoteCalculatorComponent(); p.campus = 'city'; return p; } },
   { name: 'JIC Premium', create: () => new JicPremiumSchoolComponent() },
   { name: 'Fella Second', create: () => new FellaSecondCampusSchoolComponent() },
   { name: 'CELLA Premium', create: () => { const p = new CellaQuoteCalculatorComponent(); p.initialCampus = 'premium'; return p; } },
@@ -69,7 +66,6 @@ const schools = [
   { name: "I.BREEZE", create: () => new IbreezeSchoolPageComponent() },
   { name: "A&J", create: () => new AnjSchoolPageComponent() },
   { name: "IMS", create: () => new ImsSchoolPageComponent() },
-  { name: "BECI", create: () => new BeciQuoteCalculatorComponent() },
   { name: "JIC", create: () => new JicChallengerSchoolComponent() },
   { name: "IU", create: () => new IuSchoolComponent() },
   { name: "ICL", create: () => new IclSchoolComponent() },

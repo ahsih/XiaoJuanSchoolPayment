@@ -200,23 +200,23 @@ export const SEO_PAGES: Record<string, SeoPage> = {
   '/philippines-study/baguio/beci-eop-campus': {
     title: '菲律宾碧瑶BECI EOP校区 | 课程住宿费用与多人报价',
     description:
-      '菲律宾碧瑶BECI EOP校区独立页面，整理2026课程费、住宿费、淡旺季与长期优惠、到校学杂费，并支持单人及2至20人报价。',
+      '菲律宾碧瑶BECI EOP校区：英语沉浸式环境，整理2027课程费、校内与Mansion住宿费、淡季九折与长期优惠、到校学杂费，并支持单人及2至20人报价。',
     keywords: '菲律宾碧瑶BECI EOP校区, BECI EOP Campus, BECI课程费用, BECI住宿费, 碧瑶语言学校',
     image: '/assets/philippines/beci-eop-campus.webp',
   },
   '/philippines-study/baguio/beci-sparta-campus': {
     title: '菲律宾碧瑶BECI斯巴达校区 | 课程住宿费用与多人报价',
     description:
-      '菲律宾碧瑶BECI斯巴达校区独立页面，整理24 ESL、托业、雅思及保证班、住宿、优惠、到校学杂费和单人及多人报价。',
+      '菲律宾碧瑶BECI斯巴达校区：24 ESL、托业、雅思及保分班，3+1宿舍，2027课程住宿费用、优惠、到校学杂费和单人及多人报价。',
     keywords: '菲律宾碧瑶BECI斯巴达校区, BECI Sparta Campus, 碧瑶斯巴达学校, BECI雅思, BECI费用',
-    image: '/assets/philippines/beci-campus-blue-roof.webp',
+    image: '/assets/beci-sparta/campus-aerial.webp',
   },
   '/philippines-study/baguio/api-beci-city-campus': {
-    title: '菲律宾碧瑶API BECI City校区 | 课程住宿费用与多人报价',
+    title: '菲律宾碧瑶BECI City校区 | 课程住宿费用与多人报价',
     description:
-      '菲律宾碧瑶API BECI City校区独立页面，整理Lite、Native、Unlimited与Junior ESL课程、Studio住宿、夫妻房价、优惠、到校学杂费和多人报价。',
-    keywords: '菲律宾碧瑶API BECI City校区, BECI City Campus, API BECI课程费用, BECI夫妻房, 碧瑶语言学校',
-    image: '/assets/philippines/beci-city-workspace.webp',
+      '菲律宾碧瑶BECI City校区：Lite、Native、Unlimited与Junior ESL课程，Studio与Semi房型，2027费用、两人同住价、优惠、到校学杂费和多人报价。',
+    keywords: '菲律宾碧瑶BECI City校区, BECI City Campus, API BECI, BECI课程费用, 碧瑶语言学校',
+    image: '/assets/beci-city/building-1.webp',
   },
   '/philippines-study/baguio/baguio-jic-challenger': {
     title: '菲律宾碧瑶JIC挑战校区 | Challenger课程住宿费用与报价',
