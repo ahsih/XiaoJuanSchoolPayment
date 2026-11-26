@@ -113,7 +113,8 @@
       "tag": "斯巴达 / 半斯巴达",
       "desc": "宿务市区现代校园，斯巴达和半斯巴达强度可选。",
       "image": "/assets/ev/campus-exterior.webp",
-      "path": "/philippines-study/cebu/ev-academy"
+      "path": "/philippines-study/cebu/ev-academy",
+      "detail": "/content/schools/ev.json"
     },
     {
       "id": "cpi",
@@ -132,7 +133,28 @@
       "tag": "老牌名校",
       "desc": "老牌综合学校，资源齐全，可选斯巴达与半斯巴达管理。",
       "image": "/assets/cpils/campus-front.webp",
-      "path": "/philippines-study/cebu/cpils"
+      "path": "/philippines-study/cebu/cpils",
+      "detail": "/content/schools/cpils.json"
+    },
+    {
+      "id": "cella-uni",
+      "name": "CELLA Uni 斯巴达校区",
+      "city": "宿务",
+      "tag": "斯巴达",
+      "desc": "宿务 Talamban 区的斯巴达校区，主打口语强化、雅思、托业和英语教师课程。",
+      "image": "/assets/cella-uni/campus-exterior.webp",
+      "path": "/philippines-study/cebu/cella-uni-sparta-campus",
+      "detail": "/content/schools/cella-uni.json"
+    },
+    {
+      "id": "cella-premium",
+      "name": "CELLA Premium 校区",
+      "city": "宿务",
+      "tag": "酒店式校区",
+      "desc": "宿务 Banilad 区的酒店式校区，不是斯巴达管理，主打口语、商务英语和空乘英语。",
+      "image": "/assets/cella-premium/pool.webp",
+      "path": "/philippines-study/cebu/cella-premium-campus",
+      "detail": "/content/schools/cella-premium.json"
     },
     {
       "id": "fella",
@@ -385,7 +407,8 @@
       "tag": "成人和青少年项目",
       "desc": "伦敦南部的英国文化协会认证学校，上课、吃饭、住宿在同一栋楼，还有自己的巴斯城堡。",
       "image": "/assets/burlington/campus-courtyard.jpg",
-      "path": "/overseas-study-tour/uk/burlington-school"
+      "path": "/overseas-study-tour/uk/burlington-school",
+      "detail": "/content/schools/burlington.json"
     },
     {
       "id": "atc",
