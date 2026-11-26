@@ -1,0 +1,17 @@
+/* Babel additions on top of the shared school-detail layout and Burlington's bt-* rules. */
+.babel-page .bb-en { display: block; margin-top: 2px; color: #64748b; font-size: 12px; font-weight: 400; }
+.babel-page .bt-table .bb-orange { color: #d96a0b; }
+.babel-page .bb-offer { display: flex; align-items: center; gap: 6px; margin: 0 0 12px; padding: 10px 12px; border-radius: 8px; background: #fff4e8; color: #a14f08; font-size: 14px; font-weight: 700; }
+.babel-page .bb-offer mat-icon { flex: none; font-size: 18px; width: 18px; height: 18px; }
+.babel-page .hero-price-card.bb-offer-card { border-color: #ee7d1a; }
+.babel-page .bb-facts { margin: 0; padding: 4px 16px; border: 1px solid #dce8ee; border-radius: 8px; background: #fff; }
+.babel-page .bt-extra-grid.bb-two { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.babel-page .bb-support-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.babel-page .bb-deposit { margin: 0 !important; color: #40506a !important; font-size: 14px !important; }
+
+@media (max-width: 980px) {
+  .babel-page .bb-support-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 640px) {
+  .babel-page .bt-extra-grid.bb-two, .babel-page .bb-support-grid { grid-template-columns: 1fr; }
+}

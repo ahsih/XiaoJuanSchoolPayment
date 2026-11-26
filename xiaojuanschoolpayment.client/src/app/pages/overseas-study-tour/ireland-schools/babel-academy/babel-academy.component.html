@@ -1,0 +1,347 @@
+<app-cia-school>
+<div class="cia-page burlington-page babel-page">
+  <div class="page-grid">
+    <main class="page-main">
+      <section class="hero-section" id="top">
+        <div class="hero-copy">
+          <a class="back-link" routerLink="/overseas-study-tour/ireland">
+            <mat-icon>arrow_back</mat-icon>
+            返回爱尔兰游学
+          </a>
+          <p class="breadcrumb">{{ copy.breadcrumb }}</p>
+          <h1>{{ copy.title }}</h1>
+          <p class="hero-lead">{{ copy.lead }}</p>
+          <div class="hero-tags" aria-label="Babel Academy of English特点">
+            <span *ngFor="let tag of copy.tags"><mat-icon>{{ tag.icon }}</mat-icon>{{ tag.text }}</span>
+          </div>
+          <div class="hero-actions">
+            <a class="primary-action" href="#quote" (click)="scrollToSection('quote', $event)">
+              立即计算我的费用
+              <mat-icon>calculate</mat-icon>
+            </a>
+            <a class="secondary-action" href="#courses" (click)="scrollToSection('courses', $event)">
+              查看课程和价格
+              <mat-icon>menu_book</mat-icon>
+            </a>
+            <a class="secondary-action" routerLink="/about-sida/contact">
+              联系顾问
+              <mat-icon>support_agent</mat-icon>
+            </a>
+          </div>
+          <p class="trust-note"><mat-icon>verified</mat-icon>{{ copy.trustNote }}</p>
+        </div>
+
+        <div class="hero-media" aria-label="Babel Academy of English图片展示">
+          <figure class="feature-photo">
+            <img [src]="heroImage.src" alt="Babel Academy of English学员在学校门口合影" />
+            <figcaption>{{ heroImage.title }}：{{ heroImage.description }}</figcaption>
+          </figure>
+          <div class="media-strip" aria-label="Babel Academy of English缩略图">
+            <figure *ngFor="let image of heroStrip">
+              <img [src]="image.src" [alt]="image.title" loading="lazy" />
+              <figcaption>{{ image.title }}</figcaption>
+            </figure>
+          </div>
+          <aside class="hero-price-card" [class.bb-offer-card]="blackFriday">
+            <span>{{ priceCard.label }}</span>
+            <strong>{{ priceCard.price }}</strong>
+            <p>{{ priceCard.caption }}</p>
+            <ul>
+              <li><mat-icon>check_circle</mat-icon>{{ priceCard.points[0] }}</li>
+              <li><mat-icon>info</mat-icon>{{ priceCard.points[1] }}</li>
+            </ul>
+          </aside>
+        </div>
+      </section>
+
+      <nav class="mobile-anchor-nav" aria-label="手机端快捷导航">
+        <a *ngFor="let item of mobileAnchors" [href]="'#' + item.target" (click)="scrollToSection(item.target, $event)">
+          <mat-icon>{{ item.icon }}</mat-icon>{{ item.label }}
+        </a>
+      </nav>
+
+      <section class="quick-info" aria-label="Babel Academy of English快速信息">
+        <article class="quick-card" *ngFor="let item of quickInfo">
+          <mat-icon>{{ item.icon }}</mat-icon>
+          <div>
+            <span>{{ item.label }}</span>
+            <strong>{{ item.value }}</strong>
+            <p>{{ item.note }}</p>
+          </div>
+        </article>
+      </section>
+
+      <section class="section-block" id="gallery">
+        <div class="section-heading">
+          <span>图片 / 环境展示</span>
+          <h2>看看 Babel 的课堂和学员</h2>
+          <p>两个教学点 Eden Quay 和 Capel Street 都在都柏林市中心。</p>
+        </div>
+        <div class="gallery-grid">
+          <figure *ngFor="let image of gallery">
+            <img [src]="image.src" [alt]="image.title" loading="lazy" />
+            <figcaption><strong>{{ image.title }}</strong><span>{{ image.description }}</span></figcaption>
+          </figure>
+        </div>
+        <p class="bt-note">所有图片仅供参考，具体安排以学校为准。</p>
+      </section>
+
+      <div class="info-trio">
+        <section class="panel basic-panel" id="basic-info">
+          <div class="compact-heading"><span>学校基本信息</span><h2>Babel 基本资料</h2></div>
+          <dl class="info-list">
+            <div *ngFor="let row of basicInfo"><dt>{{ row.label }}</dt><dd>{{ row.value }}</dd></div>
+          </dl>
+        </section>
+
+        <section class="panel advisor-panel" id="advisor-review">
+          <div class="quote-mark">"</div>
+          <div class="compact-heading"><span>思达启航顾问点评</span><h2>{{ advisor.heading }}</h2></div>
+          <p>{{ advisor.text }}</p>
+          <div class="advisor-card">
+            <div class="advisor-avatar">{{ advisor.name }}</div>
+            <div><strong>{{ advisor.name }} 顾问建议</strong><span>{{ advisor.advice }}</span></div>
+          </div>
+          <a class="primary-action full-action" routerLink="/about-sida/contact">让顾问帮我选方案<mat-icon>chat</mat-icon></a>
+        </section>
+
+        <section class="panel highlight-panel" id="highlights">
+          <div class="compact-heading"><span>学校亮点</span><h2>为什么推荐 Babel？</h2></div>
+          <div class="highlight-list">
+            <article *ngFor="let item of highlights">
+              <mat-icon>check_circle</mat-icon>
+              <div><strong>{{ item.title }}</strong><p>{{ item.text }}</p></div>
+            </article>
+          </div>
+        </section>
+      </div>
+
+      <section class="fit-section" id="fit">
+        <div class="section-heading"><span>适合 / 需要考虑</span><h2>先判断 Babel 是不是你的优先选择</h2></div>
+        <div class="fit-grid">
+          <div>
+            <h3><mat-icon>check_circle</mat-icon>适合优先考虑</h3>
+            <article *ngFor="let item of fit.suitable"><strong>{{ item.title }}</strong><p>{{ item.text }}</p></article>
+          </div>
+          <div>
+            <h3><mat-icon>cancel</mat-icon>可能需要再比较</h3>
+            <article *ngFor="let item of fit.lessSuitable"><strong>{{ item.title }}</strong><p>{{ item.text }}</p></article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section-block" id="courses">
+        <div class="section-heading">
+          <span>短期成人英语 · 17岁以上</span>
+          <h2>每周一开课，最短1周</h2>
+          <p>上午班、下午班、30小时强化班，或者在通用英语之外加一个5小时选修模块（每周20小时）。每班最多16人。</p>
+        </div>
+        <p class="bb-offer" *ngIf="blackFriday"><mat-icon>local_offer</mat-icon>黑五优惠：2026年11月30日前报名，短期课程按黑五价收学费。</p>
+        <div class="bt-table-wrap">
+          <table class="bt-table bt-wide">
+            <thead>
+              <tr>
+                <th>课程</th><th>每周课时</th><th>上课时间</th><th>入学要求</th>
+                <th *ngIf="blackFriday">黑五价/周</th><th>学校价格/周</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let row of shortCourses">
+                <th scope="row">{{ row.name }}<small class="bb-en">{{ row.english }}</small></th>
+                <td>{{ row.hours }}</td><td>{{ row.schedule }}</td><td>{{ row.level }}</td>
+                <td *ngIf="blackFriday" class="bt-strong bb-orange">{{ row.blackFriday }}</td>
+                <td [class.bt-strong]="!blackFriday">{{ row.regular }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="bt-note">另收注册费50欧元，教材费1–11周50欧元、12周及以上85欧元。学校价格报12周以上学费85折{{ blackFriday ? '；黑五价能否再叠加，以学校确认为准' : '' }}。</p>
+
+        <div class="bt-extra-grid">
+          <article *ngFor="let item of courseDetails"><span>课程内容</span><strong>{{ item.title }}</strong><p>{{ item.text }}</p></article>
+        </div>
+        <p class="bt-note bt-reference">{{ referenceNote }}</p>
+      </section>
+
+      <section class="section-block" id="work-study">
+        <div class="section-heading">
+          <span>半工半读 · 18岁以上</span>
+          <h2>25周英语课程，在都柏林边学边打工</h2>
+          <p>适合想在爱尔兰长期学英语、体验当地生活的成年学生。</p>
+        </div>
+        <dl class="info-list bb-facts">
+          <div *ngFor="let row of workStudyFacts"><dt>{{ row.label }}</dt><dd>{{ row.value }}</dd></div>
+        </dl>
+
+        <h3 class="bt-subheading">25周学费</h3>
+        <div class="bt-table-wrap">
+          <table class="bt-table bt-wide">
+            <thead>
+              <tr>
+                <th>课程</th><th>每周课时</th>
+                <th *ngIf="blackFriday">黑五学费</th>
+                <th>{{ blackFriday ? '黑五后参考价' : '学费' }}</th>
+                <th *ngIf="blackFriday">在读学生续读总价</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let row of workStudyRows">
+                <th scope="row">{{ row.name }}<small class="bb-en">{{ row.english }}</small></th>
+                <td>{{ row.hours }}</td>
+                <td *ngIf="blackFriday" class="bt-strong bb-orange">{{ row.blackFriday }}</td>
+                <td [class.bt-strong]="!blackFriday">{{ row.regular }}</td>
+                <td *ngIf="blackFriday">{{ row.renewal }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="bt-note" *ngIf="blackFriday">黑五学费2026年11月30日前报名有效，最晚可于2028年2月底开课。续读价只给在读学生，最晚2027年2月底开课，已含注册费、教材费、TIE考试费、医疗保险和学生保障费。</p>
+        <p class="bt-note">学校会在黑五活动后更新半工半读价格，报名前以学校最新价格为准。</p>
+
+        <h3 class="bt-subheading">学费以外的费用</h3>
+        <ul class="bt-price-list bt-supplements">
+          <li *ngFor="let row of workStudyFees"><span>{{ row.label }}</span><b>{{ row.value }}</b></li>
+        </ul>
+        <p class="bt-note bt-reference">{{ referenceNote }}</p>
+      </section>
+
+      <section class="section-block" id="accommodation">
+        <div class="section-heading">
+          <span>住宿 / 每周价格</span>
+          <h2>寄宿家庭或学生公寓</h2>
+          <p>成人课程和半工半读都可以另订住宿，周数可以和课程不同。</p>
+        </div>
+        <div class="bt-room-grid">
+          <article class="bt-room-card">
+            <h3><mat-icon>home</mat-icon>寄宿家庭和学生公寓</h3>
+            <ul class="bt-price-list"><li *ngFor="let row of accommodationRows"><span>{{ row.name }}</span><b>{{ row.price }}</b></li></ul>
+            <p>{{ accommodationNotes.homestay }}{{ accommodationNotes.residence }}</p>
+          </article>
+          <article class="bt-room-card">
+            <h3><mat-icon>restaurant</mat-icon>寄宿家庭特殊饮食</h3>
+            <ul class="bt-price-list"><li *ngFor="let row of dietRows"><span>{{ row.name }}</span><b>{{ row.price }}</b></li></ul>
+            <p>{{ accommodationNotes.booking }}</p>
+          </article>
+        </div>
+        <p class="bt-note bt-reference">{{ referenceNote }}</p>
+      </section>
+
+      <section class="section-block" id="support">
+        <div class="section-heading"><span>学生服务和活动</span><h2>学习和生活上都有人帮</h2></div>
+        <div class="bt-service-grid bb-support-grid">
+          <article *ngFor="let item of support"><mat-icon>{{ item.icon }}</mat-icon><strong>{{ item.title }}</strong><p>{{ item.text }}</p></article>
+        </div>
+        <p class="bt-note bt-reference">{{ referenceNote }}</p>
+      </section>
+
+      <section class="section-block" id="quote">
+        <div class="section-heading">
+          <span>在线报价</span>
+          <h2>选课程、日期和住宿，马上算出费用</h2>
+          <p>必付费用和可选费用分开列，可以加一个方案并排对比；算好后可以直接保存报价图片。</p>
+        </div>
+        <app-babel-quote-calculator></app-babel-quote-calculator>
+      </section>
+
+      <section class="section-block" id="fees">
+        <div class="section-heading"><span>其他费用</span><h2>注册、教材、接送机和交通</h2></div>
+        <div class="local-fee-grid bt-fee-grid">
+          <article *ngFor="let fee of fees"><span>{{ fee.item }}</span><strong>{{ fee.amount }}</strong><p>{{ fee.note }}</p></article>
+        </div>
+      </section>
+
+      <section class="section-block" id="calendar">
+        <div class="section-heading">
+          <span>2027年日历</span>
+          <h2>公共假期和学校假期</h2>
+          <p>平时周一至周五上课；周一遇公共假期，当周周二开课。</p>
+        </div>
+        <div class="bt-calendar">
+          <article *ngFor="let item of calendar"><time>{{ item.date }}</time><strong>{{ item.title }}</strong><span>{{ item.note }}</span></article>
+        </div>
+        <p class="bt-note bt-reference">{{ referenceNote }}</p>
+      </section>
+
+      <section class="section-block" id="refund">
+        <div class="section-heading"><span>退款规定</span><h2>取消和退款怎么算</h2></div>
+        <div class="bt-room-grid">
+          <article class="bt-room-card">
+            <h3><mat-icon>policy</mat-icon>学校退款规定</h3>
+            <ul class="bt-check-list"><li *ngFor="let item of refund">{{ item }}</li></ul>
+          </article>
+          <article class="bt-room-card">
+            <h3><mat-icon>savings</mat-icon>思达启航定金</h3>
+            <p class="bb-deposit">{{ sidaDeposit }}</p>
+          </article>
+        </div>
+        <p class="bt-note bt-reference">{{ referenceNote }}</p>
+      </section>
+
+      <section class="section-block" id="reviews">
+        <div class="section-heading"><span>学员评价</span><h2>来自不同国家和地区的学员怎么说</h2></div>
+        <div class="bt-extra-grid bb-two">
+          <article *ngFor="let item of reviews"><span>{{ item.who }} · {{ item.programme }}</span><p>“{{ item.text }}”</p></article>
+        </div>
+        <p class="bt-note">学员感言仅代表个人体验。</p>
+      </section>
+
+      <section class="section-block" id="service">
+        <div class="section-heading"><span>思达启航</span><h2>报名 Babel，思达启航可以帮你做什么</h2></div>
+        <div class="bt-service-grid">
+          <article *ngFor="let item of service"><mat-icon>{{ item.icon }}</mat-icon><strong>{{ item.title }}</strong><p>{{ item.text }}</p></article>
+        </div>
+        <div class="bt-contact">
+          <img class="bt-contact-qr" [src]="consultant.qrSrc" [alt]="consultant.name + ' 微信二维码'" loading="lazy" />
+          <div>
+            <span>爱尔兰游学顾问</span>
+            <strong>{{ consultant.name }} · {{ consultant.title }}</strong>
+            <p>电话 <a [href]="consultant.phoneHref">{{ consultant.phone }}</a>；扫码添加微信，发年龄、出发时间和预算，帮你确认学位和正式报价。</p>
+            <a class="secondary-action" routerLink="/about-sida/contact">查看全部顾问<mat-icon>arrow_forward</mat-icon></a>
+          </div>
+        </div>
+      </section>
+
+      <section class="section-block" id="faq">
+        <div class="section-heading"><span>报名前常见问题</span><h2>报名 Babel 前，先确认这些</h2></div>
+        <div class="faq-list">
+          <article *ngFor="let item of faqs"><h3>{{ item.title }}</h3><p>{{ item.text }}</p></article>
+        </div>
+      </section>
+
+      <section class="bottom-cta">
+        <div>
+          <span>获取 Babel 正式报价</span>
+          <h2>把年龄、出发时间、周数和住宿想法告诉思达启航，我们帮你确认学位和费用</h2>
+          <p>顾问会跟学校确认开课日期、住宿空位和当期价格，并提醒签证、机票、保险和接机安排。</p>
+        </div>
+        <ul>
+          <li><mat-icon>check_circle</mat-icon>按学校最新价格报价</li>
+          <li><mat-icon>check_circle</mat-icon>必付和可选费用分开列</li>
+          <li><mat-icon>check_circle</mat-icon>可以并排比较两个方案</li>
+          <li><mat-icon>check_circle</mat-icon>出发前逐项提醒</li>
+        </ul>
+        <a class="primary-action" routerLink="/about-sida/contact">联系思达启航顾问<mat-icon>support_agent</mat-icon></a>
+      </section>
+    </main>
+
+    <aside class="side-panel" aria-label="页面快捷导航">
+      <div class="side-card">
+        <span>Babel Academy of English</span>
+        <strong class="side-price">{{ priceCard.price }}</strong>
+        <p>{{ priceCard.caption }}</p>
+        <a class="primary-action" href="#quote" (click)="scrollToSection('quote', $event)">估算费用<mat-icon>calculate</mat-icon></a>
+      </div>
+      <nav class="side-nav">
+        <a *ngFor="let item of sideNav" [href]="'#' + item.target" (click)="scrollToSection(item.target, $event)">
+          <mat-icon>{{ item.icon }}</mat-icon>{{ item.label }}
+        </a>
+      </nav>
+    </aside>
+  </div>
+
+  <div class="mobile-bottom-actions" aria-label="手机端固定操作">
+    <a href="#quote" (click)="scrollToSection('quote', $event)"><mat-icon>calculate</mat-icon>估算费用</a>
+    <a routerLink="/about-sida/contact"><mat-icon>support_agent</mat-icon>联系顾问</a>
+  </div>
+</div>
+</app-cia-school>

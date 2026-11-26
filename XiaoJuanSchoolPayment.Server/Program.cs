@@ -281,6 +281,7 @@ var sitemapEntries = new (string Path, string ChangeFrequency, string Priority)[
   ("/philippines-study/cebu/cia-cebu-international-academy/student-reviews/memorable-cebu-trip-with-friends", "monthly", "0.65"),
   ("/philippines-study/cebu/ciec", "monthly", "0.8"),
   ("/overseas-study-tour/uk/burlington-school", "monthly", "0.8"),
+  ("/overseas-study-tour/ireland/babel-academy-of-english", "monthly", "0.8"),
   ("/overseas-study-tour/uk/st-giles", "monthly", "0.8"),
   ("/overseas-study-tour/uk/st-giles/london-central", "monthly", "0.8"),
   ("/overseas-study-tour/uk/st-giles/london-highgate", "monthly", "0.8"),

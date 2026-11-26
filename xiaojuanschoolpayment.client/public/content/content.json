@@ -411,6 +411,16 @@
       "detail": "/content/schools/burlington.json"
     },
     {
+      "id": "babel",
+      "name": "Babel Academy of English",
+      "country": "IE",
+      "city": "都柏林",
+      "tag": "成人课程和半工半读",
+      "desc": "都柏林市中心语言学校，每周一开课，最短1周；18岁以上可报25周半工半读。",
+      "image": "/assets/babel/school-entrance.webp",
+      "path": "/overseas-study-tour/ireland/babel-academy-of-english"
+    },
+    {
       "id": "atc",
       "name": "ATC Language Schools",
       "country": "IE",
