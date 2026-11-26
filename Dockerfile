@@ -17,7 +17,6 @@ FROM mcr.microsoft.com/dotnet/sdk:10.0 AS server-build
 WORKDIR /src
 
 COPY XiaoJuanSchoolPayment.Server ./XiaoJuanSchoolPayment.Server
-COPY --from=client-build /src/xiaojuanschoolpayment.client/dist/xiaojuanschoolpayment.client/browser ./XiaoJuanSchoolPayment.Server/wwwroot
 
 # The Visual Studio SPA project reference is only needed for local development.
 # The container builds Angular separately and serves the compiled files from wwwroot.
@@ -35,6 +34,11 @@ ENV ASPNETCORE_URLS=http://0.0.0.0:8080
 ENV ASPNETCORE_ENVIRONMENT=Production
 
 COPY --from=server-build /app/publish ./
+# The Angular build goes straight into wwwroot. It holds every photo and video (5.5 GB in November 2026), and
+# every COPY stores them once more: passing them through the server build and `dotnet publish` as before kept
+# five copies during a build, which filled the server's disk (2026-11-27). The server reads wwwroot from disk
+# at run time (UseStaticFiles, SpaSeoHtmlRenderer), so it does not need these files when it is published.
+COPY --from=client-build /src/xiaojuanschoolpayment.client/dist/xiaojuanschoolpayment.client/browser ./wwwroot
 
 EXPOSE 8080
 ENTRYPOINT ["dotnet", "XiaoJuanSchoolPayment.Server.dll"]
