@@ -821,6 +821,13 @@ const routes: Routes = [
           ),
       },
       {
+        path: 'overseas-study-tour/ireland/babel-academy-of-english',
+        loadComponent: () =>
+          import('./pages/overseas-study-tour/ireland-schools/babel-academy/babel-academy.component').then(
+            (m) => m.BabelAcademyComponent,
+          ),
+      },
+      {
         path: 'overseas-study-tour/uk',
         loadComponent: () =>
           import('./pages/overseas-study-tour/uk-tour/uk-tour.component').then((m) => m.UkTourComponent),
