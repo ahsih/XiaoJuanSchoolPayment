@@ -108,7 +108,7 @@ import { cloneCellaContentConfig, createDefaultCellaContentConfig } from '../phi
 import { cloneFellaContentConfig, createDefaultFellaContentConfig } from '../philippines/fella-school/fella-content-config';
 import { cloneBtesContentConfig, cloneBlueOceanContentConfig, cloneTargetContentConfig, cloneWalesContentConfig, createDefaultBtesContentConfig, createDefaultBlueOceanContentConfig, createDefaultTargetContentConfig, createDefaultWalesContentConfig } from '../philippines/remaining-content-config';
 import { cloneMintContentConfig, createDefaultMintContentConfig } from '../philippines/english-mint-school/mint-content-config';
-import { BeciCampus } from '../philippines/beci-quote/beci-pricing';
+import type { BeciCampus } from '../philippines/beci-school/beci-content-config';
 import { JicCampus } from '../philippines/jic-school/jic-pricing';
 import { AdminSchoolPhotosComponent } from '../admin-school-photos/admin-school-photos.component';
 

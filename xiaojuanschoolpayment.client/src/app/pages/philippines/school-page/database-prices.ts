@@ -6,6 +6,7 @@
  */
 export const CONTENT_ONLY_PRICE_SCHOOL_CODES: readonly string[] = [
   'ANJ',
+  'BECI',
   'BLUE-OCEAN',
   'CELLA-UNI',
   'CELLA-PREMIUM',

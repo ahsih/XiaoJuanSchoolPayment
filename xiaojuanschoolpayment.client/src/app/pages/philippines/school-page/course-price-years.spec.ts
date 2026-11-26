@@ -31,6 +31,7 @@ import { ImsSchoolPageComponent } from '../ims-school/ims-school-page.component'
 import { IuSchoolComponent } from '../iu-school/iu-school.component';
 import { JicChallengerSchoolComponent } from '../jic-school/jic-challenger-school.component';
 import { JicPremiumSchoolComponent } from '../jic-school/jic-premium-school.component';
+import { BeciEopSchoolComponent } from '../beci-school/beci-eop-school.component';
 import { LaMerSchoolPageComponent } from '../la-mer-school/la-mer-school-page.component';
 import { MonolSchoolPageComponent } from '../monol-school/monol-school-page.component';
 import { MonolSpartaSchoolPageComponent } from '../monol-sparta-school/monol-sparta-school-page.component';
@@ -107,6 +108,7 @@ describe('one or two course prices on the shared Philippine template', () => {
     ['ICL', IclSchoolComponent, page => { page.selectedStartDate = '2027-02-07'; }],
     ['JIC Challenger', JicChallengerSchoolComponent],
     ['JIC Premium', JicPremiumSchoolComponent],
+    ['BECI EOP', BeciEopSchoolComponent],
     ['IMS', ImsSchoolPageComponent],
     ['MONOL', MonolSchoolPageComponent],
     ['EV La Mer', LaMerSchoolPageComponent],

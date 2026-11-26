@@ -1,6 +1,3 @@
-import { BeciStudentQuote } from './beci-quote/beci-student-quote';
-import { BECI_CAMPUS_PRICING } from './beci-quote/beci-pricing';
-import { createDefaultBeciContentConfig } from './beci-school/beci-content-config';
 import { CellaStudentQuote } from './cella-quote/cella-student-quote';
 import { CELLA_COURSES, CELLA_ROOMS } from './cella-quote/cella-pricing';
 import { ImsPageStudent } from './ims-school/ims-page-quote';
@@ -79,15 +76,6 @@ describe('IMS textbook course switches',()=>{
 });
 
 describe('Published textbook price overrides',()=>{
-  it('BECI uses separate types with the published unit price and cycle',()=>{
-    const c=createDefaultBeciContentConfig();const fee=c.localFees.find(x=>x.id==='books')!;
-    fee.amount=1700;fee.periodWeeks=8;
-    const q=new BeciStudentQuote(BECI_CAMPUS_PRICING.eop,{registrationFee:100,shortStayRatios:c.quoteSettings.shortStayRatios,peakSeasonFeePerWeek:40,peakSeasonRanges:c.quoteSettings.peakSeasonRanges,promotions:c.quoteSettings.promotions,localFees:c.localFees});
-    q.quotePlan.courses=[row(1,'esl',4),row(2,'ielts',4)];
-    expect(q.localFees.find(x=>x.item===fee.name)!.total).toBe(3400);
-    q.quotePlan.courses[1].optionId='esl';expect(q.localFees.find(x=>x.item===fee.name)!.total).toBe(1700);
-    fee.enabled=false;expect(q.localFees.some(x=>x.item===fee.name)).toBeFalse();
-  });
   it('CELLA reads the employee textbook amount without inventing an unspecified cycle',()=>{
     const fee={id:'books',name:'教材费',amount:2300,currency:'PHP' as const,billingRule:'per-course-period' as const,enabled:true,includeInTotal:true,sortOrder:0,note:'实购'};
     const q=new CellaStudentQuote({courses:[...CELLA_COURSES],rooms:[...CELLA_ROOMS],registrationFee:100,peakSeasonWeeklyFee:40,localFeeRules:[fee]},'uni');

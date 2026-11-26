@@ -103,7 +103,7 @@ import {
   createDefaultIuContentConfig,
 } from '../philippines/iu-school/iu-icl-content-config';
 import { iuIclPreviewQuoteImage } from '../philippines/iu-school/iu-icl-page-quote';
-import { BeciCampus } from '../philippines/beci-quote/beci-pricing';
+import type { BeciCampus } from '../philippines/beci-school/beci-content-config';
 import { JicCampus } from '../philippines/jic-school/jic-pricing';
 import { cloneCellaContentConfig, createDefaultCellaContentConfig } from '../philippines/cella-quote/cella-content-config';
 import { cloneFellaContentConfig, createDefaultFellaContentConfig, fellaQuoteImageSettings } from '../philippines/fella-school/fella-content-config';
