@@ -64,6 +64,8 @@ export const GENIUS_COMPARE_COURSE_GROUPS = [
 
 export type GeniusManagement = 'regular' | 'semi-sparta' | 'sparta';
 export type GeniusExtraClasses = 'none' | 'one-to-one' | 'group' | 'both';
+/** Age of a student under 18 (user 2026-11-26): regular courses from 13, the family program's children from 6. */
+export type GeniusMinorAge = 'teen' | 'child' | 'under6';
 
 const MANAGEMENT_OPTIONS: ReadonlyArray<{ value: GeniusManagement; label: string }> = [
   { value: 'regular', label: '常规（无门禁）' },
@@ -76,6 +78,11 @@ const EXTRA_CLASS_OPTIONS: ReadonlyArray<{ value: GeniusExtraClasses; label: str
   { value: 'group', label: '每天加1节小组课（每4周100美元）' },
   { value: 'both', label: '一对一和小组课各加1节（每4周225美元）' },
 ];
+const MINOR_AGE_OPTIONS: ReadonlyArray<{ value: GeniusMinorAge; label: string }> = [
+  { value: 'teen', label: '13–17岁' },
+  { value: 'child', label: '6–12岁' },
+  { value: 'under6', label: '未满6岁' },
+];
 
 /** One Genius student: plan, conditions and every amount the template and quote image show. */
 export class GeniusPageStudent implements PhPageStudent {
@@ -83,6 +90,8 @@ export class GeniusPageStudent implements PhPageStudent {
   readonly quotePlan: SchoolQuotePlan;
   visaType = 'tourist30';
   selectedAgeGroup: 'adult' | 'minor' = 'adult';
+  /** Only asked when the student is under 18. */
+  minorAge: GeniusMinorAge = 'teen';
   returningStudent = false;
   management: GeniusManagement = 'regular';
   extraClasses: GeniusExtraClasses = 'none';
@@ -114,6 +123,14 @@ export class GeniusPageStudent implements PhPageStudent {
       24, true, false,
     );
     const student = this;
+    const age: PhExtraChoice = {
+      label: '孩子年龄',
+      options: MINOR_AGE_OPTIONS,
+      get visible() { return student.selectedAgeGroup === 'minor'; },
+      note: '',
+      get value() { return student.minorAge; },
+      set value(band: unknown) { student.minorAge = band as GeniusMinorAge; },
+    };
     const management: PhExtraChoice = {
       label: '管理方式',
       options: MANAGEMENT_OPTIONS,
@@ -156,7 +173,7 @@ export class GeniusPageStudent implements PhPageStudent {
       get value() { return student.promo999Chosen; },
       set value(chosen: unknown) { student.promo999Chosen = chosen === true || chosen === 'true'; },
     };
-    this.extraChoices = [management, extra, minor, promo];
+    this.extraChoices = [age, management, extra, minor, promo];
   }
 
   // ---- choices ----------------------------------------------------------------------------------
@@ -269,6 +286,19 @@ export class GeniusPageStudent implements PhPageStudent {
     return '';
   }
 
+  /** Regular courses take students from 13; the family program takes children from 6 (user 2026-11-26). */
+  private get ageError(): string {
+    if (this.selectedAgeGroup !== 'minor') return '';
+    if (this.minorAge === 'under6') return 'Genius 亲子课程的孩子要6岁以上，常规课程要13岁以上；未满6岁暂时不能报名。';
+    if (this.minorAge === 'child' && !this.isFamilyKid) return '6–12岁的孩子不能报常规课程，请和家长一起报亲子课程（孩子）。';
+    return '';
+  }
+
+  /** The age band the quote image shows in place of 未满18岁. */
+  get minorAgeLabel(): string {
+    return MINOR_AGE_OPTIONS.find(option => option.value === this.minorAge)?.label ?? '未满18岁';
+  }
+
   /** The 999 promotion is offered while its registration window is open. */
   get promo999Open(): boolean { return this.today <= GENIUS_PROMO_999.registrationEnd; }
 
@@ -289,7 +319,7 @@ export class GeniusPageStudent implements PhPageStudent {
 
   get quoteError(): string {
     if (!this.visaOptions.some(option => option.value === this.visaType)) return '请选择有效的签证类型。';
-    const error = this.quotePlan.error || this.courseLengthError || this.familyError;
+    const error = this.quotePlan.error || this.courseLengthError || this.familyError || this.ageError;
     if (error) return error;
     if (this.promo999Active && !this.promo999Fits) {
       return '999美元推广价只限一般英语或强化口语A＋四人间（或海景四人间），2026年9–12月就读整4周；请调整方案，或选择不参加。';
@@ -298,7 +328,7 @@ export class GeniusPageStudent implements PhPageStudent {
   }
 
   get minorNote(): string {
-    return '未满18岁、没有家长同行的学生，每4周另收100美元未成年管理费；和家长一起来的孩子可以报亲子课程。';
+    return '常规课程13岁以上可以报；6–12岁的孩子要和家长一起报亲子课程。未满18岁、没有家长同行的学生读常规课程，每4周另收100美元未成年管理费。';
   }
 
   // ---- offers -----------------------------------------------------------------------------------
@@ -536,6 +566,12 @@ export class GeniusQuote extends PhSchoolQuote<GeniusPageStudent> {
     });
     family.kids = () => this.activeStudents.filter(student => student.isFamilyKid).length;
   }
+
+  /** The 报价条件 line names the age band (13–17岁, 6–12岁) instead of 未满18岁. */
+  override studentConditionText(student: GeniusPageStudent): string {
+    const text = super.studentConditionText(student);
+    return student.selectedAgeGroup === 'minor' ? text.replace('未满18岁', student.minorAgeLabel) : text;
+  }
 }
 
 export class GeniusPlanComparison extends PhPlanComparison<GeniusPageStudent> {
@@ -549,6 +585,7 @@ export class GeniusPlanComparison extends PhPlanComparison<GeniusPageStudent> {
         to.management = from.isFamily ? 'regular' : from.management;
         to.extraClasses = from.isFamily ? 'none' : from.extraClasses;
         to.unaccompanied = from.unaccompanied;
+        to.minorAge = from.minorAge;
       },
       heading: 'Genius 方案对比报价',
       courseGroups: GENIUS_COMPARE_COURSE_GROUPS,

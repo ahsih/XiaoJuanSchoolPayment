@@ -70,3 +70,10 @@ The school's address, website, email, Telegram group, staff names, the nationali
 
 - 2027 offers after December 2026 have not been published.
 - The brochure lists a 豪华房 that has no price on the price list, so it is not offered.
+
+## Update 2026-11-26
+
+- Resent files (same names as the 2026-11-25 pack): brochure, price list, family list, 学生守则2, both offer posters. The family list was re-read: one child 740/1,265/1,790/2,100/2,625/3,150/3,675/4,200/6,300 dollars for 1–8 and 12 weeks; two or more children 670/1,145/1,620/1,900/2,375/2,850/3,325/3,800/5,700 each; parent studying 494/844/1,194/1,400/1,750/2,100/2,450/2,800/4,200; parent not studying 317/542/767/900/1,125/1,350/1,575/1,800/2,700. These match the config.
+- User (WeChat, 2026-11-26): family program from age 6; regular courses from age 13; no peak-season surcharge.
+- School holidays page (`studyenglishgenius.com/holidays/`, read 2026-11-26): Philippine regular holidays 2026 — Jan 1, Apr 2, Apr 3, Apr 9, May 1, Jun 12, Aug 31, Nov 30, Dec 25, Dec 30; 2027 — Jan 1, Mar 25, Mar 26, Apr 9, May 1 (Sat), Jun 12 (Sat), Aug 30, Nov 30, Dec 24, Dec 30. The page does not mention make-up classes; the student rules say no classes and no make-up on national and local holidays.
+- School media Drive folder `4. Pictures and videos` (public link from the user): ACTIVITIES, CAMPS, CLASSES, COURSES, Facilities, Food, Room Pictures, School Campus pictures and videos, Student Reviews, TRENDY — the same library as the 2026-11-25 pack. `Student Reviews` holds six interview videos (Arabian, Japanese, Kamile Koc, two Taiwanese and a Turkish review, about 880 MB), not yet downloaded or used; the two Taiwanese ones need the rule-3 flag check.
