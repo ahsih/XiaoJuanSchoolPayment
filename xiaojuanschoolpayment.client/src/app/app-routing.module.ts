@@ -264,9 +264,12 @@ const routes: Routes = [
       {
         path: 'philippines-study/cebu/qqenglish-beachfront-campus',
         loadComponent: () =>
-          import(
-            './pages/philippines/qqenglish-beachfront-school/qqenglish-beachfront-school.component'
-          ).then((m) => m.QqenglishBeachfrontSchoolComponent),
+          import('./pages/philippines/qq-school/qq-beachfront-school.component').then((m) => m.QqBeachfrontSchoolComponent),
+      },
+      {
+        path: 'philippines-study/cebu/qqenglish-it-park-campus',
+        loadComponent: () =>
+          import('./pages/philippines/qq-school/qq-it-park-school.component').then((m) => m.QqItParkSchoolComponent),
       },
       {
         path: 'philippines-study/cebu/stargate-global-education',

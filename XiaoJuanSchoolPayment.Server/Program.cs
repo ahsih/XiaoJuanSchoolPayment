@@ -322,6 +322,7 @@ var sitemapEntries = new (string Path, string ChangeFrequency, string Priority)[
   ("/philippines-study/cebu/genius-english-academy", "monthly", "0.75"),
   ("/philippines-study/cebu/howdy-english-academy", "monthly", "0.75"),
   ("/philippines-study/cebu/lapulapu", "monthly", "0.75"),
+  ("/philippines-study/cebu/qqenglish-it-park-campus", "monthly", "0.75"),
   ("/philippines-study/cebu/qqenglish-beachfront-campus", "monthly", "0.75"),
   ("/philippines-study/cebu/stargate-global-education", "monthly", "0.75"),
   ("/philippines-study/cebu/winning-english-academy", "monthly", "0.75"),

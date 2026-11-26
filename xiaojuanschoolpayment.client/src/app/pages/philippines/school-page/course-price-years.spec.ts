@@ -22,6 +22,8 @@ import { TargetSchoolPageComponent } from '../target-school/target-school-page.c
 import { EvSchoolPageComponent } from '../ev-school/ev-school-page.component';
 import { FellaFirstCampusSchoolComponent } from '../fella-school/fella-first-campus-school.component';
 import { FellaSecondCampusSchoolComponent } from '../fella-school/fella-second-campus-school.component';
+import { QqBeachfrontSchoolComponent } from '../qq-school/qq-beachfront-school.component';
+import { QqItParkSchoolComponent } from '../qq-school/qq-it-park-school.component';
 import { GeniusSchoolPageComponent } from '../genius-school/genius-school-page.component';
 import { GlcSchoolPageComponent } from '../glc-school/glc-school-page.component';
 import { HanaSchoolPageComponent } from '../hana-school/hana-school-page.component';
@@ -101,6 +103,8 @@ describe('one or two course prices on the shared Philippine template', () => {
     ['EV', EvSchoolPageComponent],
     ['English Fella First', FellaFirstCampusSchoolComponent],
     ['English Fella Second', FellaSecondCampusSchoolComponent],
+    ['CampusTop IT Park', QqItParkSchoolComponent],
+    ['CampusTop Beach Front', QqBeachfrontSchoolComponent],
     ['Genius', GeniusSchoolPageComponent],
     ['GLC', GlcSchoolPageComponent],
     ['HANA', HanaSchoolPageComponent, page => { page.selectedCourseId = 'general-esl'; }],

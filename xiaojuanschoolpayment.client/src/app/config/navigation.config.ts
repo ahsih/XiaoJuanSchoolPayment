@@ -321,8 +321,13 @@ export const mainNavigation: NavigationItem[] = [
             route: '/philippines-study/cebu/global-language-cebu',
           },
           {
+            id: 'qqenglish-it-park-campus',
+            label: '菲律宾宿务QQ English IT Park校区',
+            route: '/philippines-study/cebu/qqenglish-it-park-campus',
+          },
+          {
             id: 'qqenglish-beachfront-campus',
-            label: '菲律宾宿务QQEnglish（Beachfront Campus）',
+            label: '菲律宾宿务QQ English Beach Front校区',
             route: '/philippines-study/cebu/qqenglish-beachfront-campus',
           },
           {

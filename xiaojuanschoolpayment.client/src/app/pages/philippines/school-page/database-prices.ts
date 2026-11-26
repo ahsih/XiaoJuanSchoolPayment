@@ -16,6 +16,7 @@ export const CONTENT_ONLY_PRICE_SCHOOL_CODES: readonly string[] = [
   'CPILS',
   'ELSA',
   'FELLA',
+  'QQ',
   'GENIUS',
   'GLC',
   'HANA',
