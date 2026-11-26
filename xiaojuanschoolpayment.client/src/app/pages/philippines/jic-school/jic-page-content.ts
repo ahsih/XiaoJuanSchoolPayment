@@ -233,6 +233,8 @@ export const JIC_PAGE_CONTENT: Record<JicCampus, JicPageContent> = {
     videoTabs: [
       { label: '校园视频', videos: ['jic-challenger-campus-intro'] },
       { label: '宿舍视频', videos: ['jic-challenger-room-tour', 'jic-challenger-double-room-video', 'jic-challenger-quad-bunk-room-video', 'jic-challenger-quad-duplex-room-video'] },
+      { label: '学员访谈', videos: ['jic-challenger-student-interview'] },
+      { label: '课堂视频', videos: ['jic-challenger-class-observation'] },
     ],
     videos: {
       'jic-challenger-campus-intro': video('jic-challenger-campus-intro', 'JIC Challenger 校区介绍', '学校官方介绍片：课堂、宿舍和校园生活。', '2:10'),
@@ -240,6 +242,10 @@ export const JIC_PAGE_CONTENT: Record<JicCampus, JicPageContent> = {
       'jic-challenger-double-room-video': video('jic-challenger-double-room-video', '双人间', '双人间实拍（原片无配音）。', '0:41'),
       'jic-challenger-quad-bunk-room-video': video('jic-challenger-quad-bunk-room-video', '四人间（上下铺）', '上下铺四人间实拍（原片无配音）。', '0:39'),
       'jic-challenger-quad-duplex-room-video': video('jic-challenger-quad-duplex-room-video', '四人间（楼中楼）', '楼中楼四人间实拍（原片无配音）。', '0:51'),
+      // JIC's own YouTube, 2026 (user request 2026-11-26). The interview's opening card with the student's full name
+      // was cut. The TERMINAL ribbons in the observation video are JIC's own campus café, so they stay.
+      'jic-challenger-student-interview': video('jic-challenger-student-interview', 'Challenger学员采访', '日本学员读到Pro级，讲为什么学英语、全英文环境怎么帮她进步（英文）。', '1:33'),
+      'jic-challenger-class-observation': video('jic-challenger-class-observation', '听课评估', '教学主管进课堂听课，课后给老师一对一反馈，帮老师不断改进（英文）。', '1:08'),
     },
     roomVideos: {
       'challenger-single': 'jic-challenger-room-tour',
@@ -467,6 +473,8 @@ export const JIC_PAGE_CONTENT: Record<JicCampus, JicPageContent> = {
           'jic-premium-twin-no-balcony-video', 'jic-premium-quad-balcony-video', 'jic-premium-quad-no-balcony-video',
         ],
       },
+      { label: '学员访谈', videos: ['jic-premium-student-interview-jack', 'jic-premium-student-interview-rick'] },
+      { label: '活动视频', videos: ['jic-premium-circuit-training', 'jic-premium-graduation'] },
     ],
     videos: {
       'jic-premium-campus-intro': video('jic-premium-campus-intro', 'JIC Premium 校区介绍', '学校官方介绍片：课堂、宿舍和校园生活。', '2:27'),
@@ -476,6 +484,12 @@ export const JIC_PAGE_CONTENT: Record<JicCampus, JicPageContent> = {
       'jic-premium-twin-no-balcony-video': video('jic-premium-twin-no-balcony-video', '双人间（无阳台）', '没有阳台的双人房实拍（原片无配音）。', '1:23', 'tall'),
       'jic-premium-quad-balcony-video': video('jic-premium-quad-balcony-video', '四人间（阳台）', '带阳台的四人房实拍（原片无配音）。', '1:27'),
       'jic-premium-quad-no-balcony-video': video('jic-premium-quad-no-balcony-video', '四人间（无阳台）', '没有阳台的四人房实拍（原片无配音）。', '1:29', 'tall'),
+      // JIC's own YouTube, 2026 (user request 2026-11-26). The graduation video lost three seconds of certificates
+      // with the students' full names.
+      'jic-premium-student-interview-jack': video('jic-premium-student-interview-jack', '学员Jack采访', '学员讲在口语强化课程里练到敢开口说英语（英文）。', '1:31'),
+      'jic-premium-student-interview-rick': video('jic-premium-student-interview-rick', '学员Rick采访', '学员讲这里的老师、员工和自己沟通能力的进步（英文）。', '2:37'),
+      'jic-premium-circuit-training': video('jic-premium-circuit-training', '课后体能训练', 'Premium校区课后的循环体能训练课。', '1:16'),
+      'jic-premium-graduation': video('jic-premium-graduation', '结业典礼', 'Premium校区的结业典礼：领证书、合影和表演。', '0:57'),
     },
     roomVideos: {
       'premium-single-balcony': 'jic-premium-single-balcony-video',

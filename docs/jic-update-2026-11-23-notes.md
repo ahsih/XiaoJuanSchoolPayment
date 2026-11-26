@@ -63,3 +63,18 @@ December 2026 holiday notice and the BESA pickup poster.
   used only as a campus photo; the 单人雅房 uses its video poster).
 - Meals: described as mostly Korean with Japanese, Vietnamese and Filipino dishes at times; no vegetarian meals.
 - Not yet synced to the WeChat mini program; follow the mini-program workflow in AGENTS.md once the user confirms.
+
+## Official YouTube videos (2026-11-26)
+
+User request: more videos that build trust, from JIC's own YouTube channel (@BaguioJIC). All are from 2026. Files are
+720p H.264 in `public/assets/philippines/` with posters in `jic-posters/`.
+
+- Challenger, 学员访谈 chip: `jic-challenger-student-interview` ("PRO CHALLENGER INTERVIEW: KANO"); the opening card
+  with the student's full name was cut.
+- Challenger, 课堂视频 chip: `jic-challenger-class-observation` ("JIC Class Observation"). Its TERMINAL ribbons are
+  JIC's own campus café (already on the page as 咖啡厅), so they were kept.
+- Premium, 学员访谈 chip: `jic-premium-student-interview-jack` and `jic-premium-student-interview-rick`.
+- Premium, 活动视频 chip: `jic-premium-circuit-training` and `jic-premium-graduation` ("Awarding of Certificates");
+  three seconds of certificates showing students' full names were cut.
+
+Facebook was not checked (user decision 2026-11-26).

@@ -52,3 +52,18 @@ refund ratios, so the refund section has only the 思达启航 deposit rules and
 - IELTS course prices (not on the price list; the page says to ask a consultant).
 
 Tests: `npx ng test --watch=false --browsers=ChromeHeadlessNoSandbox --ts-config=tsconfig.elsa.spec.json --include=src/app/pages/philippines/elsa-school/elsa-school-page.spec.ts --progress=false`.
+
+## Official YouTube videos (2026-11-26)
+
+User request: more videos that build trust, from the school's own YouTube channel (@elsaschool-cebu). All five are from
+2026 and end with the school's logo only; none needed a cut. Files are 720p H.264 in `public/assets/elsa/videos/`
+with a `.webp` poster. The hero album now has 校园／宿舍／餐厅／活动 chips.
+
+- `pool-rules`: "ELSA 游泳池使用方法" (2026-04), Chinese narration: pool rules and opening hours.
+- `dorm-c-building`: "ELSA School C-Building Dormitory" (2026-07), vertical. It also opens the B栋／C栋宿舍 room album,
+  because the school's own title says it is the C building.
+- `lunch`: "Let's have lunch at ELSA" (2026-07), vertical.
+- `after-school-swim-golf`: "ELSA After School, Wed" (2026-03): swimming and golf classes on campus.
+- `zumba`: "ELSA Zumba Dance Class, Wednesday" (2026-03), in the canteen.
+
+Facebook was not checked (user decision 2026-11-26).
