@@ -438,7 +438,7 @@ const routes: Routes = [
       {
         path: 'philippines-study/cebu/philinter-academy',
         loadComponent: () =>
-          import('./pages/philippines/philinter-school/philinter-school-detail.component').then((m) => m.PhilinterSchoolDetailComponent),
+          import('./pages/philippines/philinter-school/philinter-school-page.component').then((m) => m.PhilinterSchoolPageComponent),
       },
       {
         path: 'philippines-study/cebu',
@@ -541,7 +541,7 @@ const routes: Routes = [
       {
         path: 'philippines-study/clark/cip-english-kepos',
         loadComponent: () =>
-          import('./pages/philippines/cip-school/cip-school.component').then((m) => m.CipSchoolComponent),
+          import('./pages/philippines/cip-school/cip-school-page.component').then((m) => m.CipSchoolPageComponent),
       },
       {
         path: 'philippines-study/clark/eg-academy',
@@ -949,6 +949,11 @@ const routes: Routes = [
           import('./pages/study-tour-guide/philippines-guide/philippines-guide.component').then(
             (m) => m.PhilippinesGuideComponent,
           ),
+      },
+      {
+        path: 'study-tour-guide/phone-top-up',
+        loadComponent: () =>
+          import('./pages/phone-top-up/phone-top-up.component').then((m) => m.PhoneTopUpComponent),
       },
       {
         path: 'study-tour-guide/online-english',

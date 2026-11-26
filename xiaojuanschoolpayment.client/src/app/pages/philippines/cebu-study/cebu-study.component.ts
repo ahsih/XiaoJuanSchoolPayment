@@ -608,8 +608,8 @@ export class CebuStudyComponent {
     },
     {
       name: 'Philinter', route: '/philippines-study/cebu/philinter-academy', tag: '老牌综合校',
-      location: 'Mactan · Lapu-Lapu', summary: '老牌半斯巴达学校，口语、雅思、商务和家庭课程体系完整。',
-      image: '/assets/philinter/campus-main.webp', highlights: ['常规 / 强化综合英语', '强化口语', '雅思保证班', '托业', '商务 / 行业英语', '青少年英语（12岁起）'],
+      location: 'Mactan · Lapu-Lapu', summary: '2003年创办的老牌学校，斯巴达和半斯巴达课程都有，雅思、托业和口语课程完整。',
+      image: '/assets/philinter/campus-main.webp', highlights: ['强化 / 综合ESL', '强化口语', '雅思保分班', '托业保分班', '商务英语', '青少年英语（7岁起）'],
     },
   ];
 

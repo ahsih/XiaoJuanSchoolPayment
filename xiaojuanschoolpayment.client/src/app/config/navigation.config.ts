@@ -998,6 +998,12 @@ export const mainNavigation: NavigationItem[] = [
         route: '/study-tour-guide/faq',
         type: 'FAQ页',
       },
+      {
+        id: 'phone-top-up',
+        label: '海外手机话费充值',
+        route: '/study-tour-guide/phone-top-up',
+        type: '工具页',
+      },
     ],
   },
   {
@@ -1077,6 +1083,12 @@ export const mainNavigation: NavigationItem[] = [
         label: '留学常见问题',
         route: '/study-abroad-guide/faq',
         type: 'FAQ页',
+      },
+      {
+        id: 'phone-top-up-abroad',
+        label: '海外手机话费充值',
+        route: '/study-tour-guide/phone-top-up',
+        type: '工具页',
       },
     ],
   },

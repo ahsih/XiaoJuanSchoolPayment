@@ -275,11 +275,11 @@ export const SEO_PAGES: Record<string, SeoPage> = {
     image: '/assets/philippines/clark-study-hero.webp',
   },
   '/philippines-study/clark/cip-english-kepos': {
-    title: '菲律宾克拉克 CIP语言学校 | Native一对一课程费用住宿与报名咨询',
+    title: '菲律宾克拉克 CIP语言学校 | 外教一对一课程费用住宿与在线报价',
     description:
-      '了解克拉克CIP的母语外教一对一、ESL、雅思及亲子课程，比较宿舍和酒店实景、2026年9月人民币价格与当地费用，查看入学测试、假期、学习管理及参考报价。',
+      '了解克拉克CIP的外籍老师一对一、ESL、口语、雅思保分和青少年课程，查看校园、宿舍和Clover Hotel实景视频，2027年美元课程住宿费、淡季优惠、到校学杂费和在线报价。',
     keywords: '菲律宾克拉克 CIP语言学校, CIP English Kepos, 克拉克CIP, Clark CIP, 菲律宾外教一对一, 克拉克语言学校',
-    image: '/assets/philippines/cip-campus-intro.webp',
+    image: '/assets/cip/campus/campus-01.webp',
   },
   '/philippines-study/clark/eg-academy': {
     title: '菲律宾克拉克EG语言学校 | 课程费用住宿与报名咨询',
@@ -501,6 +501,12 @@ export const SEO_PAGES: Record<string, SeoPage> = {
     keywords: '菲律宾热门语言学校, 菲律宾学校推荐, 宿务英语学校, 碧瑶英语学校, 克拉克英语学校',
     image: '/assets/philippines/beci-eop-campus.webp',
   },
+  '/study-tour-guide/phone-top-up': {
+    title: '海外手机话费充值 | 菲律宾、爱尔兰、英国手机号在线充值',
+    description:
+      '思达启航学员服务：在国内用人民币给菲律宾、爱尔兰和英国的手机号充值话费和流量，支持Globe、Smart、Vodafone、Three等当地运营商，家长也能帮孩子充。',
+    keywords: '菲律宾话费充值, 爱尔兰话费充值, 英国话费充值, 海外手机充值, 留学生话费充值, 游学话费充值',
+  },
   '/study-tour-guide/philippines': {
     title: '菲律宾游学攻略 | 英语课程选校费用与行前准备',
     description:
@@ -681,6 +687,7 @@ const BREADCRUMB_LABELS: Record<string, string> = {
   cebu: '宿务',
   baguio: '碧瑶',
   'airport-pickup': '碧瑶接机指南',
+  'phone-top-up': '海外手机话费充值',
   clark: '克拉克',
   iloilo: '伊洛伊洛',
   bacolod: '巴科洛德',
