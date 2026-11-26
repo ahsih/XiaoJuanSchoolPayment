@@ -179,7 +179,7 @@ const shortVideo = (item: SmeagVideo): CiaShortVideo => ({
   ...(item.orientation === 'landscape' ? { shape: 'wide' as const } : {}),
 });
 
-const SMEAG_VIDEO_TOPICS: ReadonlyArray<SmeagVideo['topic']> = ['校园', '宿舍', '课程', '餐厅'];
+const SMEAG_VIDEO_TOPICS: ReadonlyArray<SmeagVideo['topic']> = ['校园', '宿舍', '课程', '餐厅', '访谈'];
 const SMEAG_VIDEO_TABS: PhVideoTab[] = SMEAG_VIDEO_TOPICS.map(topic => ({
   label: `${topic}视频`,
   icon: 'videocam',

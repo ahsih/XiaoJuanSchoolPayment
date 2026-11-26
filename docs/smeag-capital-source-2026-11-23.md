@@ -18,6 +18,23 @@ the SMEAG Capital page and to ignore the Encanto material, so nothing from the E
   used. Clips filmed landscape inside a vertical frame are cropped to the 16:9 picture (1080×608), which also removes the
   added 宿务SMEAG captions; vertical clips are 720×1280. The hero album groups them as 校园／宿舍／课程／餐厅, and the twin
   room's photo album now opens with its video.
+- YouTube (2026-11-25): five clips from SMEAG's own channels, @smeagedu (the Korean promo channel) and @smeagtv (the
+  school's channel since 2026-08, whose descriptions name the Capital Campus), at 1280×720 or 720×1280:
+  - `capital-promo-2025`: "2025 SMEAG CAPITAL 리뉴얼 홍보 비디오", kept 6.0–13.9 s and 20.2–141.2 s. Cut: the logo
+    intro, QR-code posters with SMEAG Vietnam's Facebook name and a PTE poster, a flag row that includes the flag of
+    the Taiwan authorities, a Cebu map with malls and hotels, IELTS/IDP award plaques, and the logo and website end card.
+    It is the first clip in the album.
+  - `orientation`: "New Student Orientation at SMEAG Global Education" (Capital Campus per its description), whole.
+  - `summer-party`: "2025 SMEAG CAPITAL EVENT - Feel the Heat", kept 5.3–84.5 s (no logo intro or end card).
+  - `lunch-buffet`: "SMEAG Student Life Reel: From Classroom to Dining" (Capital Campus), whole.
+  - `student-interview`: "Japanese Student Shares What She Learned at SMEAG", whole; she speaks English with burned-in
+    English captions. It opens a fifth album group, 访谈.
+- Not used from YouTube: the 2019–2023 channels (before the renewal); the dormitory slideshow (the same room photos as
+  the page); a Vietnamese-narrated dorm tour (repeats the room clips); the costume "first day" short; the 2026
+  Teachers' Day dance; the staff dance short (an "IELTS 9.0 (7 students)" score banner); "3000+ students scored 6.0+"
+  (a result claim); the Cambridge OET video (another organisation); the Tarlac, Encanto and junior-camp videos (other
+  campuses); and the 2025 outdoor-activity video (trips outside the school). Minori's part 1 could not be downloaded.
+- Facebook (SMEAGCEBU) shows nothing without a login and was not searched.
 
 ## Sources used
 
