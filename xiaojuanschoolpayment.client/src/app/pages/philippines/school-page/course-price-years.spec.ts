@@ -18,6 +18,7 @@ import { CiecSchoolPageComponent } from '../ciec-school/ciec-school-page.compone
 import { CpiSchoolPageComponent } from '../cpi-school/cpi-school-page.component';
 import { CpilsSchoolPageComponent } from '../cpils-school/cpils-school-page.component';
 import { ElsaSchoolPageComponent } from '../elsa-school/elsa-school-page.component';
+import { TargetSchoolPageComponent } from '../target-school/target-school-page.component';
 import { EvSchoolPageComponent } from '../ev-school/ev-school-page.component';
 import { FellaFirstCampusSchoolComponent } from '../fella-school/fella-first-campus-school.component';
 import { FellaSecondCampusSchoolComponent } from '../fella-school/fella-second-campus-school.component';
@@ -113,6 +114,7 @@ describe('one or two course prices on the shared Philippine template', () => {
     ['MONOL', MonolSchoolPageComponent],
     ['EV La Mer', LaMerSchoolPageComponent],
     ['MONOL Sparta', MonolSpartaSchoolPageComponent],
+    ['TARGET', TargetSchoolPageComponent],
     ['SMEAG Capital', SmeagCapitalSchoolPageComponent],
   ];
 

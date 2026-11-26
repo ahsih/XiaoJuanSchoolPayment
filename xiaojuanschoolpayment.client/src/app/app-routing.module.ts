@@ -236,8 +236,8 @@ const routes: Routes = [
       {
         path: 'philippines-study/cebu/target-global-english-academy',
         loadComponent: () =>
-          import('./pages/philippines/target-school/target-school.component').then(
-            (m) => m.TargetSchoolComponent,
+          import('./pages/philippines/target-school/target-school-page.component').then(
+            (m) => m.TargetSchoolPageComponent,
           ),
       },
       {

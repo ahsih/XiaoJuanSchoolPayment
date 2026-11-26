@@ -1,5 +1,41 @@
 # School notes: target
 
-Moved verbatim from AGENTS.md on 2026-11-26 to keep that file small. Record new decisions about this topic here; AGENTS.md holds only rules that apply to every task.
+Record new decisions about this page here; AGENTS.md holds only rules that apply to every task.
 
-TARGET uses the school package catalog effective for applications from2026/07/10 in `target-pricing.ts`; every price is a combined course-and-campus-room amount and must never be split into invented tuition and accommodation components. TARGET5 and Working Holiday remain separate course choices while sharing one price grid; ULTIMATE8, IELTS Regular and IELTS Guarantee also remain separate while sharing one grid. `target-student-quote.ts` owns the independent single /2–20-person quote state, with per-student registration date,30/59-day initial tourist visa, optional Cebu pickup and1–52-week Sunday-start package segments. Multiple segments may exceed24 weeks in total; do not impose an aggregate package-week or full-stay-span cap. When a course or room changes, use the student's total-duration1/2/3/4-week price tier to prorate each combined package segment. School cash deductions are20 dollars per non-peak week for exactly3 weeks,30 dollars per non-peak week for4–11 weeks, and35 dollars per non-peak week from12 weeks; exclude overlaps with2026/06/28–08/22 and2027/06/27–08/21. Omit the school cash-discount row from generated images when its calculated amount is zero. Apply the authorized Sida90% rate to the remaining package amount after the school cash deduction; registration and peso fees are excluded. The separate upgrade offer requires registration by2026/11/30 and entry during2026/08/23–2027/01/01:4 weeks adds the listed course upgrade,8 weeks adds one room upgrade, and12+ weeks also offers the final-four-week ULTIMATE8/eligible-IELTS upgrade or two weekend trips; room, level, quota and final eligibility remain school-confirmed. Local fees use selected visa and full stay:7,800-peso SSP,4,500-peso SSP E-CARD,4,300-peso ACR with the first visa extension, the school cumulative visa-extension table beginning at5,140 pesos, textbooks at500/1,000/2,000/3,000 pesos for1/2/3–4/5–8 weeks then1,000 per additional four weeks, and weekly600-peso electricity,200-peso water and500-peso common fee. Keep every local-fee row and its explanation in generated images even when its quantity and amount are zero. The published visa table lists up to five extensions; longer stays provisionally add4,440 pesos per further extension and identify that estimate for school confirmation. Deposit, pickup and laundry stay excluded references. The webpage and CIA-layout full-detail image reuse the same calculations and preserve both user-confirmed payment/local-fee notes in the image footer; keep the image's fourth section concise like EV by relying on the renderer's exchange-rate and final-confirmation lines instead of duplicating other webpage guidance.
+## On the shared template (2026-11-26)
+
+`/philippines-study/cebu/target-global-english-academy` renders `TargetSchoolPageComponent` on the shared Philippine
+template in CIA's compact layout with `layoutVersion: 2` quote and comparison images. Files in
+`pages/philippines/target-school/`: `target-content-config.ts` (content document, code `TARGET`, `TARGET_POLICY_VERSION`
+1 replaces an older saved document's catalogue, local fees and quote settings once; prices only here,
+`applyPricingData` is a no-op and `TARGET` is in `CONTENT_ONLY_PRICE_SCHOOL_CODES`), `target-page-content.ts` (page text
+and data), `target-page-profile.ts`, `target-page-quote.ts` and `target-school-page.component.ts`. The old
+`target-school.component.*`, `target-pricing.ts` and `target-student-quote.ts` are gone; `remaining-content-config.ts`
+re-exports the TARGET document for the employee editors. Sources and open questions:
+`docs/target-source-2026-11-26.md`.
+
+- Prices: the school's list for applications from 2026/07/10. Every price is a course-and-campus-room package; the
+  course price is the six-person package and other rooms are supplements per 4 weeks (quad +80, triple +140, twin
+  +240, single +500), which reproduces every cell. Room cards show “+X 美元” and “课程价已含” (`supplementBaseLabel`).
+  1/2/3 weeks are 0.4/0.6/0.8 of the 4-week price; the shared plan applies the student's total-weeks tier to every row.
+  IELTS Guarantee is 12 weeks only. Registration 150 dollars, returning students free.
+- Offers: campaign discount 20/30/35 dollars per non-peak week (3 / 4–11 / 12+ weeks), none in 2026/06/28–08/22 and
+  2027/06/27–08/14; then 思达启航 9折 on the package and the peak surcharge after it (registration and peso fees
+  excluded; user decision 2026-11-26).
+  限时尊享升级计划 (registration by 2026/11/30, entry 2026/08/23–2027/04/04, whole stay on one of TARGET 4/5/6; user decision
+  2026-11-26: 4+ weeks course, 8+ weeks also room, 12+ weeks also the choice): a free 0-dollar line in the quote; its offer card and FAQ hide from 2026-12-01.
+- 2027 peak 06/27–08/14: 40 dollars per peak study week, waived when the courses add up to 8 weeks or more (a 0-dollar
+  line then says so).
+- Local fees: SSP 7,800, E-CARD 4,500, ACR I-CARD 4,300 with the first extension, extensions 6,410 / 5,830 / 5,830 /
+  5,800 from the first extension on either entry visa (a 30-day entry pays nothing for 4 weeks; user decision
+  2026-11-26; past the table 5,800 each, marked as an estimate),
+  exit clearance 5,000 when the stay is over 24 weeks, textbooks by course type (500 / 1,000 / 2,000 / 3,000, +1,000
+  per further 4 weeks for any length, user decision 2026-11-26), electricity 600, water 200, management 500 per room week. Deposit, pickup, send-off, laundry,
+  extra nights and the minor care fee are references outside the total. The two user-confirmed footer lines of the
+  quote image (payment two weeks before arrival; local fees collected by the school) stay word for word.
+- Media: 53 school photos and 7 school videos (introduction, campus tour, one per room type) in `public/assets/target/`.
+  Room albums open with that room type's video. The old hero `public/assets/philippines/target-campus-hero.webp` stays
+  because the quote-image editor still uses it.
+- Not yet synced to the mini program (waiting for the user's layout and content review).
+
+Tests: `npx ng test --watch=false --browsers=ChromeHeadlessNoSandbox --ts-config=tsconfig.target-spec.json --include=src/app/pages/philippines/target-school/target-school-page.spec.ts --progress=false`.

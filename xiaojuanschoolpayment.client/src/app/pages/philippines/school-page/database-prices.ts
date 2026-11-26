@@ -27,6 +27,7 @@ export const CONTENT_ONLY_PRICE_SCHOOL_CODES: readonly string[] = [
   'MONOL',
   'PINES',
   'SMEAG-ENCANTO',
+  'TARGET',
 ];
 
 /** Whether the school's page and editor fill missing prices from the database (every school not listed above). */

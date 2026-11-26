@@ -37,7 +37,7 @@ import { SchoolService } from '../../../services/school.service';
 import { chinaToday, ExchangeRateService } from '../../../services/exchange-rate.service';
 import { SchoolQuotePlan, QuotePlanKind, quoteMoney } from '../../components/school-quote-plan';
 import { SchoolQuotePlanComponent } from '../../components/school-quote-plan.component';
-import { TargetStudentQuote } from './target-school/target-student-quote';
+import { TargetSchoolPageComponent } from './target-school/target-school-page.component';
 import { associationPeakRateForWeek, calculateAssociationPeakSurcharge } from './association-peak-surcharge';
 const schools = [
   { name: 'PINES IELTS', create: () => { const p = new PinesSchoolPageComponent(); p.students[0].quotePlan.courses[0].optionId = 'pre-ielts'; return p; } },
@@ -67,6 +67,7 @@ const schools = [
   { name: "Fella", create: () => new FellaFirstCampusSchoolComponent() },
   { name: "BTES", create: () => new BtesSchoolComponent() },
   { name: "Blue Ocean", create: () => new CboaSchoolPageComponent() },
+  { name: "TARGET", create: () => new TargetSchoolPageComponent() },
   { name: "WALES", create: () => new WalesSchoolDetailComponent() },
   { name: "MINT", create: () => new EnglishMintSchoolComponent() },
 ];
@@ -149,7 +150,8 @@ describe('confirmed common quote rules across completed routes', () => {
       plan.rooms[0].startDate = '2027-02-30';
       expect(plan.error).not.toBe('');
     });
-    if (school.name !== 'MINT') it(school.name + ': different students retain independent duration tiers', () => {
+    // TARGET's default six-person room is priced inside the course (room supplement 0); its own spec covers the tiers.
+    if (school.name !== 'MINT' && school.name !== 'TARGET') it(school.name + ': different students retain independent duration tiers', () => {
       const page = initialize(school.create);
       page.setQuoteMode('group');
       const active = page.activeStudents;
@@ -210,14 +212,6 @@ describe('confirmed common quote rules across completed routes', () => {
     for (const row of plan.paymentItems()) { expect(text).toContain(row.amount.replace(/\s/g,'')); expect(text).toContain(row.detailSubtitle!.replace(/\s/g,'')); }
     expect(text).not.toMatch(/均价|自动同步|4周价格的|4周价的|÷4/);
   }, 30000);
-  it('TARGET preserves package prices and reflows dates after edits/removals', () => {
-    const student = new TargetStudentQuote(); student.addPackage();
-    student.updateWeeks(student.packages[0], 1);
-    expect(student.packages[1].startDate).toBe(new Date(student.date(student.startDate)! + 7*86400000).toISOString().slice(0,10));
-    student.removePackage(student.packages[0].id);
-    student.packages[0].startDate = '2026-11-09';
-    expect(student.quoteError).toContain('周日');
-  });
   it('shared controls prevent invalid Sundays and keep long-quote segment choices available', () => {
     const plan = new SchoolQuotePlan('course','room','2026-11-08',[4,8,12], kind => [{id:kind,name:kind,details:''}], (_,row)=>1000*row.weeks/4);
     const editor = new SchoolQuotePlanComponent(); editor.plan=plan;
