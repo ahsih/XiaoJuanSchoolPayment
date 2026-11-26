@@ -159,6 +159,24 @@ export const CBOA_VIDEOS: CboaVideo[] = [
     name: 'student-vlog', title: '中国学员的一天', duration: '3:21',
     description: '中国学员用中文记录一天：上课、自习、吃饭、健身和宿舍窗外的海。',
   },
+  // More from the same channel (2026-11-27, the user chose to add them). The pickup film lost the airport banner
+  // with a fast-food logo, the taxi-company shots, the road shots with a fast-food sign and the close-ups of a
+  // filled-in registration form. The textbook film lost a third-party publisher's book, a workbook page with QR
+  // codes, the IELTS and PINES logo shots and students holding certificates with their names. The teacher
+  // interview starts after its title card. The EGI clip is the 2025 tour's own twin and triple room shots.
+  {
+    name: 'pickup-first-day', title: '机场接机和入学报到', duration: '1:21',
+    description: '学校工作人员在宿务机场到达口举牌接人，坐校车到校，当天办理报到和入学说明。',
+  },
+  {
+    name: 'textbooks-and-classes', title: '教材和课堂实况', duration: '1:01',
+    description: '蓝海CBOA的口语、语法、雅思和托业教材，以及一对一和小组课的上课实况。',
+  },
+  {
+    name: 'teacher-method', title: '老师谈上课方法', duration: '1:29',
+    description: '蓝海CBOA一位月度优秀教师讲她怎么上课：按学生的节奏走，鼓励开口，用活动练口语（英文，带英文字幕）。',
+  },
+  { name: 'egi-rooms', title: 'EGI校内宿舍房间', duration: '0:04', description: 'EGI校内宿舍的双人间和三人间，取自学校的校园导览。' },
 ];
 
 const SUITES_SERVICE = '酒店式管理，每天免费早餐';

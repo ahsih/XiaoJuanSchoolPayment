@@ -143,6 +143,11 @@ describe('Cebu Blue Ocean (CBOA) school page on the shared template', () => {
     expect(egi?.rateIds).toEqual(['egi-twin-ocean', 'egi-twin-city', 'egi-triple-ocean']);
     expect(Object.keys(egi?.variants ?? {})).toEqual(['EGI-TO', 'EGI-TC', 'EGI-3']);
     expect(egi?.gallery).toEqual(['01', '02', '03'].map(n => `assets/cebu-blue-ocean/rooms/egi-${n}.webp`));
+    expect(CBOA_PAGE_PROFILE.roomVideos?.['egi']?.src).toBe('/assets/cebu-blue-ocean/videos/egi-rooms.mp4');
+    expect(CBOA_PAGE_PROFILE.videoTabs?.map(tab => tab.label)).toEqual(['公寓视频', '房型视频', '校园视频', '课程视频', '学员视频']);
+    const albumNames = (CBOA_PAGE_PROFILE.videoTabs ?? []).flatMap(tab => tab.items.map(item => item.src));
+    expect(new Set(albumNames).size).toBe(albumNames.length);
+    expect(albumNames.length).toBe(13);
     for (const profile of CBOA_PAGE_PROFILE.roomProfiles.filter(item => item.id !== 'egi')) {
       expect(profile.rateIds?.length).withContext(profile.id).toBe(1);
       expect(CBOA_PAGE_PROFILE.roomVideos?.[profile.id]?.src).withContext(profile.id).toMatch(/^\/assets\/cebu-blue-ocean\/videos\/ocean-suites-[a-z-]+\.mp4$/);
