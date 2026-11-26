@@ -111,7 +111,7 @@ MySQL/MariaDB database
   - `Services/DataInitialize.cs`: large, insert-only startup seed routine for currencies, schools, pricing, rooms, lessons, fees, and notes. It adds missing baseline records but never updates or deletes existing production records.
   - `Migrations/`: EF Core schema history. Do not hand-edit the model snapshot.
   - `wwwroot/uploads/`: legacy/local-development school-photo storage; only `.gitkeep` is source controlled. New production uploads use COS when `TencentCos__Enabled=true`.
-- `Dockerfile`: multi-stage production build.
+- `Dockerfile`: multi-stage production build. The Angular build is copied straight into the runtime image's `wwwroot`, not through the server build (2026-11-27): every COPY of it stores all photos and videos again, see `docs/agents/deployment.md`.
 - `.github/workflows/deploy-server.yml`: every `main` push deploys production by pushing over SSH to the server, which never pulls from GitHub. Never add `--volumes` or `-a` image pruning. Details: `docs/agents/deployment.md`.
 - `.github/workflows/deploy-github-pages.yml`: builds and publishes the static Angular frontend to GitHub Pages. API-dependent features require a separate reachable backend and will not work from a static-only deployment without additional configuration.
 - `study60/`: source for `public/study60/`; see `docs/agents/study60.md`.
