@@ -24,7 +24,6 @@ interface ScheduleItem { time: string; title: string; text: string; }
 interface ProcessStep { icon: string; title: string; text: string; }
 interface FaqItem { question: string; answer: string; }
 interface SideNavItem { label: string; target: string; icon: string; }
-interface SourceLink { label: string; url: string; }
 
 @Component({
   selector: 'app-eg-school-detail',
@@ -86,30 +85,30 @@ export class EgSchoolDetailComponent implements OnInit {
 
   readonly quickInfo: QuickInfo[] = [
     { icon: 'location_on', label: '城市', value: '克拉克 / Angeles City', note: '位于Friendship Highway生活圈，适合重视机场衔接和舒适环境的学生。' },
-    { icon: 'groups', label: '学校规模', value: '约110名学生', note: '官网概况列出1:1教室50间、团体教室20间，属于中小型综合校。' },
+    { icon: 'groups', label: '学校规模', value: '约110名学生', note: '1:1教室50间、团体教室20间，属于中小型综合校。' },
     { icon: 'record_voice_over', label: '师资方向', value: '菲律宾 / 美国 / 加拿大等', note: '适合想把一对一训练和Native表达反馈一起比较的人。' },
     { icon: 'school', label: '课程', value: 'ESL / IELTS / TOEIC / TOEFL / Business', note: '另有Junior、Guardian和Golf英语组合方向。' },
-    { icon: 'sports_golf', label: '特色资源', value: '250码高尔夫练习场', note: '官网概况和Golf页均列出高尔夫练习资源。' },
-    { icon: 'payments', label: '费用参考', value: '2025年USD价目表', note: '4周课程与住宿以USD列示，注册费USD100另计。' },
+    { icon: 'sports_golf', label: '特色资源', value: '250码高尔夫练习场', note: '校内有高尔夫练习场，可搭配Golf英语课程。' },
+    { icon: 'payments', label: '费用参考', value: '2025年美元价格', note: '4周课程与住宿以美元计价，注册费100美元另计。' },
   ];
 
   readonly galleryImages: GalleryImage[] = [
-    { category: '校园', title: 'EG校园与泳池外观', description: 'EG官方校园页展示的校区、泳池、球场和庭院环境。', src: 'assets/philippines/eg-facility-001.webp' },
-    { category: '校园', title: 'EG校园总览', description: '官方Facility综合图，展示校舍、宿舍、泳池和公共空间。', src: 'assets/philippines/eg-campus-overview.webp' },
-    { category: '教室', title: '教学楼与教室', description: '官方School Building图，包含大堂、教室、一对一教室和多媒体教室。', src: 'assets/philippines/eg-classroom.jpg' },
-    { category: '住宿', title: 'Dormitory 1 双人/单人房', description: '官方宿舍图展示房间、书桌、衣柜、浴室和走廊空间。', src: 'assets/philippines/eg-dormitory.webp' },
-    { category: '住宿', title: 'Dormitory 1 四人房', description: '官方四人房图，适合先判断低预算房型和基本生活配置。', src: 'assets/philippines/eg-group-classroom.jpg' },
-    { category: '住宿', title: 'Dormitory 2 房型', description: '官方Dormitory 2图，展示单人/多人房和卫浴空间。', src: 'assets/philippines/eg-facility-003.webp' },
-    { category: '运动', title: '高尔夫与运动设施', description: '官方设施图展示高尔夫练习场、球场、篮球场和休息区。', src: 'assets/philippines/eg-facility-004.webp' },
-    { category: '运动', title: 'EG Golf项目', description: '官方Golf页展示高尔夫练习场、教练和课程方向。', src: 'assets/philippines/eg-golf-facility.webp' },
-    { category: '设施', title: '校园设施综合图', description: '官方图集中展示泳池、教室、TOEIC考场、宿舍和运动设施。', src: 'assets/philippines/eg-room-2018.jpg' },
+    { category: '校园', title: 'EG校园与泳池外观', description: '校区、泳池、球场和庭院环境。', src: 'assets/philippines/eg-facility-001.webp' },
+    { category: '校园', title: 'EG校园总览', description: '校舍、宿舍、泳池和公共空间。', src: 'assets/philippines/eg-campus-overview.webp' },
+    { category: '教室', title: '教学楼与教室', description: '大堂、教室、一对一教室和多媒体教室。', src: 'assets/philippines/eg-classroom.jpg' },
+    { category: '住宿', title: 'Dormitory 1 双人/单人房', description: '房间、书桌、衣柜、浴室和走廊空间。', src: 'assets/philippines/eg-dormitory.webp' },
+    { category: '住宿', title: 'Dormitory 1 四人房', description: '四人房的床位和基本生活配置。', src: 'assets/philippines/eg-group-classroom.jpg' },
+    { category: '住宿', title: 'Dormitory 2 房型', description: '单人/多人房和卫浴空间。', src: 'assets/philippines/eg-facility-003.webp' },
+    { category: '运动', title: '高尔夫与运动设施', description: '高尔夫练习场、球场、篮球场和休息区。', src: 'assets/philippines/eg-facility-004.webp' },
+    { category: '运动', title: 'EG Golf项目', description: '高尔夫练习场、教练和课程方向。', src: 'assets/philippines/eg-golf-facility.webp' },
+    { category: '设施', title: '校园设施综合图', description: '泳池、教室、TOEIC考场、宿舍和运动设施。', src: 'assets/philippines/eg-room-2018.jpg' },
   ];
 
   readonly basicInfo: BasicInfoRow[] = [
     { label: '学校名称', value: '菲律宾克拉克EG语言学校' },
     { label: '英文名称', value: 'EG Academy / Education Group Granma INC' },
     { label: '创校时间', value: '2013年4月' },
-    { label: '地址', value: 'Friendship Highway, Cutcut, Angeles City, Philippines' },
+    { label: '所在区域', value: 'Angeles City Cutcut一带（Friendship Highway附近）' },
     { label: '学生容量', value: '约110名学生' },
     { label: '教室配置', value: '1:1教室50间、团体教室20间' },
     { label: '设施', value: 'TOEIC考场、自习室、视听室、250码高尔夫练习场、咖啡厅、旅行社等' },
@@ -118,9 +117,9 @@ export class EgSchoolDetailComponent implements OnInit {
 
   readonly highlights: Highlight[] = [
     { image: 'assets/philippines/eg-facility-001.webp', title: 'Clark舒适型校园', text: 'EG适合想在克拉克把校园环境、住宿、学习和生活便利度一起考虑的学生。' },
-    { image: 'assets/philippines/eg-classroom.jpg', title: '一对一和团体课并重', text: '官网概况列出50间一对一教室和20间团体教室，ESL和考试课程都可按强度选择。' },
-    { image: 'assets/philippines/eg-facility-004.webp', title: '高尔夫英语特色明显', text: 'EG Golf页列出练习场、教练和追加课程费用，适合把英语和高尔夫体验结合。' },
-    { image: 'assets/philippines/eg-facility-002.webp', title: '宿舍配置清晰', text: '官方宿舍图展示床位、书桌、衣柜、卫浴等空间，报价时重点确认房型和空房。' },
+    { image: 'assets/philippines/eg-classroom.jpg', title: '一对一和团体课并重', text: '50间一对一教室和20间团体教室，ESL和考试课程都可按强度选择。' },
+    { image: 'assets/philippines/eg-facility-004.webp', title: '高尔夫英语特色明显', text: '有练习场、教练和追加Golf课程，适合把英语和高尔夫体验结合。' },
+    { image: 'assets/philippines/eg-facility-002.webp', title: '宿舍配置清晰', text: '宿舍有床位、书桌、衣柜、卫浴等空间，报价时重点确认房型和空房。' },
   ];
 
   readonly suitableFor: FitItem[] = [
@@ -132,7 +131,7 @@ export class EgSchoolDetailComponent implements OnInit {
   ];
 
   readonly notSuitableFor: FitItem[] = [
-    { title: '只想找最低总价', text: 'EG官方表以课程费和宿舍费叠加，短期比例、注册费、当地费用和接机费都要一起算。' },
+    { title: '只想找最低总价', text: 'EG按课程费和宿舍费叠加计价，短期比例、注册费、当地费用和接机费都要一起算。' },
     { title: '短期高压雅思冲刺', text: '可以看IELTS路线，但若需要严格晚自习和密集模考，也应同步比较碧瑶强管理学校。' },
     { title: '只预留USD主费用', text: '课程、住宿与注册费以USD计算，但教材、许可、接机和签证等PHP到校费用仍需另列。' },
     { title: '只看Golf不看学习安排', text: 'Golf课程要把练习时间、额外课程费、球具、交通和英语课表一起核对。' },
@@ -178,7 +177,7 @@ export class EgSchoolDetailComponent implements OnInit {
   ];
 
   readonly schedule: ScheduleItem[] = [
-    { time: '07:20 - 08:20', title: '早餐与准备', text: 'EG FAQ说明食宿通常含三餐，周末提供早午餐，最终按当期规则确认。' },
+    { time: '07:20 - 08:20', title: '早餐与准备', text: '食宿通常含三餐，周末提供早午餐，以学校当期安排为准。' },
     { time: '08:00 - 12:00', title: '上午一对一 / 团体课', text: '按ESL、Native、IELTS、TOEIC、TOEFL或Business方向安排课程。' },
     { time: '12:00 - 13:00', title: '午餐与短休', text: '住宿生活、餐食和宿舍规则应在报名时一起确认。' },
     { time: '13:00 - 17:00', title: '下午课程与反馈', text: '考试或Native课程需确认老师配置、教材和是否按期开课。' },
@@ -197,7 +196,7 @@ export class EgSchoolDetailComponent implements OnInit {
     { item: 'ACR I-Card', amount: 'PHP 4,000', note: '长期学习或延签时通常需要' },
     { item: '签证延签8周', amount: 'PHP 3,830', note: '8周延签参考' },
     { item: '签证延签12周', amount: 'PHP 8,830', note: '12周延签参考' },
-    { item: 'Golf追加课（每周5次）', amount: 'PHP 10,000', note: 'EG Golf官方页参考' },
+    { item: 'Golf追加课（每周5次）', amount: 'PHP 10,000', note: '选择Golf追加课时收取' },
   ];
 
   readonly serviceSteps: ProcessStep[] = [
@@ -209,17 +208,17 @@ export class EgSchoolDetailComponent implements OnInit {
   ];
 
   readonly notes = [
-    '2025年USD价目表列出4周课程费和住宿费，注册费USD100另计。',
-    '1周、2周、3周暂沿用4周课程+住宿总额的40%、65%、85%估算规则，正式短期报价需由学校确认。',
+    '课程费和住宿费为2025年4周美元价格，注册费100美元另计。',
+    '1周、2周、3周按4周课程+住宿总额的40%、65%、85%估算，正式短期报价需由学校确认。',
     '到校费用多以PHP支付，教材、SSP、SSP E-Card、ACR I-Card、接机、签证延签和Golf追加费用需另列。',
     'Golf + ESL和Golf Special需要额外确认练习场、教练、练习球、开放时间和个人装备。',
-    '最终报名以学校正式回函、空房、优惠有效期、汇率和顾问确认报价为准。',
+    '最终报名以学校正式报价、空房、优惠有效期、汇率和顾问确认报价为准。',
   ];
 
   readonly faqs: FaqItem[] = [
     { question: '菲律宾克拉克EG语言学校适合第一次游学吗？', answer: '适合进入候选。EG课程选择较完整，Clark生活环境相对舒适，尤其适合ESL、Native口语、亲子和高尔夫英语组合需求。' },
-    { question: 'EG的价格为什么用USD显示？', answer: '本页已按2025年USD价目表更新课程、住宿与注册费。PHP当地费用仍需分开准备，人民币换算建议按付款日汇率由顾问确认。' },
-    { question: '短期1-3周怎么计算？', answer: '页面暂沿用1周、2周、3周分别按4周课程+住宿总额40%、65%、85%的规则估算；由于新价目表仅列4周价格，正式短期报价需由学校确认。' },
+    { question: 'EG的价格为什么用美元显示？', answer: 'EG的课程、住宿与注册费以美元计价，到校当地费用以比索另付。人民币换算按付款日汇率由顾问确认。' },
+    { question: '短期1-3周怎么计算？', answer: '1周、2周、3周分别按4周课程+住宿总额的40%、65%、85%估算，正式短期报价需由学校确认。' },
     { question: 'EG和CIP怎么选？', answer: '如果核心是外教一对一和口语纠音，可以优先比较CIP；如果想要ESL、考试、Native、亲子和Golf一起比较，EG更值得放进候选。' },
     { question: 'EG适合雅思冲刺吗？', answer: '可以看Pre-IELTS、IELTS + Native或Score Guarantee，但短期高压冲分还应比较碧瑶强管理学校，并确认模考和保证班规则。' },
   ];
@@ -240,14 +239,6 @@ export class EgSchoolDetailComponent implements OnInit {
     { label: '费用', target: 'quote', icon: 'calculate' },
     { label: '服务', target: 'service-process', icon: 'support_agent' },
     { label: 'FAQ', target: 'faq', icon: 'help' },
-  ];
-
-  readonly sources: SourceLink[] = [
-    { label: 'EG Academy官方概况', url: 'https://egesl.com/bbs/board.php?bo_table=overview' },
-    { label: 'EG Academy官方校园页', url: 'https://www.egesl.com/study/campus/' },
-    { label: 'EG Academy官方费用PDF（课程规则参考）', url: 'https://www.egesl.com/study/cost/cost_2025.pdf' },
-    { label: 'EG Academy官方Golf页', url: 'https://www.egesl.com/study/golf/' },
-    { label: 'EG Academy官方FAQ', url: 'https://egesl.com/faq/' },
   ];
 
   ngOnInit(): void {

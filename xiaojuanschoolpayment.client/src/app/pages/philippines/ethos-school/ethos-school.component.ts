@@ -68,11 +68,6 @@ interface SideNavItem {
   icon: string;
 }
 
-interface SourceLink {
-  label: string;
-  url: string;
-}
-
 @Component({
   selector: 'app-ethos-school',
   standalone: true,
@@ -110,7 +105,7 @@ export class EthosSchoolComponent {
       icon: 'groups',
       label: '班级人数',
       value: 'Group最多6人',
-      note: '官方资料显示Group Class每班最多6名学生；Man-to-Man名额有限，通常需单独确认。',
+      note: 'Group Class每班最多6名学生；Man-to-Man名额有限，通常需单独确认。',
     },
     {
       icon: 'schedule',
@@ -132,9 +127,9 @@ export class EthosSchoolComponent {
     },
     {
       icon: 'paid',
-      label: '公开价格',
+      label: '价格方式',
       value: 'USD套餐价',
-      note: '公开价格表列出1-20周、4小时/5小时、Tuition only、Dormitory、Home Stay和Outside Stay套餐。',
+      note: '价格按1-20周、4小时/5小时、Tuition only、Dormitory、Home Stay和Outside Stay套餐计算。',
     },
   ];
 
@@ -160,7 +155,7 @@ export class EthosSchoolComponent {
     {
       category: '教室',
       title: '小班课堂',
-      description: 'Group Class公开上限为6人，适合在同伴互动中练习输出。',
+      description: 'Group Class上限为6人，适合在同伴互动中练习输出。',
       src: 'https://www.ethos.ph/images/S04.jpg',
     },
     {
@@ -178,7 +173,7 @@ export class EthosSchoolComponent {
     {
       category: '住宿',
       title: '宿舍厨房参考',
-      description: '宿舍公开资料列出完整厨房、Wi-Fi、空调、清洁和水电等支持。',
+      description: '宿舍有完整厨房、Wi-Fi、空调、清洁和水电等支持。',
       src: 'https://www.ethos.ph/images/S10.jpg',
     },
     {
@@ -200,8 +195,8 @@ export class EthosSchoolComponent {
       label: '学校定位',
       value: '宿务市区小规模American English学校，强调美国籍老师、小班、每日反馈和Homestay体验。',
     },
-    { label: '公开规模', value: '官方FAQ列当前最大容量约30名；Kids Camp需至少6名学生成团。' },
-    { label: '开校时间', value: '官方FAQ显示2012年4月开校。' },
+    { label: '学校规模', value: '最大容量约30名；Kids Camp需至少6名学生成团。' },
+    { label: '开校时间', value: '2012年4月开校。' },
     {
       label: '4周起价',
       value: 'USD 1,438起：4小时/天Group Class Tuition only；Dormitory住宿套餐4周USD 1,781起。',
@@ -215,7 +210,7 @@ export class EthosSchoolComponent {
     },
     {
       title: '小班最多6人，适合互动输出',
-      text: '官方更推荐Group Class，因为同伴互动、老师纠错和课后共同复习能降低开口压力。',
+      text: '学校更推荐Group Class，因为同伴互动、老师纠错和课后共同复习能降低开口压力。',
     },
     {
       title: 'Home Stay是它很特别的住宿体验',
@@ -230,7 +225,7 @@ export class EthosSchoolComponent {
     },
     {
       title: '喜欢小规模、熟人感强的学校',
-      text: 'ETHOS公开容量不大，适合不想进几百人大校、希望老师和学生之间更熟悉的人。',
+      text: 'ETHOS容量不大，适合不想进几百人大校、希望老师和学生之间更熟悉的人。',
     },
     {
       title: '亲子或家庭想一起上课',
@@ -249,7 +244,7 @@ export class EthosSchoolComponent {
     },
     {
       title: '只想全一对一且立刻锁定',
-      text: 'ETHOS公开说明Man-to-Man名额有限且费用更高，页面报价器先按公开Group套餐估算。',
+      text: 'ETHOS的Man-to-Man名额有限且费用更高，这里的报价按Group套餐估算。',
     },
   ];
 
@@ -285,7 +280,7 @@ export class EthosSchoolComponent {
       id: 'dormitory',
       name: 'Dormitory Housing',
       shortName: '宿舍',
-      note: '校方宿舍预算较低，公开资料显示离学校很近，含Wi-Fi、空调、清洁、厨房和基础水电。',
+      note: '校方宿舍预算较低，离学校很近，含Wi-Fi、空调、清洁、厨房和基础水电。',
       pricesUsd: {
         'group-4': { 1: 447, 2: 891, 3: 1337, 4: 1781, 8: 3417, 12: 5127, 16: 6690, 20: 8363 },
         'group-5': { 1: 537, 2: 1072, 3: 1608, 4: 2143, 8: 4104, 12: 6800, 16: 8031, 20: 10037 },
@@ -314,11 +309,11 @@ export class EthosSchoolComponent {
   ];
 
   readonly localFees: LocalFee[] = [
-    { item: 'Immigration首月预算', amount: 'PHP 11,190', note: '官方移民页列示SSP、ACR-I Card、Express fee和交通费等首月费用。' },
-    { item: '2个月累计移民费用', amount: 'PHP 16,850', note: '含第一次签证延长等公开参考费用。' },
+    { item: 'Immigration首月预算', amount: 'PHP 11,190', note: '包含SSP、ACR-I Card、Express fee和交通费等首月费用。' },
+    { item: '2个月累计移民费用', amount: 'PHP 16,850', note: '含第一次签证延长等费用。' },
     { item: '3个月累计移民费用', amount: 'PHP 27,700', note: '长期学习会增加签证延长、ACR-I Card等费用。' },
     { item: '餐食加购', amount: 'PHP 1,500 / 3,000 / 4,500 每周', note: '工作日1/2/3餐；Home Stay工作日早餐已含，周末和假日餐食不含。' },
-    { item: '注册费 / 订金', amount: '总价15%', note: 'Payment Policy说明这是非退款Registration Fee，属于总报价的一部分，不是额外费用。' },
+    { item: '注册费 / 订金', amount: '总价15%', note: '这是不退还的Registration Fee，属于总报价的一部分，不是额外费用。' },
     { item: 'Kids Camp订金', amount: '总价25%', note: 'Kids Camp使用更高订金比例，团体安排需另行报价。' },
     { item: '不含项目', amount: '按实际', note: '餐食、洗衣、市内交通、手机、医疗、旅游活动和购物等不在学习报价内。' },
     { item: '额外住宿日', amount: '按比例', note: '若航班需要提前到或延后离开，ETHOS可按情况加收额外住宿。' },
@@ -343,7 +338,7 @@ export class EthosSchoolComponent {
     {
       time: 'After Class',
       title: 'Group学生可预约免费短时辅导',
-      text: '官方课程页提到Group Class学生可预约每日课后15分钟Man-to-Man辅导，用来问问题或练习弱项。',
+      text: 'Group Class学生可预约每日课后15分钟Man-to-Man辅导，用来问问题或练习弱项。',
     },
   ];
 
@@ -354,11 +349,11 @@ export class EthosSchoolComponent {
     },
     {
       title: '页面报价是否包含所有费用？',
-      text: '不是。报价器按ETHOS公开USD套餐价估算课程和所选住宿；菲律宾移民费用、餐食加购、洗衣、市内交通、医疗、活动、机票和保险另计。',
+      text: '不是。报价器按ETHOS美元套餐价估算课程和所选住宿；菲律宾移民费用、餐食加购、洗衣、市内交通、医疗、活动、机票和保险另计。',
     },
     {
       title: 'Man-to-Man可以报价吗？',
-      text: '可以让顾问确认，但ETHOS公开说明Man-to-Man名额有限且费用更高。本页面先用公开Group价格计算，避免把未确认的一对一费用写死。',
+      text: '可以让顾问确认，但ETHOS的Man-to-Man名额有限且费用更高。这里先按Group价格计算，一对一费用以学校报价为准。',
     },
     {
       title: '亲子家庭适合ETHOS吗？',
@@ -371,7 +366,6 @@ export class EthosSchoolComponent {
     { label: '课程费用', target: 'courses', icon: 'payments' },
     { label: '快速报价', target: 'quote', icon: 'calculate' },
     { label: '当地费用', target: 'local-fees', icon: 'receipt' },
-    { label: '资料来源', target: 'sources', icon: 'link' },
   ];
 
   readonly mobileAnchors: SideNavItem[] = [
@@ -379,17 +373,6 @@ export class EthosSchoolComponent {
     { label: '课程', target: 'courses', icon: 'menu_book' },
     { label: '报价', target: 'quote', icon: 'calculate' },
     { label: '费用', target: 'local-fees', icon: 'receipt_long' },
-  ];
-
-  readonly sourceLinks: SourceLink[] = [
-    { label: 'ETHOS官方首页', url: 'https://ethos.ph/' },
-    { label: 'ETHOS Classroom English课程页', url: 'https://ethos.ph/ethos-eng1.html' },
-    { label: 'ETHOS当前公开价格页', url: 'https://ethos.ph/prices/ethos-english-with-housing-price.html' },
-    { label: 'ETHOS住宿说明', url: 'https://ethos.ph/ethos-eng-house1.html' },
-    { label: 'ETHOS移民费用说明', url: 'https://ethos.ph/ethos-imm1.html' },
-    { label: 'ETHOS付款政策', url: 'https://ethos.ph/ethos-payments.php' },
-    { label: 'ETHOS Family English', url: 'https://ethos.ph/ethos-eng2.html' },
-    { label: 'ETHOS Kids Camp FAQ', url: 'https://ethos.ph/ethos-faq-ENG5.html' },
   ];
 
   get filteredGalleryImages(): GalleryImage[] {
@@ -437,7 +420,7 @@ export class EthosSchoolComponent {
   }
 
   get quoteNote(): string {
-    return 'USD套餐价按ETHOS公开价格表估算；Immigration、餐食加购、洗衣、市内交通、医疗、活动、机票和保险另计。';
+    return '美元套餐价为估算；Immigration、餐食加购、洗衣、市内交通、医疗、活动、机票和保险另计。';
   }
 
   get packageFeeRows() {

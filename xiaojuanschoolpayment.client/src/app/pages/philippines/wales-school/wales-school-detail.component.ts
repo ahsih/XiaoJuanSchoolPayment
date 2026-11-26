@@ -112,22 +112,22 @@ export class WalesSchoolDetailComponent implements OnInit, AfterViewInit, WalesQ
   readonly quickInfo: QuickInfo[] = [
     { icon: 'terrain', label: '城市', value: '碧瑶 Baguio', note: 'Legarda Road市区生活圈，步行可到餐厅、商场、ATM等生活机能。' },
     { icon: 'groups', label: '学校规模', value: '约80名学生', note: '小校容量让老师与学校人员更容易照顾个别需求。' },
-    { icon: 'school', label: '课程方向', value: 'EEP / Infinity / PTE / IELTS / Junior', note: '2026价表共列11门课程，从轻量英文到考试与青少年方向。' },
+    { icon: 'school', label: '课程方向', value: 'EEP / Infinity / PTE / IELTS / Junior', note: '2026年共开设11门课程，从轻量英文到考试与青少年方向。' },
     { icon: 'bed', label: '住宿', value: '16种房型', note: 'Lower/Upper Studio、Premium Studio、Condo与Share Type按每人计价。' },
     { icon: 'local_offer', label: '年末优惠', value: '指定入学日住宿六折', note: '2026/11/29入学4或6周、12/13入学4周；限10名，须确认名额。' },
-    { icon: 'payments', label: '费用参考', value: 'WALES 2026价表', note: '课程、住宿、报名费与到校比索费用已按本次学校资料同步。' },
+    { icon: 'payments', label: '费用参考', value: 'WALES 2026年价格', note: '课程、住宿、报名费与到校比索费用均按2026年价格计算。' },
   ];
 
   readonly galleryImages: GalleryImage[] = [
-    { category: '校区', title: 'WALES校舍外观', description: 'WALES官方网站展示的Baguio校舍，学校位于Legarda Road生活圈。', src: 'assets/philippines/wales-school-building.webp' },
-    { category: '设施', title: 'WALES校内设施', description: '官方Facility页面展示的校内学习与生活空间，学校楼层内集中安排教室、办公室和餐厅。', src: 'assets/philippines/wales-facility-main.webp' },
-    { category: '教室', title: '一对一玻璃隔间教室', description: 'WALES官方Classrooms页面展示的一对一教室，隔间式空间利于集中上课。', src: 'assets/philippines/wales-classroom.webp' },
+    { category: '校区', title: 'WALES校舍外观', description: 'WALES在Baguio的校舍，学校位于Legarda Road生活圈。', src: 'assets/philippines/wales-school-building.webp' },
+    { category: '设施', title: 'WALES校内设施', description: '校内学习与生活空间，学校楼层内集中安排教室、办公室和餐厅。', src: 'assets/philippines/wales-facility-main.webp' },
+    { category: '教室', title: '一对一玻璃隔间教室', description: 'WALES的一对一教室，隔间式空间利于集中上课。', src: 'assets/philippines/wales-classroom.webp' },
     { category: '教室', title: '团体与功能教室', description: '团体课用于讨论、听力、发音、商务表达和考试技能训练。', src: 'assets/philippines/wales-classroom-group.webp' },
-    { category: '住宿', title: 'Studio房型', description: 'WALES官方Studio Type页面展示的单人房型，适合重视隐私和学习空间的学生。', src: 'assets/philippines/wales-studio-room.webp' },
+    { category: '住宿', title: 'Studio房型', description: 'Studio Type单人房型，适合重视隐私和学习空间的学生。', src: 'assets/philippines/wales-studio-room.webp' },
     { category: '住宿', title: 'Premium Studio房型', description: 'Premium Studio配有更完整的生活设备，适合成人、家庭或长期学习需求。', src: 'assets/philippines/wales-premium-studio-room.webp' },
     { category: '住宿', title: 'Condo房型', description: 'Condo Type适合希望有公寓式生活空间、厨房设备和更强生活机能的学生。', src: 'assets/philippines/wales-condo-room.webp' },
     { category: '住宿', title: 'Share Type房型', description: 'Share Type适合想兼顾预算、室友互动和生活设备的学生。', src: 'assets/philippines/wales-share-room.webp' },
-    { category: '餐厅', title: 'WALES Cafeteria', description: '官方Facility页面展示的餐厅空间，正式报价时需把餐费和饮食需求一起确认。', src: 'assets/philippines/wales-cafeteria.webp' },
+    { category: '餐厅', title: 'WALES Cafeteria', description: 'WALES餐厅空间，正式报价时需把餐费和饮食需求一起确认。', src: 'assets/philippines/wales-cafeteria.webp' },
   ];
 
   readonly basicInfo: BasicInfoRow[] = [
@@ -138,13 +138,13 @@ export class WalesSchoolDetailComponent implements OnInit, AfterViewInit, WalesQ
     { label: '学校容量', value: '约80名学生' },
     { label: '课程方向', value: 'EEP、Infinity、PTE、IELTS、IELTS Guarantee、Junior ESL、Junior IELTS' },
     { label: '房型方向', value: 'Lower/Upper Studio、Upper/Lower Premium Studio、Condo Type、Share Type，共16种' },
-    { label: '报价说明', value: '课程费、住宿费、100美元报名费和到校比索费用均按2026年9月收到的学校价表更新' },
+    { label: '报价说明', value: '课程费、住宿费、100美元报名费和到校比索费用为2026年9月更新的价格' },
   ];
 
   readonly highlights: Highlight[] = [
     { image: 'assets/philippines/wales-school-building.webp', title: '小校容量，照顾更细', text: 'WALES容量约80名学生，适合希望学校人员更容易认识学生、学习和生活问题能快速沟通的人。' },
-    { image: 'assets/philippines/wales-classroom.webp', title: '一对一隔间教室', text: '官方Classrooms页面展示的一对一玻璃隔间，让学生能在较安静的环境里集中练习与纠错。' },
-    { image: 'assets/philippines/wales-cafeteria.webp', title: '餐厅空间清楚可见', text: '报名时要把meal fee和饮食需求一起确认，官方餐厅照片能帮助学生先判断日常用餐环境。' },
+    { image: 'assets/philippines/wales-classroom.webp', title: '一对一隔间教室', text: '一对一玻璃隔间让学生能在较安静的环境里集中练习与纠错。' },
+    { image: 'assets/philippines/wales-cafeteria.webp', title: '餐厅空间清楚可见', text: '报名时要把meal fee和饮食需求一起确认，餐厅照片能帮助学生先判断日常用餐环境。' },
     { image: 'assets/philippines/wales-condo-room.webp', title: '房型选择生活化', text: 'Studio、Premium Studio、Share和Condo房型让WALES更适合重视隐私、厨房设备、网络和生活机能的学生。' },
   ];
 
@@ -244,8 +244,8 @@ export class WalesSchoolDetailComponent implements OnInit, AfterViewInit, WalesQ
   readonly campusActivities = ['新生说明会', '英语口语活动', 'IELTS阶段训练', '生活英文实践', '学生交流活动'];
   readonly weekendActivities = ['SM Baguio', 'Burnham Park', 'Baguio夜市', 'Session Road咖啡厅', 'Camp John Hay'];
   readonly notes = [
-    'WALES课程费和住宿费分开列示，本页默认按4周 EEP Lite + Share Type双人房估算。',
-    '2026价表列示一次性报名费100美元；课程与住宿通常以4周价格为基础。',
+    'WALES课程费和住宿费分开列示，默认按4周 EEP Lite + Share Type双人房估算。',
+    '2026年一次性报名费为100美元；课程与住宿通常以4周价格为基础。',
     'PTE仅开放4、8、12周；IELTS Guarantee从8周起，计算器会阻止不适用的周数。',
     '2026/11/29入学4或6周、2026/12/13入学4周可申请住宿费六折；所有房型适用，但限10名、在校生不适用且不得与其他优惠叠加。',
     '长周数优惠为8/12/16/20/24周分别减200/300/400/550/700美元；旺季每重叠2周减少50美元优惠。',
@@ -255,7 +255,7 @@ export class WalesSchoolDetailComponent implements OnInit, AfterViewInit, WalesQ
   readonly faqs: FaqItem[] = [
     { question: '菲律宾碧瑶WALES语言学校是斯巴达学校吗？', answer: '不是典型高压斯巴达。WALES更适合小校、市区便利、成人友好和相对弹性的学习节奏；如果需要强制自习和严格门禁，应同步比较PINES、JIC Challenger或BECI Sparta。' },
     { question: 'WALES适合零基础学生吗？', answer: '可以优先看EEP、EEP Lite或Infinity Lite。报名时建议先说明英文基础、学习周数和目标，顾问会帮你判断是否需要更高课时的Infinity路线。' },
-    { question: '页面报价包含哪些费用？', answer: '学校付款金额包含100美元报名费、所选课程、住宿及适用优惠；到校学杂费按课程、周数和接机选择另表估算。餐费未列入本次学校2026价表，须另行确认。' },
+    { question: '这里的报价包含哪些费用？', answer: '学校付款金额包含100美元报名费、所选课程、住宿及适用优惠；到校学杂费按课程、周数和接机选择另表估算。餐费未包含在内，须另行确认。' },
     { question: 'WALES年末住宿六折如何计算？', answer: '2026年11月29日入学的4或6周，或12月13日入学的4周，所有房型可申请住宿费六折；限10名，在校生不适用，不与其他优惠叠加，最终须由学校确认名额。' },
     { question: 'WALES长周数优惠如何计算？', answer: '注册日在2025年8月1日或之后，并选择公告列明的BESA四周一期开学日（网页按前一天周日抵达）时，8/12/16/20/24周分别减200/300/400/550/700美元；若与2026年6月28日至8月8日旺季重叠，每满2周减少50美元优惠。' },
     { question: 'WALES的房型怎么选？', answer: '预算优先可先看Share Type双人房或家庭房；重视隐私可看Studio单人房，重视生活设备可看Premium Studio。热门档期须尽早确认空房。' },

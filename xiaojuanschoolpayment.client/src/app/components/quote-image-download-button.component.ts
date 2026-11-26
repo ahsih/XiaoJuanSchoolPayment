@@ -32,6 +32,7 @@ import {
 import { drawPlanCompareImage, planCompareImageHeight } from './plan-compare/plan-compare-image-renderer';
 import { planCompareReady } from './plan-compare/plan-compare-sheet';
 import { drawUkQuoteImage, ukQuoteImageHeight } from './uk-quote/uk-quote-image-renderer';
+import { drawUkQuoteImage as drawUkQuoteImageV2, ukQuoteImageHeight as ukQuoteImageHeightV2 } from './uk-quote-v2/uk-quote-image-renderer';
 
 export type QuoteImageActionMode = 'download' | 'email';
 
@@ -509,14 +510,16 @@ export class QuoteImageDownloadButtonComponent implements OnInit, OnDestroy {
     const compareSheet = this.quote.layout === 'plan-compare' ? this.quote.planCompare : undefined;
     if (this.quote.layout === 'plan-compare' && (!compareSheet || !planCompareReady(compareSheet))) throw new Error('对比方案还有需要修改的地方。');
     const ukSheet = this.quote.layout === 'uk-package' ? this.quote.ukSheet : undefined;
-    if (this.quote.layout === 'uk-package' && (!ukSheet || ukSheet.issues.length)) throw new Error('报价还有需要修改的地方。');
+    const ukSheetV2 = this.quote.layout === 'uk-package' && !ukSheet ? this.quote.ukSheetV2 : undefined;
+    const anyUkSheet = ukSheet ?? ukSheetV2;
+    if (this.quote.layout === 'uk-package' && (!anyUkSheet || anyUkSheet.issues.length)) throw new Error('报价还有需要修改的地方。');
     // layoutVersion 2 (CIA so far): only the chosen consultant's QR code is loaded, for the title card.
     const contactCard = this.quote.layoutVersion === 2 ? this.quote.contactCard : undefined;
-    const [logo, hero, consultantAssets, ukQr, contactQr] = await Promise.all([
+    const [logo, hero, consultantAssets, ukQr, contactQr, ukQrsV2] = await Promise.all([
       this.loadCanvasImage(quoteBrandLogoSource(this.quote)),
       this.loadCanvasImage(this.quote.heroSrc),
       Promise.all(
-        (this.quote.layout === 'cia-detailed' || compareSheet || ukSheet ? [] : consultants.slice(0, 3)).map(async (consultant) => ({
+        (this.quote.layout === 'cia-detailed' || compareSheet || anyUkSheet ? [] : consultants.slice(0, 3)).map(async (consultant) => ({
           consultant,
           avatar: await this.loadCanvasImage(consultant.avatarSrc),
           qr: await this.loadCanvasImage(consultant.qrSrc),
@@ -524,6 +527,7 @@ export class QuoteImageDownloadButtonComponent implements OnInit, OnDestroy {
       ),
       ukSheet ? this.loadCanvasImage(ukSheet.contact.qrSrc) : Promise.resolve(undefined),
       contactCard?.consultant.qrSrc ? this.loadCanvasImage(contactCard.consultant.qrSrc) : Promise.resolve(undefined),
+      Promise.all((ukSheetV2?.contacts ?? []).map(contact => this.loadCanvasImage(contact.qrSrc))),
     ]);
     const width = QUOTE_IMAGE_WIDTH;
     const canvas = document.createElement('canvas');
@@ -537,6 +541,8 @@ export class QuoteImageDownloadButtonComponent implements OnInit, OnDestroy {
       ? planCompareImageHeight(context, compareSheet, this.quote)
       : ukSheet
         ? ukQuoteImageHeight(context, ukSheet)
+      : ukSheetV2
+        ? ukQuoteImageHeightV2(context, ukSheetV2)
       : this.quote.layout === 'cia-detailed'
         ? detailedQuoteImageHeight(context, this.quote)
         : 1848;
@@ -557,6 +563,8 @@ export class QuoteImageDownloadButtonComponent implements OnInit, OnDestroy {
             drawPlanCompareImage<HTMLImageElement>(context, this.quote, compareSheet, { logo, hero, contactQr }, width, height);
           } else if (ukSheet) {
             drawUkQuoteImage<HTMLImageElement>(context, ukSheet, { logo, qr: ukQr }, height);
+          } else if (ukSheetV2) {
+            drawUkQuoteImageV2<HTMLImageElement>(context, ukSheetV2, { logo, qrs: ukQrsV2 }, height);
           } else if (this.quote.layout === 'cia-detailed') {
             this.drawDetailedQuoteImage(context, {
               logo, hero, consultants: consultants.slice(0, 5).map(consultant => ({ consultant })), contactQr,
@@ -579,7 +587,7 @@ export class QuoteImageDownloadButtonComponent implements OnInit, OnDestroy {
       }
       throw failure;
     } finally {
-      for (const image of [logo, hero, ...(ukQr ? [ukQr] : []), ...(contactQr ? [contactQr] : []), ...consultantAssets.flatMap(item => [item.avatar, item.qr])]) image.src = '';
+      for (const image of [logo, hero, ...(ukQr ? [ukQr] : []), ...ukQrsV2, ...(contactQr ? [contactQr] : []), ...consultantAssets.flatMap(item => [item.avatar, item.qr])]) image.src = '';
     }
   }
 

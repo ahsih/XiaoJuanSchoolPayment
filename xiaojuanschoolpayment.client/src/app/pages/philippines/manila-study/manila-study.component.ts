@@ -52,11 +52,6 @@ interface FaqItem {
   answer: string;
 }
 
-interface SourceLink {
-  label: string;
-  url: string;
-}
-
 @Component({
   selector: 'app-manila-study',
   standalone: true,
@@ -139,11 +134,11 @@ export class ManilaStudyComponent {
       accommodation:
         '非寄宿制城市课程，酒店、公寓、亲友住宿或公司住宿需自行安排，并提前核对通勤时间。',
       facilities:
-        '官网BLP说明包含社交团体课、每周一对一Validation、线上coursework；较长周期可核对额外一对一、gym与合作餐厅/酒店折扣。',
+        'BLP包含社交团体课、每周一对一Validation、线上coursework；较长周期可核对额外一对一、gym与合作餐厅/酒店折扣。',
       bestFor:
         '成人、职场人士、学术英语衔接、短期课程，以及希望结合城市资源的人群。',
       consultantNote:
-        '官方公开General/Business月费为PHP40,000/30,000/25,000/20,000档，Book Fee约PHP6,000-8,700；SSP由学校Visa Team按护照和签证状态确认。',
+        'General/Business月费分40,000/30,000/25,000/20,000比索四档，Book Fee约6,000-8,700比索；SSP由学校Visa Team按护照和签证状态确认。',
     },
     {
       name: '菲律宾马尼拉American-English-Skill语言学校',
@@ -163,11 +158,11 @@ export class ManilaStudyComponent {
       accommodation:
         '非寄宿制城市培训中心；酒店、公寓、亲友住宿、餐食、通勤、签证停留和保险需学生自行安排。',
       facilities:
-        '官网强调线上与面对面课程、团体课、一对一、企业培训、TNA需求分析、沟通表达和真实场景练习；上课点位于Makati。',
+        '提供线上与面对面课程、团体课、一对一、企业培训、TNA需求分析、沟通表达和真实场景练习；上课点位于Makati。',
       bestFor:
         '成人、职场人士、商务英语、短期马尼拉停留、企业培训、面试准备、商务写作、客服沟通和公开表达。',
       consultantNote:
-        '官网公开Online Business Conversational English为PHP14,800/40小时；团体课常见区间PHP19,700-48,000，一对一公开区间PHP12,800-98,800。适合已能自行安排马尼拉住宿和通勤的人。',
+        'Online Business Conversational English为14,800比索/40小时；团体课常见区间19,700-48,000比索，一对一区间12,800-98,800比索。适合已能自行安排马尼拉住宿和通勤的人。',
     },
     {
       name: '菲律宾马尼拉Berlitz语言学校',
@@ -175,7 +170,7 @@ export class ManilaStudyComponent {
       location: 'Makati / Metro Manila',
       style: '国际语言培训与企业服务型',
       route: '/philippines-study/manila/berlitz-philippines',
-      startingPrice: 'PHP 3,200 Starter Course公告价；常规课需核价',
+      startingPrice: 'PHP 3,200 Starter Course入门价；常规课需核价',
       courses: [
         'Private Language Classes',
         'Group Language Classes',
@@ -187,10 +182,10 @@ export class ManilaStudyComponent {
       ],
       accommodation: '非住校制语言中心；酒店、公寓、亲友住宿、餐食、通勤、签证停留和保险需学生自行安排。',
       facilities:
-        '官网列出成人私教、小组课、自学平台、儿童青少年、企业语言培训、商务沟通、语言测评、TELC和Makati学习中心。',
+        '开设成人私教、小组课、自学平台、儿童青少年、企业语言培训、商务沟通、语言测评和TELC，设有Makati学习中心。',
       bestFor: '商务人士、企业培训、家庭城市课程、需要国际品牌、多语言、测评或TELC服务的人群。',
       consultantNote:
-        '官网2025 Starter Course公告公开Php 3,200；常规私教、小组、企业、测评和TELC多为询价制。顾问会重点核对语言、级别、排课、Makati通勤和是否适合短期访客。',
+        '2025年Starter Course为3,200比索；常规私教、小组、企业、测评和TELC多为询价制。顾问会重点核对语言、级别、排课、Makati通勤和是否适合短期访客。',
     },
     {
       name: '菲律宾马尼拉Business College学校',
@@ -198,7 +193,7 @@ export class ManilaStudyComponent {
       location: 'Manila City',
       style: '商科院校与国际学生衔接候选',
       route: '/philippines-study/manila/manila-business-college',
-      startingPrice: '常规学费需当期确认；奖学金金额仅作官方公开参考',
+      startingPrice: '常规学费需当期确认；奖学金金额仅供参考',
       courses: [
         'Senior High School ABM',
         'BSBA Marketing / Management',
@@ -208,9 +203,9 @@ export class ManilaStudyComponent {
         'Night / Weekend / TESDA Courses',
       ],
       accommodation:
-        '官网介绍提到 dormitories，但未公开房型、费用、餐食、押金、门禁和空位；需要按国际学生身份单独确认。',
+        '学校设有宿舍（dormitories），房型、费用、餐食、押金、门禁和空位需要按国际学生身份单独确认。',
       facilities:
-        '官网说明学校获得 CHED、DepEd、TESDA 相关认可，并展示 classroom、library、mock hotel、laboratories、canteens 和 dormitories 等设施线索。',
+        '学校获得 CHED、DepEd、TESDA 相关认可，校内有 classroom、library、mock hotel、laboratories、canteens 和 dormitories 等设施。',
       bestFor: '想了解马尼拉商科院校环境、后续学历路径或城市型学习资源的学生。',
       consultantNote:
         '适合作为“英语能力 + 商科/学院/城市体验”的候选，不应与菲律宾语言学校寄宿套餐直接类比；需先确认当期费用、国际学生材料、签证协助和住宿条件。',
@@ -256,7 +251,7 @@ export class ManilaStudyComponent {
     },
     {
       title: '优惠与活动',
-      text: '培训中心和学院课程会有开课日期、企业价、短课优惠或名额限制，需以当期官网和回函为准。',
+      text: '培训中心和学院课程会有开课日期、企业价、短课优惠或名额限制，需以学校当期通知和回函为准。',
     },
   ];
 

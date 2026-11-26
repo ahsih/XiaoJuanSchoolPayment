@@ -257,8 +257,8 @@ const routes: Routes = [
       {
         path: 'philippines-study/cebu/global-language-cebu',
         loadComponent: () =>
-          import('./pages/philippines/glc-school/glc-school.component').then(
-            (m) => m.GlcSchoolComponent,
+          import('./pages/philippines/glc-school/glc-school-page.component').then(
+            (m) => m.GlcSchoolPageComponent,
           ),
       },
       {
@@ -756,6 +756,13 @@ const routes: Routes = [
           import('./pages/school-compare/school-compare-page.component').then((m) => m.SchoolComparePageComponent),
       },
       {
+        path: 'philippines-study/service-process',
+        loadComponent: () =>
+          import('./pages/philippines/service-process/service-process.component').then(
+            (m) => m.PhilippinesServiceProcessComponent,
+          ),
+      },
+      {
         path: 'philippines-study/faq',
         component: PhilippinesInfoPageComponent,
         data: { infoKey: 'faq' },
@@ -848,11 +855,32 @@ const routes: Routes = [
           ),
       },
       {
+        path: 'overseas-study-tour/uk/st-giles',
+        loadComponent: () =>
+          import('./pages/overseas-study-tour/uk-schools/st-giles/st-giles-hub.component').then((m) => m.StGilesHubComponent),
+      },
+      // One page per St Giles UK campus; the shared component reads the campus from the route data.
+      ...(['london-central', 'london-highgate', 'brighton', 'cambridge', 'eastbourne'] as const).map((campus) => ({
+        path: `overseas-study-tour/uk/st-giles/${campus}`,
+        data: { campus },
+        loadComponent: () =>
+          import('./pages/overseas-study-tour/uk-schools/st-giles/st-giles-campus.component').then(
+            (m) => m.StGilesCampusComponent,
+          ),
+      })),
+      {
         path: 'overseas-study-tour/singapore',
         loadComponent: () =>
           import('./pages/overseas-study-tour/singapore-tour/singapore-tour.component').then(
             (m) => m.SingaporeTourComponent,
           ),
+      },
+      {
+        path: 'overseas-study-tour/singapore/canadian-education-college',
+        loadComponent: () =>
+          import(
+            './pages/overseas-study-tour/singapore-schools/canadian-education-college/canadian-education-college.component'
+          ).then((m) => m.CanadianEducationCollegeComponent),
       },
       {
         path: 'overseas-study-tour/malaysia',

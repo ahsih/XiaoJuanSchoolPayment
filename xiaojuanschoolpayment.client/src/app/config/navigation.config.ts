@@ -698,6 +698,12 @@ export const mainNavigation: NavigationItem[] = [
         type: '活动页',
       },
       {
+        id: 'philippines-service-process',
+        label: '菲律宾游学服务流程',
+        route: '/philippines-study/service-process',
+        type: '服务流程页',
+      },
+      {
         id: 'philippines-faq',
         label: '菲律宾游学常见问题',
         route: '/philippines-study/faq',
@@ -807,6 +813,36 @@ export const mainNavigation: NavigationItem[] = [
             label: 'Burlington School（伦敦）',
             route: '/overseas-study-tour/uk/burlington-school',
           },
+          {
+            id: 'st-giles',
+            label: 'St Giles（5个校区）',
+            route: '/overseas-study-tour/uk/st-giles',
+          },
+          {
+            id: 'st-giles-london-central',
+            label: 'St Giles 伦敦中心校区',
+            route: '/overseas-study-tour/uk/st-giles/london-central',
+          },
+          {
+            id: 'st-giles-london-highgate',
+            label: 'St Giles 伦敦海格特校区',
+            route: '/overseas-study-tour/uk/st-giles/london-highgate',
+          },
+          {
+            id: 'st-giles-brighton',
+            label: 'St Giles 布莱顿校区',
+            route: '/overseas-study-tour/uk/st-giles/brighton',
+          },
+          {
+            id: 'st-giles-cambridge',
+            label: 'St Giles 剑桥校区',
+            route: '/overseas-study-tour/uk/st-giles/cambridge',
+          },
+          {
+            id: 'st-giles-eastbourne',
+            label: 'St Giles 伊斯特本校区',
+            route: '/overseas-study-tour/uk/st-giles/eastbourne',
+          },
         ],
       },
       {
@@ -814,6 +850,18 @@ export const mainNavigation: NavigationItem[] = [
         label: '新加坡游学',
         route: '/overseas-study-tour/singapore',
         type: '国家页',
+        children: [
+          {
+            id: 'singapore-tour-overview',
+            label: '新加坡游学总览',
+            route: '/overseas-study-tour/singapore',
+          },
+          {
+            id: 'canadian-education-college',
+            label: '加拿大教育学院（新加坡）',
+            route: '/overseas-study-tour/singapore/canadian-education-college',
+          },
+        ],
       },
       {
         id: 'malaysia-tour',

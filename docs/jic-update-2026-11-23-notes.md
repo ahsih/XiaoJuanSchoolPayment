@@ -64,17 +64,50 @@ December 2026 holiday notice and the BESA pickup poster.
 - Meals: described as mostly Korean with Japanese, Vietnamese and Filipino dishes at times; no vegetarian meals.
 - Not yet synced to the WeChat mini program; follow the mini-program workflow in AGENTS.md once the user confirms.
 
-## Official YouTube videos (2026-11-26)
 
-User request: more videos that build trust, from JIC's own YouTube channel (@BaguioJIC). All are from 2026. Files are
-720p H.264 in `public/assets/philippines/` with posters in `jic-posters/`.
+## Videos from JIC's official YouTube channel (2026-11-25)
 
-- Challenger, 学员访谈 chip: `jic-challenger-student-interview` ("PRO CHALLENGER INTERVIEW: KANO"); the opening card
-  with the student's full name was cut.
-- Challenger, 课堂视频 chip: `jic-challenger-class-observation` ("JIC Class Observation"). Its TERMINAL ribbons are
-  JIC's own campus café (already on the page as 咖啡厅), so they were kept.
-- Premium, 学员访谈 chip: `jic-premium-student-interview-jack` and `jic-premium-student-interview-rick`.
-- Premium, 活动视频 chip: `jic-premium-circuit-training` and `jic-premium-graduation` ("Awarding of Certificates");
-  three seconds of certificates showing students' full names were cut.
+The user asked for more trust-building videos from JIC's official YouTube channel ("Baguio JIC") and Facebook page
+(facebook.com/baguio.jic). Nine clips were added to the hero albums (720p H.264, CRF 27, AAC 128k, posters in
+`public/assets/philippines/jic-posters/`); the sources stay in `G:\Claude下载\jic-videos`.
 
-Facebook was not checked (user decision 2026-11-26).
+| File | YouTube id | Cuts |
+| --- | --- | --- |
+| `jic-challenger-class-observation` | xyPe7Q2_2lY | logo intro and outro cut; the café-brand tape on the left column blurred (src 40.15–41.75 s) |
+| `jic-challenger-taiwan-story` | 53sc_W51vSI | logo intro, the card with the student's full name (15.4–19.5 s) and the outro cut |
+| `jic-challenger-ielts-story` | 8mbsH1F1VbM | logo intro and outro cut |
+| `jic-challenger-speaking-story` | IRoVFGNjX5w | logo intro and outro cut |
+| `jic-premium-day-in-life` | DPhmbOaGtnw | whole |
+| `jic-premium-taiwan-story` | Hm4hFCr-HeU | whole |
+| `jic-premium-graduation` | PZUOce4bQyM | logo outro cut |
+| `jic-premium-sketching-class` | sHhyp_t4hmE | logo outro cut |
+| `jic-premium-zumba-class` | b7e8aPvB9lw | logo outro cut |
+
+Our titles never use a student's name. Checked frame by frame (every 3 s plus the last 16 s at 1 fps) and left out:
+
+- Another company's branding: the 2025 Challenger tour (dQtfSRS-9NA: IDP posters, the Terminal café, snack brands,
+  K-Mart and a bank ATM), the 2026 Premium 4K tour (r0lAC52nakE: an SM City logo, FamilyMart, the Terminal café, a
+  feature film on screen), "Why JIC IELTS" (U2sRJoznbs8: IDP and COMPANNA café), the teacher-hiring video
+  (zO96XW--XXc: IDP posters throughout), the movie class (QYoSSGX_40E: a feature film's title on screen) and the
+  weekends video (hnGc1JG1SUM: mall and surf-school signs).
+- Unsure campus or content: the English-only Challenger skit (maXgjeTo4TU, 2024: filmed in a dining hall that looks like
+  Premium's, and it mentions getting 500 back without saying what that is).
+- Lower value: interviews without captions (MANA, Justin, Suji), a long interview with a full name in the title
+  (Huw--9EgoUo) and a Facebook interview filmed in front of a laptop covered in stickers (Spencer).
+
+## More official YouTube videos (2026-11-26)
+
+A second pass on the same channel (@BaguioJIC) added four 2026 clips that the 2026-11-25 pass had not used, in the
+same folders. Titles follow the rule above and never use a student's name.
+
+| File | Chip | Cuts |
+| --- | --- | --- |
+| `jic-challenger-student-interview` ("PRO CHALLENGER INTERVIEW") | Challenger 学员访谈 | the opening card with the student's full name cut |
+| `jic-premium-student-interview-jack` | Premium 学员视频 | whole |
+| `jic-premium-student-interview-rick` | Premium 学员视频 | whole |
+| `jic-premium-circuit-training` | Premium 课程视频 | whole |
+
+`jic-premium-graduation` was also re-cut: the 2026-11-25 file still showed the certificates with students' full
+names (source 8.2–11.45 s). Those seconds are now cut too, as is the logo ending, so the clip is 0:49.
+
+Facebook was not checked in this pass (user decision 2026-11-26).

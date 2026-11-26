@@ -69,11 +69,6 @@ interface SideNavItem {
   icon: string;
 }
 
-interface SourceLink {
-  label: string;
-  url: string;
-}
-
 @Component({
   selector: 'app-target-school',
   standalone: true,
@@ -137,7 +132,7 @@ export class TargetSchoolComponent implements OnInit, AfterViewInit {
       icon: 'groups',
       label: '学校规模',
       value: '约140人容量',
-      note: '官方公司资料列最大学生容量约140名、老师约100名。',
+      note: '最大学生容量约140名、老师约100名。',
     },
     {
       icon: 'menu_book',
@@ -153,9 +148,9 @@ export class TargetSchoolComponent implements OnInit, AfterViewInit {
     },
     {
       icon: 'paid',
-      label: '公开价格',
+      label: '套餐价格',
       value: '2026年7月后美元价格',
-      note: '官方页面说明2026年7月10日后使用新价格；本页报价器按该公开表估算。',
+      note: '2026年7月10日起使用新价格，在线报价按新价格估算。',
     },
   ];
 
@@ -169,7 +164,7 @@ export class TargetSchoolComponent implements OnInit, AfterViewInit {
     {
       category: '校园',
       title: '校区中庭',
-      description: '官方住宿页介绍校园有泳池、休息区、篮球、台球、乒乓和Wi-Fi等设施。',
+      description: '校园有泳池、休息区、篮球、台球、乒乓和Wi-Fi等设施。',
       src: 'https://target-english.org/wp-content/uploads/Outside03-1-200x200.jpg',
     },
     {
@@ -205,7 +200,7 @@ export class TargetSchoolComponent implements OnInit, AfterViewInit {
     {
       category: '生活',
       title: '餐厅参考',
-      description: '官方说明平日提供3餐，土曜/祝日1餐，日曜2餐，并有日本人支持与生活服务。',
+      description: '平日提供3餐，周六/节假日1餐，周日2餐，并有日本人支持与生活服务。',
       src: 'https://cebu21.jp/include/schoolno2/target/Dining%26Kiosk/Dining01.jpg',
     },
   ];
@@ -227,7 +222,7 @@ export class TargetSchoolComponent implements OnInit, AfterViewInit {
     },
     {
       title: '初学者和成人支持较完整',
-      text: '官方课程资料强调初学者、旅行、TOEIC、Business和Working Holiday等半固定课程设计，也有日本人学习支持。',
+      text: '课程覆盖初学者、旅行、TOEIC、Business和Working Holiday等半固定课程设计，也有日本人学习支持。',
     },
     {
       title: '校内住宿和生活服务集中',
@@ -261,7 +256,7 @@ export class TargetSchoolComponent implements OnInit, AfterViewInit {
     },
     {
       title: '只看促销价做决定',
-      text: '官方页面说明活动折扣有申请时机和旺季限制，正式预算一定要按开课日、周数和房型确认。',
+      text: '活动折扣有申请时机和旺季限制，正式预算一定要按开课日、周数和房型确认。',
     },
   ];
 
@@ -294,16 +289,16 @@ export class TargetSchoolComponent implements OnInit, AfterViewInit {
       text: 'CIA偏大型综合半斯巴达和Mactan新校区；TARGET偏日系成人友好、Talamban安静校区、预算控制和一对一课量。预算和基础口语优先可看TARGET，设施和考试资源综合度优先可看CIA。',
     },
     {
-      title: '页面报价包含所有费用吗？',
-      text: '不包含。报价器按学校公开的美元课程住宿套餐和注册费估算；SSP、签证、教材、水电、共益费、押金、接机、洗衣、机票和保险另计。',
+      title: '在线报价包含所有费用吗？',
+      text: '不包含。在线报价按学校美元课程住宿套餐和注册费估算；SSP、签证、教材、水电、共益费、押金、接机、洗衣、机票和保险另计。',
     },
     {
       title: '促销折扣可以直接使用吗？',
-      text: '报价器会按所选日期自动排除旺季重叠周并计算学校现金优惠；限时升级仍受报名日、入学日、课程、房型空位和名额限制，最终要由学校确认。',
+      text: '在线报价会按所选日期自动排除旺季重叠周并计算学校现金优惠；限时升级仍受报名日、入学日、课程、房型空位和名额限制，最终要由学校确认。',
     },
     {
       title: '初学者可以去TARGET吗？',
-      text: '可以。官方FAQ说明0基础也可报名，课程和一对一内容可从基础开始；如果需要中文或日文支持，也要在报名时确认当前工作人员安排。',
+      text: '可以。0基础也可报名，课程和一对一内容可从基础开始；如果需要中文或日文支持，也要在报名时确认当前工作人员安排。',
     },
   ];
 
@@ -312,7 +307,6 @@ export class TargetSchoolComponent implements OnInit, AfterViewInit {
     { label: '课程费用', target: 'courses', icon: 'payments' },
     { label: '快速报价', target: 'quote', icon: 'calculate' },
     { label: '当地费用', target: 'local-fees', icon: 'receipt' },
-    { label: '资料来源', target: 'sources', icon: 'link' },
   ];
 
   readonly mobileAnchors: SideNavItem[] = [
@@ -320,17 +314,6 @@ export class TargetSchoolComponent implements OnInit, AfterViewInit {
     { label: '课程', target: 'courses', icon: 'menu_book' },
     { label: '报价', target: 'quote', icon: 'calculate' },
     { label: '费用', target: 'local-fees', icon: 'receipt_long' },
-  ];
-
-  readonly sourceLinks: SourceLink[] = [
-    { label: 'TARGET官方首页', url: 'https://target-english.org/' },
-    { label: 'TARGET官方费用页', url: 'https://target-english.org/tuition/' },
-    { label: 'TARGET官方课程页', url: 'https://target-english.org/academic/course/' },
-    { label: 'TARGET官方公司/校区资料', url: 'https://target-english.org/company/' },
-    { label: 'TARGET官方学校设施页', url: 'https://target-english.org/life/accommodation/' },
-    { label: 'TARGET官方生活支持页', url: 'https://target-english.org/life/support/' },
-    { label: 'TARGET官方FAQ', url: 'https://target-english.org/zh-CN/faq/' },
-    { label: 'CEBU English TARGET 2026费用参考', url: 'https://cebu-english.com/school/target/' },
   ];
 
   get filteredGalleryImages(): GalleryImage[] {

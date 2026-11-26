@@ -15,7 +15,6 @@ interface FeePackage { id: string; category: string; course: string; room: strin
 interface FeeSummaryRow { course: string; lessons: string; room: string; price4Weeks: number; note: string; }
 interface LocalFee { item: string; amount: string; note: string; }
 interface FitItem { title: string; text: string; }
-interface SourceLink { label: string; url: string; }
 interface SideNavItem { label: string; target: string; icon: string; }
 
 @Component({
@@ -39,12 +38,12 @@ export class GlantSchoolComponent {
   readonly galleryCategories: GalleryCategory[] = ['全部', '校区', '教室', '住宿', '生活'];
 
   readonly snapshotCards: SnapshotCard[] = [
-    { icon: 'home_work', title: '小规模家庭式学校', text: '官方介绍强调小规模、低成本、自由度高，老师和学生距离近。' },
+    { icon: 'home_work', title: '小规模家庭式学校', text: '小规模、费用较低、自由度高，老师和学生距离近。' },
     { icon: 'location_on', title: 'Kasambagan / Banilad生活圈', text: '位于宿务市区，步行或短车程可到商场、餐厅、咖啡厅和生活设施。' },
     { icon: 'public', title: '欧美外教课程', text: 'GLANT特色之一是可安排Native Speaker课程，适合练发音、表达和真实沟通。' },
-    { icon: 'nightlife', title: '无门禁管理', text: '官方页面强调No curfew and Rules，更适合自律、想保留自由度的成人学生。' },
+    { icon: 'nightlife', title: '无门禁管理', text: '学校没有门禁、规则较少，更适合自律、想保留自由度的成人学生。' },
     { icon: 'bed', title: '1/2/3人房可选', text: '费用表按单人、双人、三人房区分，课程食宿费用以美元公布。' },
-    { icon: 'restaurant', title: '含餐食与住宿', text: '公开费用表为课程、住宿、餐食打包价，入学金、接机和到校费用另计。' },
+    { icon: 'restaurant', title: '含餐食与住宿', text: '费用为课程、住宿、餐食打包价，入学金、接机和到校费用另计。' },
   ];
 
   readonly galleryImages: GalleryImage[] = [
@@ -128,9 +127,9 @@ export class GlantSchoolComponent {
   ];
 
   readonly localFees: LocalFee[] = [
-    { item: '注册费', amount: 'USD 100', note: '一次性费用，本页报价器已加入。' },
-    { item: '接机费', amount: 'USD 20', note: '公开费用表列为出发前费用，本页报价器已加入。' },
-    { item: 'SSP + E-Card', amount: '约PHP 10,500-12,000', note: '不同公开表有差异，正式报名前需按学校当期规则确认。' },
+    { item: '注册费', amount: 'USD 100', note: '一次性费用，报价已计入。' },
+    { item: '接机费', amount: 'USD 20', note: '出发前支付，报价已计入。' },
+    { item: 'SSP + E-Card', amount: '约PHP 10,500-12,000', note: '正式报名前需按学校当期规则确认。' },
     { item: '签证延长', amount: '按周数确认', note: '1-4周通常无需延签，8周以上需按停留周期计算。' },
     { item: '教材费', amount: 'PHP 200-500 / 本', note: '按实际使用教材数量收费。' },
     { item: '水电费', amount: 'PHP 20 / kWh', note: '按实际用量或学校规则结算。' },
@@ -148,14 +147,7 @@ export class GlantSchoolComponent {
   readonly notSuitableFor: FitItem[] = [
     { title: '需要严格斯巴达管理', text: 'GLANT自由度高，不适合希望学校强制自习、门禁和考试纪律推动的人。' },
     { title: '想要大型度假村式校园', text: '它更像城市小型学校，设施丰富度不能和CIA、CPI这类大型校园相比。' },
-    { title: '低龄亲子或未成年独立游学', text: '该页面更适合成人自由型学生，未成年或亲子应先确认年龄、监护和管理规则。' },
-  ];
-
-  readonly sourceLinks: SourceLink[] = [
-    { label: 'GLANT English Academy官方Wix页面', url: 'https://eduglantcebu.wixsite.com/language-school' },
-    { label: 'GLANT官方课程页面', url: 'https://eduglantcebu.wixsite.com/language-school/course' },
-    { label: '菲律宾留学中心GLANT费用表', url: 'https://www.ph-ryugaku.com/school/glant-english-academy/' },
-    { label: '菲律宾留学Hub GLANT学校与费用信息', url: 'https://philippine-ryugaku-hub.com/school/glant/' },
+    { title: '低龄亲子或未成年独立游学', text: 'GLANT更适合成人自由型学生，未成年或亲子应先确认年龄、监护和管理规则。' },
   ];
 
   readonly mobileAnchors: SideNavItem[] = [

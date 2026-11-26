@@ -23,7 +23,6 @@ interface LocalFee { item: string; amount: string; note: string; }
 interface ProcessStep { icon: string; title: string; text: string; }
 interface FaqItem { question: string; answer: string; }
 interface SideNavItem { label: string; target: string; icon: string; }
-interface SourceLink { label: string; url: string; }
 
 @Component({
   selector: 'app-american-english-school-detail',
@@ -69,28 +68,28 @@ export class AmericanEnglishSchoolDetailComponent implements OnInit {
   quoteCalculated = false;
 
   readonly quickInfo: QuickInfo[] = [
-    { icon: 'location_on', label: '城市', value: 'Makati / Metro Manila', note: '官网列出地址为901B Vicente Madrigal Building, 6793 Ayala Avenue, Makati City。' },
+    { icon: 'location_on', label: '城市', value: 'Makati / Metro Manila', note: '上课点位于Makati的Ayala Avenue商务区。' },
     { icon: 'business_center', label: '定位', value: '商务英语与沟通训练中心', note: '更偏成人、职场、一对一、团体课和企业培训，不是传统寄宿制ESL学校。' },
-    { icon: 'school', label: '成立', value: 'Since 2006', note: '官网说明American English Skills Development Center Inc.于2006年3月在Makati成立。' },
+    { icon: 'school', label: '成立', value: 'Since 2006', note: 'American English Skills Development Center Inc.于2006年3月在Makati成立。' },
     { icon: 'groups', label: '形式', value: 'Online / Face-to-Face / On-site', note: '个人课程可线上或Makati面授，企业课程可线上、到公司现场或混合交付。' },
     { icon: 'menu_book', label: '课程', value: 'Group / One-on-One / Corporate', note: '覆盖商务口语、基础会话、商务写作、发音、演讲、IELTS和企业定制。' },
     { icon: 'hotel', label: '住宿', value: '住宿自理', note: '酒店、公寓、亲友住宿、餐食、通勤和保险都需要单独规划。' },
   ];
 
   readonly galleryImages: GalleryImage[] = [
-    { category: '品牌', title: 'American English品牌图', description: '官网公开品牌图，突出“Empowering People”的沟通训练定位。', src: 'assets/philippines/american-english-brand.webp' },
-    { category: '课堂', title: 'American English培训现场', description: '官网课程页公开的培训/学员照片，适合展示Makati城市培训中心属性。', src: 'assets/philippines/american-english-training-room.webp' },
-    { category: '课程', title: 'Accent Neutralization', description: '官网课程图，用于发音、口音中和和清晰表达方向。', src: 'assets/philippines/american-english-accent-neutralization.webp' },
-    { category: '课程', title: 'Business Writing', description: '官网课程图，适合商务邮件、报告、技术写作和职场文本训练。', src: 'assets/philippines/american-english-business-writing.webp' },
-    { category: '企业', title: 'Presentation Skills', description: '官网课程图，适合会议、演讲、汇报和领导力表达训练。', src: 'assets/philippines/american-english-presentation-skills.webp' },
-    { category: '课程', title: 'Speech Enhancement', description: '官网课程图，适合口语流利度、听说和自然表达补强。', src: 'assets/philippines/american-english-speech-enhancement.webp' },
+    { category: '品牌', title: 'American English品牌图', description: '品牌标识，突出“Empowering People”的沟通训练定位。', src: 'assets/philippines/american-english-brand.webp' },
+    { category: '课堂', title: 'American English培训现场', description: 'Makati城市培训中心的培训现场。', src: 'assets/philippines/american-english-training-room.webp' },
+    { category: '课程', title: 'Accent Neutralization', description: '发音、口音中和与清晰表达训练。', src: 'assets/philippines/american-english-accent-neutralization.webp' },
+    { category: '课程', title: 'Business Writing', description: '商务邮件、报告、技术写作和职场文本训练。', src: 'assets/philippines/american-english-business-writing.webp' },
+    { category: '企业', title: 'Presentation Skills', description: '会议、演讲、汇报和领导力表达训练。', src: 'assets/philippines/american-english-presentation-skills.webp' },
+    { category: '课程', title: 'Speech Enhancement', description: '口语流利度、听说和自然表达补强。', src: 'assets/philippines/american-english-speech-enhancement.webp' },
   ];
 
   readonly basicInfo: BasicInfoRow[] = [
     { label: '中文名称', value: '菲律宾马尼拉American-English-Skill语言学校' },
     { label: '英文名称', value: 'American English Skills Development Center Inc.' },
     { label: '地址', value: 'Room 901B, Vicente Madrigal Building, 6793 Ayala Avenue, Makati City, Philippines' },
-    { label: '官网定位', value: 'Business English and Communication Skills training center' },
+    { label: '学校定位', value: 'Business English and Communication Skills training center' },
     { label: '课程形式', value: 'Group Classes、One-on-One Private Training、Corporate Training、Kids & Teens、Online / Face-to-Face' },
     { label: '课表说明', value: '团体课通常每周2-3次、6-10周；一对一可按个人时间弹性安排' },
     { label: '联系方式', value: 'info@americanenglish.ph / WhatsApp +63 933 825 7992' },
@@ -99,7 +98,7 @@ export class AmericanEnglishSchoolDetailComponent implements OnInit {
 
   readonly highlights: Highlight[] = [
     { image: 'assets/philippines/american-english-training-room.webp', title: 'Makati城市培训中心', text: '适合已经在马尼拉、短住马尼拉、商务出差或希望把英语课插入城市行程的人。' },
-    { image: 'assets/philippines/american-english-business-writing.webp', title: '商务写作和职场沟通清晰', text: '官网课程覆盖商务邮件、报告、表达、会议、客户服务和领导力沟通。' },
+    { image: 'assets/philippines/american-english-business-writing.webp', title: '商务写作和职场沟通清晰', text: '课程覆盖商务邮件、报告、表达、会议、客户服务和领导力沟通。' },
     { image: 'assets/philippines/american-english-accent-neutralization.webp', title: '一对一目标更聚焦', text: '一对一可围绕发音、口语、IELTS、商务写作、面试或演讲进行定制。' },
     { image: 'assets/philippines/american-english-presentation-skills.webp', title: '企业培训流程成熟', text: '企业课程从Training Needs Analysis开始，再设计课程、交付训练并做课后评估。' },
   ];
@@ -115,33 +114,33 @@ export class AmericanEnglishSchoolDetailComponent implements OnInit {
   readonly notSuitableFor: FitItem[] = [
     { title: '想要宿舍+三餐+门禁套餐', text: 'American English不是宿务、碧瑶或Clark那类校内住宿制语言学校。' },
     { title: '需要全天高强度沉浸ESL', text: '如果目标是每天多堂一对一、强制自习和密集校内管理，应优先比较传统ESL学校。' },
-    { title: '只看最低价格的人', text: '官网价格会按团体/一对一、线上/面授、小时数和优惠变化，需要按当期购物车或学校回函确认。' },
+    { title: '只看最低价格的人', text: '课程价格会按团体/一对一、线上/面授、小时数和优惠变化，需要按学校当期报价确认。' },
     { title: '无法处理城市通勤的人', text: 'Makati上课点、住处距离、交通时间和安全感会直接影响体验。' },
   ];
 
   readonly courses: CourseItem[] = [
-    { name: 'Online Business Conversational English', type: '团体课 / 线上', lessons: '40小时，最大10人，官网列出周一/周三/周五频率', suitable: '适合想用较清晰预算训练商务口语、会议、表达和工作场景沟通的人。' },
-    { name: 'Basic Conversational English', type: '团体课 / 基础口语', lessons: '线上或Makati面授，官网公开价格区间PHP19,700-29,500', suitable: '适合基础英语、国际学生、生活旅行和日常社交表达。' },
-    { name: 'Business Conversational English', type: '团体课 / 商务口语', lessons: '线上或面授，官网公开价格区间PHP19,700-48,000', suitable: '适合会议、展示、面试、networking和日常职场表达。' },
-    { name: 'Excellence in English Communication', type: '一对一 / 私教', lessons: '按水平、目标和场景定制，官网公开价格区间PHP12,800-98,800', suitable: '适合想把工作和生活英语系统补强的人。' },
+    { name: 'Online Business Conversational English', type: '团体课 / 线上', lessons: '40小时，最大10人，周一/周三/周五上课', suitable: '适合想用较清晰预算训练商务口语、会议、表达和工作场景沟通的人。' },
+    { name: 'Basic Conversational English', type: '团体课 / 基础口语', lessons: '线上或Makati面授，价格区间19,700-29,500比索', suitable: '适合基础英语、国际学生、生活旅行和日常社交表达。' },
+    { name: 'Business Conversational English', type: '团体课 / 商务口语', lessons: '线上或面授，价格区间19,700-48,000比索', suitable: '适合会议、展示、面试、networking和日常职场表达。' },
+    { name: 'Excellence in English Communication', type: '一对一 / 私教', lessons: '按水平、目标和场景定制，价格区间12,800-98,800比索', suitable: '适合想把工作和生活英语系统补强的人。' },
     { name: 'Excellence in Business Writing', type: '一对一 / 商务写作', lessons: '商务邮件、备忘录、报告、线上内容和营销文本可定制', suitable: '适合职场写作、英文邮件、报告和专业表达。' },
     { name: 'Corporate Training', type: '企业内训', lessons: 'TNA需求分析、课程设计、线上/现场/混合交付、课后评估', suitable: '适合公司团队、政府组织、跨国企业和HR培训项目。' },
   ];
 
   programFees: ProgramFee[] = [
-    { id: 'online-business-conversation-40', name: 'Online Business Conversational English 40 Hours', tuition: 14800, currencyCode: 'PHP', unit: '40小时项目', suitable: '官网公开线上商务会话团体课，最大10人，需确认当期开班' },
-    { id: 'basic-conversational-low', name: 'Basic Conversational English Low', tuition: 19700, currencyCode: 'PHP', unit: '每人起', suitable: '官网公开团体课价格区间低值' },
-    { id: 'basic-conversational-high', name: 'Basic Conversational English High', tuition: 29500, currencyCode: 'PHP', unit: '每人高值', suitable: '官网公开团体课价格区间高值' },
-    { id: 'business-conversational-low', name: 'Business Conversational English Low', tuition: 19700, currencyCode: 'PHP', unit: '每人起', suitable: '官网公开商务会话团体课价格区间低值' },
-    { id: 'business-conversational-high', name: 'Business Conversational English High', tuition: 48000, currencyCode: 'PHP', unit: '每人高值', suitable: '官网公开商务会话团体课价格区间高值' },
-    { id: 'assertive-communication-low', name: 'Assertive Communication Low', tuition: 19700, currencyCode: 'PHP', unit: '每人起', suitable: '官网公开团体课价格区间低值' },
-    { id: 'assertive-communication-high', name: 'Assertive Communication High', tuition: 48000, currencyCode: 'PHP', unit: '每人高值', suitable: '官网公开团体课价格区间高值' },
-    { id: 'eec-one-on-one-low', name: 'Excellence in English Communication Low', tuition: 12800, currencyCode: 'PHP', unit: '每人起', suitable: '官网公开一对一课程价格区间低值' },
-    { id: 'eec-one-on-one-high', name: 'Excellence in English Communication High', tuition: 98800, currencyCode: 'PHP', unit: '每人高值', suitable: '官网公开一对一课程价格区间高值' },
-    { id: 'business-writing-low', name: 'Excellence in Business Writing Low', tuition: 12800, currencyCode: 'PHP', unit: '每人起', suitable: '官网公开商务写作一对一价格区间低值' },
-    { id: 'business-writing-high', name: 'Excellence in Business Writing High', tuition: 98800, currencyCode: 'PHP', unit: '每人高值', suitable: '官网公开商务写作一对一价格区间高值' },
-    { id: 'private-business-english-40', name: 'Business English One-on-One 40 Hours', tuition: 48000, currencyCode: 'PHP', unit: '40小时参考', suitable: '官网Business English产品页公开40小时起价参考' },
-    { id: 'private-business-english-120', name: 'Business English One-on-One 120 Hours', tuition: 155904, currencyCode: 'PHP', unit: '120小时参考', suitable: '官网Business English产品页公开高值参考' },
+    { id: 'online-business-conversation-40', name: 'Online Business Conversational English 40 Hours', tuition: 14800, currencyCode: 'PHP', unit: '40小时项目', suitable: '线上商务会话团体课，最大10人，需确认当期开班' },
+    { id: 'basic-conversational-low', name: 'Basic Conversational English Low', tuition: 19700, currencyCode: 'PHP', unit: '每人起', suitable: '团体课价格区间低值' },
+    { id: 'basic-conversational-high', name: 'Basic Conversational English High', tuition: 29500, currencyCode: 'PHP', unit: '每人高值', suitable: '团体课价格区间高值' },
+    { id: 'business-conversational-low', name: 'Business Conversational English Low', tuition: 19700, currencyCode: 'PHP', unit: '每人起', suitable: '商务会话团体课价格区间低值' },
+    { id: 'business-conversational-high', name: 'Business Conversational English High', tuition: 48000, currencyCode: 'PHP', unit: '每人高值', suitable: '商务会话团体课价格区间高值' },
+    { id: 'assertive-communication-low', name: 'Assertive Communication Low', tuition: 19700, currencyCode: 'PHP', unit: '每人起', suitable: '团体课价格区间低值' },
+    { id: 'assertive-communication-high', name: 'Assertive Communication High', tuition: 48000, currencyCode: 'PHP', unit: '每人高值', suitable: '团体课价格区间高值' },
+    { id: 'eec-one-on-one-low', name: 'Excellence in English Communication Low', tuition: 12800, currencyCode: 'PHP', unit: '每人起', suitable: '一对一课程价格区间低值' },
+    { id: 'eec-one-on-one-high', name: 'Excellence in English Communication High', tuition: 98800, currencyCode: 'PHP', unit: '每人高值', suitable: '一对一课程价格区间高值' },
+    { id: 'business-writing-low', name: 'Excellence in Business Writing Low', tuition: 12800, currencyCode: 'PHP', unit: '每人起', suitable: '商务写作一对一价格区间低值' },
+    { id: 'business-writing-high', name: 'Excellence in Business Writing High', tuition: 98800, currencyCode: 'PHP', unit: '每人高值', suitable: '商务写作一对一价格区间高值' },
+    { id: 'private-business-english-40', name: 'Business English One-on-One 40 Hours', tuition: 48000, currencyCode: 'PHP', unit: '40小时参考', suitable: 'Business English一对一40小时起价参考' },
+    { id: 'private-business-english-120', name: 'Business English One-on-One 120 Hours', tuition: 155904, currencyCode: 'PHP', unit: '120小时参考', suitable: 'Business English一对一120小时高值参考' },
   ];
 
   roomFees: RoomFee[] = [
@@ -149,7 +148,7 @@ export class AmericanEnglishSchoolDetailComponent implements OnInit {
   ];
 
   localFees: LocalFee[] = [
-    { item: 'Pre-assessment / Needs Assessment', amount: '需确认', note: '官网FAQ说明入学前会先做简短需求或英语水平评估' },
+    { item: 'Pre-assessment / Needs Assessment', amount: '需确认', note: '入学前会先做简短需求或英语水平评估' },
     { item: '教材 / 课程资料', amount: '需确认', note: '按实际课程、小时数和定制内容确认' },
     { item: 'Corporate Training', amount: '按方案报价', note: '企业课程先做Training Needs Analysis，再按人数、模块和交付方式报价' },
     { item: '住宿 / 餐食 / 通勤', amount: '自理', note: '城市课程不含宿舍和三餐，Makati通勤需单独规划' },
@@ -165,23 +164,23 @@ export class AmericanEnglishSchoolDetailComponent implements OnInit {
   ];
 
   readonly notes = [
-    'American English不是传统寄宿制ESL学校，本页不把住宿、餐食和通勤并入课程报价。',
-    '官网课程价格会因团体课/一对一、线上/面授、小时数、班级人数和当期优惠不同而变化。',
-    '线上商务会话团体课官网公开为40小时、最大10人、PHP14,800，但开班日期需当期确认。',
-    '官网Programs页面公开多项团体课价格区间为PHP19,700-48,000，基础会话课为PHP19,700-29,500。',
-    '一对一课程如Excellence in English Communication和Excellence in Business Writing公开区间为PHP12,800-98,800。',
+    'American English不是传统寄宿制ESL学校，住宿、餐食和通勤不包含在课程费用里。',
+    '课程价格会因团体课/一对一、线上/面授、小时数、班级人数和当期优惠不同而变化。',
+    '线上商务会话团体课为40小时、最大10人、14,800比索，开班日期需当期确认。',
+    '多项团体课价格区间为19,700-48,000比索，基础会话课为19,700-29,500比索。',
+    '一对一课程如Excellence in English Communication和Excellence in Business Writing价格区间为12,800-98,800比索。',
     '企业培训需先做Training Needs Analysis，再按公司需求、人数、模块和交付方式报价。',
   ];
 
   readonly faqs: FaqItem[] = [
     { question: '菲律宾马尼拉American-English-Skill语言学校是寄宿制语言学校吗？', answer: '不是。它更适合归类为Makati城市型商务英语、成人沟通训练、一对一和企业培训中心，住宿、餐食和通勤需要另行安排。' },
-    { question: '公开价格可以直接作为最终报价吗？', answer: '不建议。官网公开价格适合做预算初筛，正式报名仍需确认课程类型、小时数、线上或面授、开班日期、优惠和学校回函。' },
+    { question: '这里列出的价格可以直接作为最终报价吗？', answer: '不建议。这些价格适合做预算初筛，正式报名仍需确认课程类型、小时数、线上或面授、开班日期、优惠和学校回函。' },
     { question: '它适合国际学生短期学英语吗？', answer: '适合已经能自行安排马尼拉住宿和通勤，并且目标是口语、职场沟通、发音、商务写作或一对一补强的学生。' },
     { question: '和宿务、碧瑶语言学校怎么选？', answer: '想要城市商务课程和弹性排课可看American English；想要宿舍、三餐、全天课表和校内管理，应优先比较宿务、碧瑶或Clark。' },
   ];
 
   readonly sideNav: SideNavItem[] = [
-    { label: '官方图片', target: 'gallery', icon: 'image' },
+    { label: '学校图片', target: 'gallery', icon: 'image' },
     { label: '课程费用', target: 'course-fees', icon: 'payments' },
     { label: '费用估算', target: 'quote', icon: 'calculate' },
     { label: '额外费用', target: 'local-fees', icon: 'receipt_long' },
@@ -196,14 +195,6 @@ export class AmericanEnglishSchoolDetailComponent implements OnInit {
     { label: '费用', target: 'quote', icon: 'calculate' },
     { label: '服务', target: 'service-process', icon: 'support_agent' },
     { label: 'FAQ', target: 'faq', icon: 'help' },
-  ];
-
-  readonly sources: SourceLink[] = [
-    { label: 'American English官方主页', url: 'https://americanenglish.ph/' },
-    { label: 'Programs官方课程页', url: 'https://americanenglish.ph/programs/' },
-    { label: 'Business English专题页', url: 'https://americanenglish.ph/business-english-philippines/' },
-    { label: 'Online Business Conversational English', url: 'https://americanenglish.ph/program/open-for-enrollment/online-business-conversational-english/' },
-    { label: 'Corporate Training官方页', url: 'https://americanenglish.ph/corporate-training/' },
   ];
 
   ngOnInit(): void {

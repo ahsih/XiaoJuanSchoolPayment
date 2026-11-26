@@ -145,7 +145,7 @@ export class PiaSchoolComponent {
       icon: 'groups',
       label: '学校容量',
       value: '约100人',
-      note: '官方说明容量包含追加教学场地。',
+      note: '容量包含追加教学场地。',
     },
     {
       icon: 'meeting_room',
@@ -163,7 +163,7 @@ export class PiaSchoolComponent {
       icon: 'verified',
       label: '学校许可',
       value: 'TESDA / SSP',
-      note: '官网展示相关培训与办学许可资料。',
+      note: '持有相关培训与办学许可。',
     },
   ];
 
@@ -183,7 +183,7 @@ export class PiaSchoolComponent {
     {
       category: '城市与校园',
       title: 'Saint Honore公寓外观',
-      description: 'PIA官网展示的2023年新公寓，采用门禁与大堂管理。',
+      description: '2023年新公寓，采用门禁与大堂管理。',
       src: 'https://cdn.imweb.me/thumbnail/20230903/9a0c5f67d2ada.jpg',
     },
     {
@@ -201,7 +201,7 @@ export class PiaSchoolComponent {
     {
       category: '住宿',
       title: '双人房示例',
-      description: '官网住宿示例配有个人床位、书桌、座椅、台灯与收纳空间。',
+      description: '房间配有个人床位、书桌、座椅、台灯与收纳空间。',
       src: 'https://cdn.imweb.me/thumbnail/20230823/16c9a8a088a5a.jpg',
     },
     {
@@ -213,7 +213,7 @@ export class PiaSchoolComponent {
     {
       category: '住宿',
       title: '房内厨房',
-      description: '官网列有冰箱、微波炉、炉具、煮饭设备与洗衣机等，具体以房间为准。',
+      description: '可配冰箱、微波炉、炉具、煮饭设备与洗衣机等，具体以房间为准。',
       src: 'https://cdn.imweb.me/thumbnail/20230823/71779ba051ab2.jpg',
     },
     {
@@ -231,7 +231,7 @@ export class PiaSchoolComponent {
     {
       category: '设施',
       title: '泳池休闲区',
-      description: '泳池与公寓公共区域相连，官网同时列有健身房和游戏室。',
+      description: '泳池与公寓公共区域相连，另有健身房和游戏室。',
       src: 'https://cdn.imweb.me/thumbnail/20231227/9c6c86a85e680.jpg',
     },
     {
@@ -247,9 +247,9 @@ export class PiaSchoolComponent {
     { label: '开办 / 更新', value: '2012年开办，2023年更新校舍与公寓' },
     { label: '学校容量', value: '约100人（包含追加教学场地）' },
     { label: '教室', value: '36间一对一教室、8间小组教室' },
-    { label: '团队', value: '官网列出86名教师、100名工作人员' },
+    { label: '团队', value: '86名教师、100名工作人员' },
     {
-      label: '官方住宿',
+      label: '学校公寓',
       value: 'Saint Honore公寓以双人房为标准，部分营期可安排3至4人',
     },
     {
@@ -275,8 +275,8 @@ export class PiaSchoolComponent {
     },
     {
       image: 'https://cdn.imweb.me/thumbnail/20230823/16c9a8a088a5a.jpg',
-      title: '住宿口径分开核对',
-      text: '官网展示公寓环境；本页价目表的校外合作酒店房型按所附价格保留。',
+      title: '住宿安排提前确认',
+      text: '学校介绍的是Saint Honore公寓；报价中的单、双、三人房为校外合作酒店，报名时确认实际住宿。',
     },
   ];
 
@@ -291,7 +291,7 @@ export class PiaSchoolComponent {
     },
     {
       title: '亲子同行家庭',
-      text: '价目表提供Junior与Guardian路线，便于一起规划。',
+      text: '有Junior与Guardian路线，便于一起规划。',
     },
     {
       title: '想兼顾学习与生活',
@@ -305,8 +305,8 @@ export class PiaSchoolComponent {
       text: 'PIA更强调舒适英语环境，管理风格需与顾问再确认。',
     },
     {
-      title: '不想核对住宿版本',
-      text: '官方公寓与价目表中的合作酒店是两套口径，报名时必须确认实际安排。',
+      title: '不想提前确认住宿',
+      text: 'Saint Honore公寓与报价中的合作酒店是两种住宿，报名时必须确认实际安排。',
     },
     {
       title: '只看前期美元价格',
@@ -322,7 +322,7 @@ export class PiaSchoolComponent {
     {
       item: 'Iloilo机场接机',
       amount: 'PHP 1,200',
-      note: 'PIA官方课程页公开参考。',
+      note: '接机参考价，以学校实际收取为准。',
     },
     {
       item: '教材',
@@ -338,33 +338,18 @@ export class PiaSchoolComponent {
     {
       item: '住宿管理费',
       amount: 'PHP 500 / 周',
-      note: '官网列明的住宿维护费用。',
+      note: '住宿维护费用。',
     },
     { item: '水电费', amount: '按使用量', note: '按房间计量并以比索支付。' },
     {
       item: 'SSP',
       amount: 'PHP 7,000',
-      note: '官网另列E-SSP PHP 4,000。',
+      note: '另需E-SSP 4,000比索。',
     },
     {
       item: '签证延长',
       amount: '按停留时间',
       note: '8周以上开始产生，正式金额报名时确认。',
-    },
-  ];
-
-  readonly sources = [
-    {
-      label: 'PIA英文官网 · About PIA',
-      url: 'https://iloilopiaen.imweb.me/about_pia',
-    },
-    {
-      label: 'PIA英文官网 · Curriculum & Cost',
-      url: 'https://iloilopiaen.imweb.me/curriculum',
-    },
-    {
-      label: 'PIA英文官网 · Facility',
-      url: 'https://iloilopiaen.imweb.me/facility',
     },
   ];
 
@@ -375,7 +360,6 @@ export class PiaSchoolComponent {
     { label: '课程介绍', target: 'courses', icon: 'menu_book' },
     { label: '费用计算', target: 'quote', icon: 'calculate' },
     { label: '当地费用', target: 'local-fees', icon: 'payments' },
-    { label: '资料来源', target: 'sources', icon: 'fact_check' },
   ];
 
   readonly mobileAnchors = this.sideNav.slice(0, 6);
@@ -387,9 +371,9 @@ export class PiaSchoolComponent {
         'PIA位于Iloilo Business Park，强调城市生活便利、较多一对一课程，以及2023年更新的学校和公寓环境。',
     },
     {
-      question: '为什么页面图片是公寓，但价格写校外合作酒店？',
+      question: '为什么图片是公寓，但价格写校外合作酒店？',
       answer:
-        '图片来自PIA当前官网的Saint Honore公寓介绍；你提供的2024价目表明确把单、双、三人房标为校外合作酒店。本页保留价格原文，并提醒报名时确认实际住宿安排。',
+        '图片为学校介绍的Saint Honore公寓；2024年价格中的单、双、三人房为校外合作酒店。报名时请向顾问确认实际住宿安排。',
     },
     {
       question: 'Power Speaking和ESL有什么不同？',
