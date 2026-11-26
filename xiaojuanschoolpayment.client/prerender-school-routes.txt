@@ -7,6 +7,14 @@
 /philippines-study/cebu/ciec
 /overseas-study-tour/uk/burlington-school
 /overseas-study-tour/ireland/babel-academy-of-english
+/overseas-study-tour/uk/st-giles
+/overseas-study-tour/uk/st-giles/london-central
+/overseas-study-tour/uk/st-giles/london-highgate
+/overseas-study-tour/uk/st-giles/brighton
+/overseas-study-tour/uk/st-giles/cambridge
+/overseas-study-tour/uk/st-giles/eastbourne
+/overseas-study-tour/ireland/atc-language-schools
+/overseas-study-tour/singapore/canadian-education-college
 /philippines-study/cebu/elsa-international-language-school
 /philippines-study/cebu/ethos-language-school
 /philippines-study/cebu/ims-academy
@@ -19,7 +27,8 @@
 /philippines-study/cebu/bcebu
 /philippines-study/cebu/btes-english-academy
 /philippines-study/cebu/cpils
-/philippines-study/cebu/english-fella
+/philippines-study/cebu/english-fella-first-campus
+/philippines-study/cebu/english-fella-second-campus
 /philippines-study/cebu/philinter-academy
 /philippines-study/cebu/cg-academy-sparta-campus
 /philippines-study/cebu/smeag-capital
@@ -50,7 +59,6 @@
 /philippines-study/baguio/beci-eop-campus
 /philippines-study/baguio/beci-sparta-campus
 /philippines-study/baguio/api-beci-city-campus
-/philippines-study/baguio/baguio-jic
 /philippines-study/baguio/baguio-jic-challenger
 /philippines-study/baguio/baguio-jic-premium
 /philippines-study/baguio/monol

@@ -1,5 +1,6 @@
 import { CiaContentConfig, CiaLocalFeeRule, CiaQuoteImageSettings } from '../cia-school/cia-content-config';
 import { MINT_COURSES, MINT_LOCAL_FEES, MINT_REGISTRATION_FEE, MINT_ROOMS } from './mint-pricing';
+import { upgradeAcrNotes } from '../acr-first-extension';
 
 const imageSettings = (): CiaQuoteImageSettings => ({
   paymentSectionTitle: '学校费用明细',
@@ -32,7 +33,7 @@ const imageSettings = (): CiaQuoteImageSettings => ({
   alumniBenefitText: '老学员结业后可享线上课程及后续留学服务相关优惠。',
   noteSectionTitle: '报价说明',
   footerNotes: [
-    '课程、住宿、全包项目和优惠仅按English MINT已公布资料计算。',
+    '课程、住宿、全包项目和优惠按English MINT当前公布的价格和条件计算。',
     '当地费用、签证、教材、房型和优惠资格最终以学校正式账单确认为准。',
   ],
 });
@@ -91,5 +92,6 @@ export const cloneMintContentConfig = (value: CiaContentConfig): CiaContentConfi
   result.quoteImageSettings.promotionNotes = { ...defaults.quoteImageSettings.promotionNotes, ...(result.quoteImageSettings.promotionNotes ?? {}) };
   result.quoteImageSettings.localFeeNotes = { ...defaults.quoteImageSettings.localFeeNotes, ...(result.quoteImageSettings.localFeeNotes ?? {}) };
   result.quoteImageSettings.supplementalFeeNotes = { ...defaults.quoteImageSettings.supplementalFeeNotes, ...(result.quoteImageSettings.supplementalFeeNotes ?? {}) };
+  upgradeAcrNotes(result, defaults, { acr: ['12周及以上按学校表格计入。'] });
   return result;
 };

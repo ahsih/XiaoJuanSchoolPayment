@@ -132,8 +132,8 @@ describe('CPI school page on the shared template', () => {
   });
 
   it('shows the official videos with a poster and the year they were filmed', () => {
-    expect(CPI_PAGE_PROFILE.videoCards.length).toBe(5);
-    expect(CPI_PAGE_PROFILE.campusLifeVideos.length).toBe(12);
+    expect(CPI_PAGE_PROFILE.videoCards.length).toBe(6);
+    expect(CPI_PAGE_PROFILE.campusLifeVideos.length).toBe(14);
     for (const card of CPI_PAGE_PROFILE.videoCards) {
       expect(card.videoSrc).toMatch(/^\/assets\/cpi\/videos\/[a-z-]+\.mp4$/);
       expect(card.poster).toBe(card.videoSrc.replace(/([a-z-]+)\.mp4$/, 'poster-$1.jpg'));

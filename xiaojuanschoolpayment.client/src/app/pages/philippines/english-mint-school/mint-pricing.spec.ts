@@ -2,6 +2,7 @@ import {
   isSunday,
   MINT_COURSES,
   MINT_FAMILY_PRICES,
+  MINT_LOCAL_FEES,
   MINT_LOCAL_TOTALS,
   MINT_ROOMS,
   MINT_WEEK_OPTIONS,
@@ -9,6 +10,7 @@ import {
   mintFamilyNoCourseDeduction,
   mintLowSeasonCashDiscount,
 } from './mint-pricing';
+import { cloneMintContentConfig, createDefaultMintContentConfig } from './mint-content-config';
 
 describe('English MINT confirmed pricing', () => {
   it('includes the user-approved 20-week four-week-average estimate', () => {
@@ -19,6 +21,21 @@ describe('English MINT confirmed pricing', () => {
     expect(MINT_ROOMS.find(item => item.id === 'deluxe-twin')?.prices[24]).toBe(5700);
     expect(MINT_LOCAL_TOTALS[4]).toBe(22800);
     expect(MINT_LOCAL_TOTALS[20]).toBe(75830);
+  });
+
+  it('charges ACR I-Card with the first visa extension at 8 weeks (user rule 2026-11-24)', () => {
+    const acr = MINT_LOCAL_FEES.find(row => row.id === 'acr')!;
+    expect(acr.amounts[4]).toBe(0);
+    expect(acr.amounts[8]).toBe(4000);
+    for (const weeks of MINT_WEEK_OPTIONS) {
+      expect(MINT_LOCAL_FEES.reduce((sum, row) => sum + row.amounts[weeks], 0)).withContext(`${weeks}`).toBe(MINT_LOCAL_TOTALS[weeks]);
+    }
+    const old = createDefaultMintContentConfig();
+    old.localFees.find(item => item.id === 'acr')!.note = '12周及以上按学校表格计入。';
+    old.quoteImageSettings.localFeeNotes!['acr'] = '12周及以上按学校表格计入。';
+    const migrated = cloneMintContentConfig(old);
+    expect(migrated.localFees.find(item => item.id === 'acr')?.note).toBe(acr.note);
+    expect(migrated.quoteImageSettings.localFeeNotes!['acr']).toBe(acr.note);
   });
 
   it('uses the published low-season discount tiers without interpolation', () => {

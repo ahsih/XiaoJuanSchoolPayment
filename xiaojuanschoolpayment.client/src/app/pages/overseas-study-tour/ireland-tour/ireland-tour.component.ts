@@ -59,6 +59,13 @@ export class IrelandTourComponent {
         text: '都柏林市中心语言学校，每班最多16人；有每周一开课的成人短期课程和18岁以上25周半工半读。',
         tags: ['成人17岁以上', '每周一开课', '半工半读', '在线报价'],
       },
+      {
+        name: 'ATC Language Schools（布雷／都柏林）',
+        route: '/overseas-study-tour/ireland/atc-language-schools',
+        image: '/assets/atc/bray-aerial.webp',
+        text: '1973年创办的爱尔兰语言学校，海边小镇布雷和都柏林市中心两个校区；成人英语课程1周起报、每周一开课，25周课程可半工半读。',
+        tags: ['成人16／17岁起', '1周起报', '寄宿家庭／学校公寓', '25周半工半读'],
+      },
     ],
     sources: [
       { label: 'Education in Ireland', url: 'https://www.educationinireland.com/en/' },

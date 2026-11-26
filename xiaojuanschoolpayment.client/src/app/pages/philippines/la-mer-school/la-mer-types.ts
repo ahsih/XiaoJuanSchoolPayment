@@ -28,6 +28,7 @@ export interface LaMerPolicy {
   familyVersions: LaMerFamilyVersion[];
 }
 
+/** The old La Mer page text, kept only so older saved documents still type-check; LA_MER_POLICY_VERSION 1 drops it. */
 export interface LaMerPageContent {
   title: string;
   lead: string;

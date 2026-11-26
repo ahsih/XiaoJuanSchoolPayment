@@ -1,0 +1,12 @@
+# School notes: beci
+
+## BECI campus pages on the template (2026-11-26)
+
+User decision 2026-11-26: BECI's three campuses moved onto the shared Philippine template (CIA compact layout, `layoutVersion: 2` quote and comparison images), from the school's 2027 info update (2026-11-25) and its Drive pack. Source record: `docs/beci-2027-update-2026-11-26.md`.
+
+- Routes: EOP `/philippines-study/baguio/beci-eop-campus` (`BeciEopSchoolComponent`), City `/philippines-study/baguio/api-beci-city-campus` (`BeciCitySchoolComponent`), Sparta `/philippines-study/baguio/beci-sparta-campus` (`BeciSpartaSchoolComponent`). The old `beci-school-detail`, `api-beci-city-school` and `beci-quote/` code is gone.
+- Like JIC: one database record (`菲律宾碧瑶BECI语言学校`) and one content document `BECI` with `campus` on every course and room; `beciCampusContent` gives each page its part. `beci-school-page.ts` is the shared base, `beci-page-profile.ts` builds each profile, `beci-page-quote.ts` calculates (`BeciPageStudent`, `BeciQuote`, `BeciPlanComparison`), page text in `beci-shared-content.ts` and `beci-<campus>-page-content.ts`. Uploads tagged with a campus show on that page; untagged uploads belong to EOP (as in the photo editor).
+- Prices only from the content document (`applyPricingData` is a no-op). `BECI_POLICY_VERSION` (1) moves a saved document once onto the 2027 list, keeping employee-added rows; later edits stay. Registrations before 2027-01-01 pay `price2026` on the raised rows (Mansion Master Single, City Native/Unlimited ESL, Semi Master/Regular Single); the quote asks the registration date.
+- Offers: 100-dollar registration waived for every 思达启航 student; 10% off course and room for 2026/02/08–06/14 and 09/06–12/27 arrivals (all campuses) and 2027/02/07–06/13 and 09/05–12/26 arrivals (EOP and City only); long-stay 8/12/16/20/24 weeks 50/100/200/300/400 after it; early bird (confirmed by 2026-11-30) waives the 2027 peak. Peak 40/week 2026/06/28–08/22, 60/week 2027/06/27–08/21, unique weeks, never discounted.
+- Rules: 1/2/3 weeks 40/60/80%; IELTS Guarantee (Sparta) from 12 weeks, no short-stay price; stays up to 24 weeks; EOP 40+ single rooms only; Sparta 18–40 only; City Studio pair prices need two students on the same room and dates. Local fees and visa table: see the source record.
+- Tests: `npx ng test --watch=false --browsers=ChromeHeadlessNoSandbox --ts-config=tsconfig.beci.spec.json --include=src/app/pages/philippines/beci-school/beci-school-page.spec.ts --progress=false`.

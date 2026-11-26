@@ -19,7 +19,6 @@ interface PriceRow {
   reference: string;
   quoteCheck: string;
   note: string;
-  basis: string;
 }
 
 interface LocalFee {
@@ -30,11 +29,6 @@ interface LocalFee {
 interface FaqItem {
   question: string;
   answer: string;
-}
-
-interface SourceLink {
-  label: string;
-  url: string;
 }
 
 @Component({
@@ -50,7 +44,7 @@ export class WalesSchoolComponent {
     { label: '城市', value: '菲律宾碧瑶 Baguio' },
     { label: '创校时间', value: '2006年' },
     { label: '地址', value: '#4 Bukaneg St., Legarda Rd., Baguio City' },
-    { label: '学校容量', value: '官方资料约80名学生' },
+    { label: '学校容量', value: '约80名学生' },
     { label: '适合方向', value: 'EEP、ESL、Business、IELTS、Junior、Family' },
   ];
 
@@ -67,13 +61,13 @@ export class WalesSchoolComponent {
     },
     {
       title: 'Business English',
-      lessons: '官方列为7节课 / 天',
-      text: '面向多文化商务场景，训练商务写作、商务阅读、词汇、语气和跨文化沟通，官方标注入门基础约Elementary B。',
+      lessons: '7节课 / 天',
+      text: '面向多文化商务场景，训练商务写作、商务阅读、词汇、语气和跨文化沟通，入门基础约Elementary B。',
     },
     {
       title: 'IELTS',
       lessons: 'Academic / General Training方向',
-      text: '适合升学、工作、移民或专业注册需求。WALES官网说明雅思分Academic和General Training，报名时要先确认目标模块。',
+      text: '适合升学、工作、移民或专业注册需求。雅思分Academic和General Training，报名时要先确认目标模块。',
     },
     {
       title: 'Junior ESL',
@@ -90,52 +84,45 @@ export class WalesSchoolComponent {
   readonly priceRows: PriceRow[] = [
     {
       item: '报名 / Enrollment fee',
-      reference: '官方流程要求先支付报名相关费用',
+      reference: '报名时需先支付报名相关费用',
       quoteCheck: '确认金额、退改规则与锁房条件',
-      note: 'WALES流程说明：提交课程、房型、日程后，支付enrollment fee以确保注册和房间。',
-      basis: '官方Admissions',
+      note: '提交课程、房型、日程后，支付enrollment fee以确保注册和房间。',
     },
     {
       item: '课程学费',
       reference: 'EEP、ESL、Business、IELTS、Junior、Family分开报价',
       quoteCheck: '确认课时、课程版本、周数和淡旺季优惠',
-      note: '官网课程页列出每日课时和课程方向，但正式金额需以当期price list或学校回信为准。',
-      basis: '官方Program',
+      note: '每门课程的每日课时和方向不同，正式金额以学校当期报价为准。',
     },
     {
       item: '宿舍费',
       reference: 'Studio、Premium Studio、Share、Condo等房型',
       quoteCheck: '确认单人、双人、Semi Single、上下层与空位',
-      note: '官网提醒房间空位会变动，建议尽早询问；不同房型设备和Wi-Fi速度也不同。',
-      basis: '官方Room',
+      note: '房间空位会变动，建议尽早询问；不同房型设备和Wi-Fi速度也不同。',
     },
     {
       item: '餐费',
-      reference: '官方流程列为需支付项目',
+      reference: '需另行支付',
       quoteCheck: '确认是否含三餐、餐费周期和特殊饮食',
-      note: '报名报价不能只看学费住宿，WALES官方流程明确提到tuition、dormitory和meal fee。',
-      basis: '官方Admissions',
+      note: '报价不能只看学费住宿，WALES收费包括tuition、dormitory和meal fee。',
     },
     {
       item: '当地费用',
       reference: 'SSP、签证延签、ACR、教材、押金、水电等',
       quoteCheck: '按周数和签证状态核算',
       note: '这些项目通常不应并入“低起价”判断，适合在报价单中单独列行。',
-      basis: '顾问核价',
     },
     {
       item: '机场接送',
       reference: '出发前至少10天提供航班信息',
       quoteCheck: '确认马尼拉或克拉克、团体或个人接送',
-      note: '官网流程要求学生至少出发前10天告知航班日程，便于安排抵达和接机。',
-      basis: '官方Admissions',
+      note: '学生需至少在出发前10天告知航班日程，便于安排抵达和接机。',
     },
     {
       item: '房型加价',
       reference: '双人共享同床等特殊使用需确认额外费用',
       quoteCheck: '确认朋友、情侣、家庭是否可同住',
-      note: '官网Room页提到家人、朋友、伴侣等共享床位情形可能可加价使用双人房。',
-      basis: '官方Room',
+      note: '家人、朋友、伴侣等共享床位情形可能可加价使用双人房。',
     },
   ];
 
@@ -151,11 +138,11 @@ export class WalesSchoolComponent {
   ];
 
   readonly accommodation = [
-    'WALES官方Room页列出Studio、Premium Studio、Share和Condo等房型，适合按生活习惯和预算细分。',
+    'WALES有Studio、Premium Studio、Share和Condo等房型，适合按生活习惯和预算细分。',
     'Studio为单人方向，配备冰箱、电热水壶、微波炉、吹风机、Bidet和60Mbps Wi-Fi。',
     'Premium Studio可单人或双人共享，增加电磁炉、LED TV with Netflix等设备。',
     'Share Type有带窗单人、单人或双人共享方向，常见设备包含冰箱、微波炉、瓦斯炉和LED TV。',
-    'Condo Type偏Semi Single，官方列出300Mbps Wi-Fi、Gas range和电视等设备，适合更重视生活机能的人。',
+    'Condo Type偏Semi Single，配有300Mbps Wi-Fi、Gas range和电视等设备，适合更重视生活机能的人。',
   ];
 
   readonly facilities = [
@@ -182,18 +169,18 @@ export class WalesSchoolComponent {
   ];
 
   readonly pros = [
-    '小型学校容量约80人，官方强调老师和工作人员能更聚焦每位学生需求',
-    'Legarda Rd.位置便利，官网列出餐厅、咖啡店、超市、ATM、健身房等多项资源步行可达',
+    '小型学校容量约80人，老师和工作人员能更聚焦每位学生需求',
+    'Legarda Rd.位置便利，餐厅、咖啡店、超市、ATM、健身房等多项资源步行可达',
     '房型选择比传统宿舍更生活化，Studio、Premium Studio、Share、Condo可按隐私和预算比较',
     '课程覆盖生活口语、ESL、商务、IELTS、Junior和Family，适合成人与家庭需求',
-    '学生年龄和国籍较多样，官网提到6个国籍、14-70岁年龄层，氛围不只面向年轻学生',
+    '学生来自6个国家和地区，年龄在14-70岁之间，氛围不只面向年轻学生',
   ];
 
   readonly cons = [
     'WALES不是典型强斯巴达学校，自律弱、需要高压制度推动的人要谨慎比较',
     '小型学校意味着容量有限，热门房型或指定入学日需要更早确认空位',
     '市区生活便利也代表外部诱惑更多，学生要能管理外出和复习节奏',
-    '官网公开页没有完整当前价目表，报价必须按课程、房型、餐费和当地费用重新核算',
+    '报价需按课程、房型、餐费和当地费用逐项核算，不能只看起价',
     '亲子和Junior需求要额外确认年龄、监护、活动、房型和周末安排，不宜只看课程名报名',
   ];
 
@@ -204,34 +191,19 @@ export class WalesSchoolComponent {
     },
     {
       question: 'WALES最突出的优势是什么？',
-      answer: '小校容量、市区位置和房型生活感。官方强调80人左右容量、5分钟生活半径、Studio/Share/Condo等房型，适合重视舒适度和便利性的学生。',
+      answer: '小校容量、市区位置和房型生活感：80人左右容量、5分钟生活半径、Studio/Share/Condo等房型，适合重视舒适度和便利性的学生。',
     },
     {
       question: 'WALES适合零基础吗？',
       answer: '可以先看EEP或ESL方向。EEP更偏听说和真实生活场景，ESL则是进一步学习Business、IELTS等课程前的基础。',
     },
     {
-      question: '页面为什么没有写固定起价？',
-      answer: 'WALES官网公开页提供课程、房型和流程信息，但当前价目需要从学校或授权顾问确认。为避免误导，本页用报价项目清单帮助核算总成本。',
+      question: '这里为什么没有写固定起价？',
+      answer: 'WALES的价格会因课程、房型、餐费和周数而变化，当前价格需向学校或思达启航顾问确认。这里列出的报价项目可以帮助你核算总成本。',
     },
     {
       question: '顾问会怎么建议WALES？',
       answer: '如果学生是成人、工作者、家庭或想在市中心附近轻松但认真地学英文，WALES值得比较；如果目标是短期高压冲刺分数，则建议同时看更强管理的碧瑶学校。',
     },
-  ];
-
-  readonly sources: SourceLink[] = [
-    { label: '菲律宾碧瑶WALES语言学校 官方网站', url: 'https://walesph.com/' },
-    { label: 'WALES School Profile', url: 'https://walesph.com/aboutus/school-profile/' },
-    { label: 'WALES Why WALES', url: 'https://walesph.com/aboutus/choose/' },
-    { label: 'WALES Program', url: 'https://walesph.com/curriculum/' },
-    { label: 'WALES EEP', url: 'https://walesph.com/curriculum/eep/' },
-    { label: 'WALES ESL', url: 'https://walesph.com/curriculum/esl/' },
-    { label: 'WALES Business', url: 'https://walesph.com/curriculum/business/' },
-    { label: 'WALES IELTS', url: 'https://walesph.com/curriculum/ielts/' },
-    { label: 'WALES Room', url: 'https://walesph.com/room/' },
-    { label: 'WALES Facility', url: 'https://walesph.com/facility/' },
-    { label: 'WALES Location', url: 'https://walesph.com/facility/location/' },
-    { label: 'WALES Admissions', url: 'https://walesph.com/admissions/process/' },
   ];
 }

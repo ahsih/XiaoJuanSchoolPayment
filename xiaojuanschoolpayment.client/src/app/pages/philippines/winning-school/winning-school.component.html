@@ -60,7 +60,7 @@
               <ul>
                 <li>
                   <mat-icon>check_circle</mat-icon>
-                  公开Ocean Campus主费通常含课程、住宿和餐食
+                  Ocean Campus主费通常含课程、住宿和餐食
                 </li>
                 <li>
                   <mat-icon>info</mat-icon>
@@ -69,7 +69,7 @@
               </ul>
             </aside>
             <p class="photo-source">
-              图片参考公开学校图库与留学资料；费用参考Winning官方费用页和2026 Ocean Campus公开价格表，最终以学校正式报价为准。
+              图片仅供参考，具体以学校实际安排为准。
             </p>
           </div>
         </section>
@@ -203,7 +203,7 @@
             <span>课程类型介绍</span>
             <h2>不知道选哪种课程？先按一对一节数和校区目的看</h2>
             <p>
-              Winning公开课程从Cambridge ESL2/4、Power Speaking6、Speaking Focus8到Travel English都有；
+              Winning课程从Cambridge ESL2/4、Power Speaking6、Speaking Focus8到Travel English都有；
               考试、商务和亲子课程需再按校区确认。
             </p>
           </div>
@@ -220,17 +220,17 @@
         <section class="split-layout" id="course-fees">
           <div class="section-block">
             <div class="section-heading">
-              <span>Winning Ocean 2026公开价格</span>
+              <span>Winning Ocean 2026价格</span>
               <h2>按课程、房型和周数看主费用</h2>
               <p>
-                以下按Winning Ocean Campus 2026公开美元表整理。主费通常含课程、住宿和餐食；
+                以下为Winning Ocean Campus 2026美元价格。主费通常含课程、住宿和餐食；
                 入学金、SSP、签证、押金、水电、教材、管理费、旺季费和接机另计。
               </p>
               <p>
                 1至3周的短期主费按4周主费计算：1周40%、2周60%、3周80%，金额四舍五入至整数美元。
               </p>
             </div>
-            <div class="data-table course-fee-table" role="table" aria-label="Winning Ocean 2026公开价格">
+            <div class="data-table course-fee-table" role="table" aria-label="Winning Ocean 2026价格">
               <div class="table-row table-head" role="row">
                 <span role="columnheader">课程 / 房型</span>
                 <span role="columnheader">1周</span>
@@ -248,7 +248,7 @@
                 </div>
               </ng-container>
             </div>
-            <div class="mobile-card-list mobile-course-fees" aria-label="Winning Ocean 2026公开价格手机卡片">
+            <div class="mobile-card-list mobile-course-fees" aria-label="Winning Ocean 2026价格手机卡片">
               <ng-container *ngFor="let course of courseOptions">
                 <article *ngFor="let room of roomOptions">
                   <span>{{ course.name }}</span>
@@ -286,7 +286,7 @@
               <span>考试 / 商务 / 亲子参考</span>
               <h2>Business、TOEIC/IELTS和亲子课程要按校区确认</h2>
               <p>
-                Winning官方课程覆盖商务、TOEIC、IELTS、菲律宾营队和亲子路线；不同校区和季节可能使用不同价格口径。
+                Winning课程覆盖商务、TOEIC、IELTS、菲律宾营队和亲子路线；不同校区和季节的价格可能不同。
               </p>
             </div>
             <div class="data-table special-fee-table" role="table" aria-label="Winning特殊课程参考">
@@ -376,7 +376,7 @@
             <span>到校支付费用参考</span>
             <h2>主费用之外，还要准备当地费用</h2>
             <p>
-              以下费用按Winning公开FAQ、官方费用页和2026公开学校资料整理，不同校区、周数、签证时长和学校政策会影响最终金额。
+              以下金额会因校区、周数、签证时长和学校政策不同而变化，以学校实际收取为准。
             </p>
           </div>
           <div class="local-fee-grid desktop-local-fees">
@@ -401,10 +401,9 @@
         <section class="notice-panel" id="price-note">
           <mat-icon>info</mat-icon>
           <div>
-            <h2>价格更新时间与资料说明</h2>
+            <h2>价格更新时间与说明</h2>
             <p>
-              本页价格更新时间：2026年8月。费用参考Winning官方费用计算页、官方课程/校区页面和2026 Ocean Campus公开费用表整理。
-              学校价格、旺季费、住宿空位、当地费用和汇率可能调整，报名以顾问向学校确认后的正式报价为准。
+              价格更新时间：2026年8月。学校价格、旺季费、住宿空位、当地费用和汇率可能调整，以顾问向学校确认的正式报价为准。
             </p>
           </div>
         </section>
@@ -429,23 +428,6 @@
           <a class="primary-action" routerLink="/about-sida/contact">
             获取完整报价单<mat-icon>description</mat-icon>
           </a>
-        </section>
-
-        <section class="source-panel" id="sources">
-          <div class="section-heading">
-            <span>资料来源</span>
-            <h2>Winning页面公开资料来源</h2>
-            <p>
-              本页以Winning官方网站、官方费用计算页、官方校区/课程页面和2026 Ocean Campus公开费用资料为主要来源。
-              正式报名以前请以学校确认书和最新报价单为准。
-            </p>
-          </div>
-          <div class="source-grid">
-            <a *ngFor="let source of sources" [href]="source.url" target="_blank" rel="noopener noreferrer">
-              <mat-icon>open_in_new</mat-icon>
-              {{ source.label }}
-            </a>
-          </div>
         </section>
 
         <section class="sida-ev-section" id="service-process">

@@ -18,6 +18,23 @@ the SMEAG Capital page and to ignore the Encanto material, so nothing from the E
   used. Clips filmed landscape inside a vertical frame are cropped to the 16:9 picture (1080×608), which also removes the
   added 宿务SMEAG captions; vertical clips are 720×1280. The hero album groups them as 校园／宿舍／课程／餐厅, and the twin
   room's photo album now opens with its video.
+- YouTube (2026-11-25): five clips from SMEAG's own channels, @smeagedu (the Korean promo channel) and @smeagtv (the
+  school's channel since 2026-08, whose descriptions name the Capital Campus), at 1280×720 or 720×1280:
+  - `capital-promo-2025`: "2025 SMEAG CAPITAL 리뉴얼 홍보 비디오", kept 6.0–13.9 s and 20.2–141.2 s. Cut: the logo
+    intro, QR-code posters with SMEAG Vietnam's Facebook name and a PTE poster, a flag row that includes the flag of
+    the Taiwan authorities, a Cebu map with malls and hotels, IELTS/IDP award plaques, and the logo and website end card.
+    It is the first clip in the album.
+  - `orientation`: "New Student Orientation at SMEAG Global Education" (Capital Campus per its description), whole.
+  - `summer-party`: "2025 SMEAG CAPITAL EVENT - Feel the Heat", kept 5.3–84.5 s (no logo intro or end card).
+  - `lunch-buffet`: "SMEAG Student Life Reel: From Classroom to Dining" (Capital Campus), whole.
+  - `student-interview`: "Japanese Student Shares What She Learned at SMEAG", whole; she speaks English with burned-in
+    English captions. It opens a fifth album group, 访谈.
+- Not used from YouTube: the 2019–2023 channels (before the renewal); the dormitory slideshow (the same room photos as
+  the page); a Vietnamese-narrated dorm tour (repeats the room clips); the costume "first day" short; the 2026
+  Teachers' Day dance; the staff dance short (an "IELTS 9.0 (7 students)" score banner); "3000+ students scored 6.0+"
+  (a result claim); the Cambridge OET video (another organisation); the Tarlac, Encanto and junior-camp videos (other
+  campuses); and the 2025 outdoor-activity video (trips outside the school). Minori's part 1 could not be downloaded.
+- Facebook (SMEAGCEBU) shows nothing without a login and was not searched.
 
 ## Sources used
 
@@ -45,12 +62,15 @@ combined rows (TOEFL / IELTS, ESL / Speaking Master) onto the separate course id
 - 思达启航折扣 10% applies to tuition and campus rooms only; partner-hotel rooms are not discounted.
 - The 25-dollar weekly offers count study weeks lying wholly inside the offer dates. The Christmas offer (100 dollars)
   needs at least 4 course weeks and any study week touching 2026/12/20–2027/01/02.
-- Local fees per student: 30-day visa extensions 5,130 / 6,400 / 4,430 (then 4,430); VISA I-CARD 4,500 once the stay
-  reaches 60 days; utilities 3,000 per started 4 accommodation weeks; water and electricity 2,400 per started 4
-  campus weeks (none at the hotels); one textbook set per course type. Pickup (1,200) and the refundable deposit
+- Local fees per student: 30-day visa extensions 5,130 / 6,400 / 4,430 (then 4,430); VISA I-CARD 4,500 with the first visa
+  extension (user rule 2026-11-24; the sheet lists it from 60 days); utilities 3,000 and water and electricity 2,400 per started 4
+  campus weeks; partner-hotel weeks pay only a management fee of 2,000 per started 4 weeks (user confirmation
+  2026-11-24, policy version 2, which adds the fee rule to saved documents); one textbook set per course type. Pickup (1,200) and the refundable deposit
   (2,000) are reference rows outside the total. Our totals equal the sheet's totals minus pickup and deposit, plus
   the textbook.
 - There is no peak-season surcharge.
+- The 2027 holiday table is on the page; the rest of the 2026 Capital holiday poster (11/27 and 12/30 holiday classes,
+  12/24, 12/25 and 12/31 closed) is one line under it.
 - The five-person room has no photos in the pack, so its price card has no photo button.
 - The partner-hotel videos are not used: their opening shows a booking banner and the hotel address.
 - Campus photos that show the flag of the Taiwan authorities are not used (photos 52, 53, 54 and 64 of the campus
@@ -62,8 +82,6 @@ combined rows (TOEFL / IELTS, ESL / Speaking Master) onto the separate course id
 ## Open questions for the school
 
 - The 59-day visa extension sequence (6,400, then 4,430) is an estimate; the sheet lists only the 30-day sequence.
-- The older hotel rule mentions a 2,000-peso maintenance fee; the 2027 sheet charges utilities of 3,000 per 4 weeks
-  for everyone. The quote uses the 2027 sheet.
 - Junior course schedules are not in the pack, so those rows say the schedule is confirmed at registration.
 
 ## Tests

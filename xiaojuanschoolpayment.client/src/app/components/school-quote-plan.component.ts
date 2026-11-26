@@ -28,6 +28,12 @@ export class SchoolQuotePlanComponent {
   readonly lists = [{ kind: 'course' as const, title: '课程' }, { kind: 'room' as const, title: '住宿' }];
   readonly money = quoteMoney;
   trackRow(_: number, row: { id: number }) { return row.id; }
+  /**
+   * optionGroups() builds new group objects on every check. Without these keys Angular rebuilt every <option> on each
+   * click, and the desktop WeChat browser closed an open course or room list at once (colleague report 2026-11-25).
+   */
+  trackGroup(_: number, group: { label: string }) { return group.label; }
+  trackOption(_: number, option: QuotePlanOption) { return option.id; }
   details(kind: 'course' | 'room', id: string) { return this.plan.options(kind).find(option => option.id === id)?.details ?? ''; }
   isRoomScheduleLocked(_kind: QuotePlanKind) { return false; }
   isStartDateLocked(kind: QuotePlanKind, index: number) {

@@ -1,28 +1,29 @@
 import { QuoteImageDownloadButtonComponent } from '../../components/quote-image-download-button.component';
 import { CiaSchoolComponent } from './cia-school/cia-school.component';
-import { CgBaniladSchoolComponent } from './cg-banilad-school/cg-banilad-school.component';
-import { CgSpartaSchoolComponent } from './cg-sparta-school/cg-sparta-school.component';
+import { CgBaniladSchoolPageComponent } from './cg-banilad-school/cg-banilad-school-page.component';
+import { CgSpartaSchoolPageComponent } from './cg-sparta-school/cg-sparta-school-page.component';
 import { SmeagCapitalSchoolPageComponent } from './smeag-capital-school/smeag-capital-school-page.component';
 import { CpiSchoolPageComponent } from './cpi-school/cpi-school-page.component';
 import { CpilsSchoolPageComponent } from './cpils-school/cpils-school-page.component';
 import { EvSchoolPageComponent } from './ev-school/ev-school-page.component';
-import { PinesSchoolDetailComponent } from './pines-school/pines-school-detail.component';
-import { MonolSchoolDetailComponent } from './monol-school/monol-school-detail.component';
-import { MonolSpartaSchoolDetailComponent } from './monol-sparta-school/monol-sparta-school-detail.component';
-import { PhilinterSchoolDetailComponent } from './philinter-school/philinter-school-detail.component';
-import { BCebuSchoolComponent } from './bcebu-school/bcebu-school.component';
-import { GlcSchoolComponent } from './glc-school/glc-school.component';
-import { IbreezeSchoolComponent } from './ibreeze-school/ibreeze-school.component';
-import { AnjSchoolComponent } from './anj-school/anj-school.component';
-import { ImsSchoolComponent } from './ims-school/ims-school.component';
-import { BeciQuoteCalculatorComponent } from './beci-quote/beci-quote-calculator.component';
-import { JicSchoolDetailComponent } from './jic-school/jic-school-detail.component';
+import { PinesSchoolPageComponent } from './pines-school/pines-school-page.component';
+import { MonolSchoolPageComponent } from './monol-school/monol-school-page.component';
+import { MonolSpartaSchoolPageComponent } from './monol-sparta-school/monol-sparta-school-page.component';
+import { PhilinterSchoolPageComponent } from './philinter-school/philinter-school-page.component';
+import { BCebuSchoolPageComponent } from './bcebu-school/bcebu-school-page.component';
+import { GlcSchoolPageComponent } from './glc-school/glc-school-page.component';
+import { IbreezeSchoolPageComponent } from './ibreeze-school/ibreeze-school-page.component';
+import { AnjSchoolPageComponent } from './anj-school/anj-school-page.component';
+import { ImsSchoolPageComponent } from './ims-school/ims-school-page.component';
+import { JicChallengerSchoolComponent } from './jic-school/jic-challenger-school.component';
+import { JicPremiumSchoolComponent } from './jic-school/jic-premium-school.component';
 import { IuSchoolComponent } from './iu-school/iu-school.component';
 import { IclSchoolComponent } from './icl-school/icl-school.component';
 import { CellaQuoteCalculatorComponent } from './cella-quote/cella-quote-calculator.component';
-import { FellaSchoolDetailComponent } from './fella-school/fella-school-detail.component';
+import { FellaFirstCampusSchoolComponent } from './fella-school/fella-first-campus-school.component';
+import { FellaSecondCampusSchoolComponent } from './fella-school/fella-second-campus-school.component';
 import { BtesSchoolComponent } from './btes-school/btes-school.component';
-import { CebuBlueOceanSchoolComponent } from './cebu-blue-ocean-school/cebu-blue-ocean-school.component';
+import { CboaSchoolPageComponent } from './cebu-blue-ocean-school/cboa-school-page.component';
 import { WalesSchoolDetailComponent } from './wales-school/wales-school-detail.component';
 import { EnglishMintSchoolComponent } from './english-mint-school/english-mint-school.component';
 import { ElementRef } from '@angular/core';
@@ -38,44 +39,40 @@ import { SchoolQuotePlan, QuotePlanKind, quoteMoney } from '../../components/sch
 import { SchoolQuotePlanComponent } from '../../components/school-quote-plan.component';
 import { TargetStudentQuote } from './target-school/target-student-quote';
 import { TargetSchoolComponent } from './target-school/target-school.component';
-import { CipQuoteCalculatorComponent } from './cip-school/cip-quote-calculator.component';
-import { LaMerSchoolComponent } from './la-mer-school/la-mer-school.component';
+import { CipSchoolPageComponent } from './cip-school/cip-school-page.component';
+import { LaMerSchoolPageComponent } from './la-mer-school/la-mer-school-page.component';
 import { PhilippinesQuoteImageExporterComponent } from '../../components/philippines-quote-image-exporter.component';
-const imageAlias = (page: any) => { Object.defineProperty(page, 'quoteImageData', { get: () => page.quoteImage }); return page; };
 const schools = [
   { name: 'TARGET', create: () => new TargetSchoolComponent() },
-  { name: 'CIP', create: () => imageAlias(new CipQuoteCalculatorComponent()) },
-  { name: 'EV La Mer', create: () => imageAlias(new LaMerSchoolComponent()) },
-  { name: 'PINES IELTS', create: () => { const p = new PinesSchoolDetailComponent(); p.quotePlan.courses[0].optionId = 'pre-ielts'; p.quotePlan.rooms[0].optionId = 'ielts-quad'; return p; } },
-  { name: 'BECI Sparta', create: () => { const p = new BeciQuoteCalculatorComponent(); p.campus = 'sparta'; return p; } },
-  { name: 'BECI City', create: () => { const p = new BeciQuoteCalculatorComponent(); p.campus = 'city'; return p; } },
-  { name: 'JIC Premium', create: () => { const p = new JicSchoolDetailComponent(); p.students[0].setCampus('premium'); return p; } },
-  { name: 'Fella Second', create: () => { const p = new FellaSchoolDetailComponent(); p.students[0].setCampus('campus2'); return p; } },
+  { name: 'CIP', create: () => new CipSchoolPageComponent() },
+  { name: 'EV La Mer', create: () => new LaMerSchoolPageComponent() },
+  { name: 'PINES IELTS', create: () => { const p = new PinesSchoolPageComponent(); p.students[0].quotePlan.courses[0].optionId = 'pre-ielts'; return p; } },
+  { name: 'JIC Premium', create: () => new JicPremiumSchoolComponent() },
+  { name: 'Fella Second', create: () => new FellaSecondCampusSchoolComponent() },
   { name: 'CELLA Premium', create: () => { const p = new CellaQuoteCalculatorComponent(); p.initialCampus = 'premium'; return p; } },
   { name: "CIA", create: () => new CiaSchoolComponent() },
-  { name: "CG Banilad", create: () => new CgBaniladSchoolComponent() },
-  { name: "CG Sparta", create: () => new CgSpartaSchoolComponent() },
+  { name: "CG Banilad", create: () => new CgBaniladSchoolPageComponent() },
+  { name: "CG Sparta", create: () => new CgSpartaSchoolPageComponent() },
   { name: "SMEAG", create: () => new SmeagCapitalSchoolPageComponent() },
   { name: "CPI", create: () => new CpiSchoolPageComponent() },
   { name: "CPILS", create: () => new CpilsSchoolPageComponent() },
   { name: "EV", create: () => new EvSchoolPageComponent() },
-  { name: "PINES", create: () => new PinesSchoolDetailComponent() },
-  { name: "MONOL", create: () => new MonolSchoolDetailComponent() },
-  { name: "MONOL Sparta", create: () => new MonolSpartaSchoolDetailComponent() },
-  { name: "PHILINTER", create: () => new PhilinterSchoolDetailComponent() },
-  { name: "B'Cebu", create: () => new BCebuSchoolComponent() },
-  { name: "GLC", create: () => new GlcSchoolComponent() },
-  { name: "I.BREEZE", create: () => new IbreezeSchoolComponent() },
-  { name: "A&J", create: () => new AnjSchoolComponent() },
-  { name: "IMS", create: () => new ImsSchoolComponent() },
-  { name: "BECI", create: () => new BeciQuoteCalculatorComponent() },
-  { name: "JIC", create: () => new JicSchoolDetailComponent() },
+  { name: "PINES", create: () => new PinesSchoolPageComponent() },
+  { name: "MONOL", create: () => new MonolSchoolPageComponent() },
+  { name: "MONOL Sparta", create: () => new MonolSpartaSchoolPageComponent() },
+  { name: "PHILINTER", create: () => new PhilinterSchoolPageComponent() },
+  { name: "B'Cebu", create: () => new BCebuSchoolPageComponent() },
+  { name: "GLC", create: () => new GlcSchoolPageComponent() },
+  { name: "I.BREEZE", create: () => new IbreezeSchoolPageComponent() },
+  { name: "A&J", create: () => new AnjSchoolPageComponent() },
+  { name: "IMS", create: () => new ImsSchoolPageComponent() },
+  { name: "JIC", create: () => new JicChallengerSchoolComponent() },
   { name: "IU", create: () => new IuSchoolComponent() },
   { name: "ICL", create: () => new IclSchoolComponent() },
   { name: "CELLA", create: () => new CellaQuoteCalculatorComponent() },
-  { name: "Fella", create: () => new FellaSchoolDetailComponent() },
+  { name: "Fella", create: () => new FellaFirstCampusSchoolComponent() },
   { name: "BTES", create: () => new BtesSchoolComponent() },
-  { name: "Blue Ocean", create: () => new CebuBlueOceanSchoolComponent() },
+  { name: "Blue Ocean", create: () => new CboaSchoolPageComponent() },
   { name: "WALES", create: () => new WalesSchoolDetailComponent() },
   { name: "MINT", create: () => new EnglishMintSchoolComponent() },
 ];

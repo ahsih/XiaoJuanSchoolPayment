@@ -48,7 +48,7 @@ export const EV_PAGE_COPY = {
   coursesLead: '先按学习目标选课程类型，每门课的4周费用和每日课时见下方费用表。',
   studyPlanLead: '两种模式白天的课程一样，区别在早晚课、晚自习和平日能不能外出。',
   dailyLead: '每节课45分钟，课间休息5分钟。所有学生都可以免费参加早晚选修课；周末和假日上午另有4节选修团体课，需提前报名。',
-  eopNote: '教学区（1至3楼及走廊）实行English Only，被老师或职员发现说母语一次，周五加1小时自习。',
+  eopNote: '教学区（1至3楼及走廊）实行English Only，被老师或职员发现说母语会收到罚单；每张罚单加1小时自习，在周五17:10后或周六、周日完成。',
   otherPlansNote: '另有校外公寓课程（仅限半斯巴达，无门禁）和走读课程，适合需要更自由安排的学生，具体请咨询顾问。',
   priceNote: '本页价格更新时间：2026年11月19日。课程费、住宿费和到校费用可能调整，报名时以顾问向学校确认的正式报价为准。',
   finalCtaTitle: '想知道 EV 当前是否有空房？',
@@ -73,6 +73,7 @@ const photo = (category: EvGalleryImage['category'], title: string, description:
 export const EV_GALLERY_FEATURED_COUNT = 6;
 export const EV_GALLERY_IMAGES: EvGalleryImage[] = [
   photo('校园', 'EV校园外观', '2017年启用的新校区，度假村式校园。', 'campus-exterior', true),
+  photo('校园', '校园导览图', '1–4教学区域，5–11校园设施，12–13学生宿舍和洗衣房。', 'campus-map'),
   photo('校园', '傍晚的校园', '主楼和校门，傍晚学生在草坪上休息。', 'campus-sunset'),
   photo('校园', '夜晚的校园', '晚上主楼、餐厅和草坪步道都有照明。', 'campus-night'),
   photo('校园', '校园草坪', '开放式户外空间，课后休息和活动。', 'campus-lawn'),
@@ -134,6 +135,23 @@ export const EV_VIDEOS: EvVideo[] = [
   video('dinner-buffet', '餐厅自助晚餐', '校内餐厅的一顿晚饭。', '1:24', 'landscape', 'tour'),
   video('yoga-class', '晚间瑜伽课', '免费瑜伽课的一节。', '1:04', 'landscape', 'tour'),
   video('power-speaking', '口语强化课学员访谈', '学员聊一对一和小组课的收获（英文）。', '6:23', 'landscape', 'tour'),
+  // Student interviews from EV's own YouTube channel (2024) and Facebook page (2025), checked to the last frame.
+  video('student-james', '越南学员 James：雅思5.0到7.0', '17岁，在EV读雅思约8周，聊老师怎么帮他找错、改错（英文）。', '4:31', 'landscape', 'tour'),
+  video('student-ella', '韩国学员 Ella：商务英语', '回头学员，聊商务课的谈判模拟和每月演讲（英文字幕）。', '4:02', 'landscape', 'tour'),
+  video('student-martin', '越南学员 Martin 毕业', '毕业典礼上告别，再带大家看一圈校园（英文字幕）。', '2:35', 'landscape', 'tour'),
+  video('student-eunji', '蒙古学员 Eunji', '15岁，从听不懂老师到能用英语交流，还交到韩国和日本朋友（英文）。', '1:37', 'landscape', 'tour'),
+  // Short clips from the 2026-11 EV collection, cut out of their vertical frames.
+  video('campus-walk', '校门与大堂', '从校门走进大堂。', '0:21', 'landscape', 'tour'),
+  video('office-windows', '办公室窗口', '大厅每个窗口办不同的事，后面是一楼教室走廊。', '0:08', 'landscape', 'tour'),
+  video('shop-pool', '咖啡店与泳池', 'EV Bucks咖啡店和校内泳池。', '0:19', 'landscape', 'tour'),
+  video('gym', '健身房', '4楼健身房的器械。', '0:20', 'landscape', 'tour'),
+  video('classes', '一对一与团体课教室', '一对一听力课和团体课教室。', '0:17', 'landscape', 'tour'),
+  video('business-presentation', '学生演讲', '商务英语和口语强化课的学生演讲。', '0:09', 'landscape', 'tour'),
+  video('exam-hall', '大教室与考场', '大教室，也用作考试教室。', '0:06', 'landscape', 'tour'),
+  video('ielts-centre', '雅思资源室', 'Westudy雅思学习资源中心。', '0:06', 'portrait', 'life'),
+  video('dining-hall', '学生餐厅', '自助取餐和餐厅环境。', '0:51', 'landscape', 'tour'),
+  video('dorm-rooms', '校内宿舍', '单人间、四人间和三人间。', '0:22', 'portrait', 'life'),
+  video('condo-single', '校外公寓单人间', '厨房、卫浴、空调和书桌。', '0:51', 'portrait', 'life'),
   video('dance-challenge', '舞蹈挑战', '各国学生和老师一起跳舞。', '1:32', 'portrait', 'life'),
   video('eop-tik-talk', '英语环境 EOP', '学生聊English Only规定（英文）。', '1:03', 'portrait', 'life'),
   video('graduation', '毕业典礼', '每周五的毕业典礼和合影。', '0:21', 'portrait', 'life'),
@@ -265,7 +283,7 @@ export const EV_STUDY_PLANS: EvStudyPlan[] = [
     ],
     curfew: [
       { day: '周一至周四', time: '不可外出' },
-      { day: '周五', time: '17:10–24:00' },
+      { day: '周五', time: '05:00–24:00' },
       { day: '周六', time: '05:00–24:00' },
       { day: '周日', time: '05:00–22:00' },
     ],
@@ -282,7 +300,7 @@ export const EV_STUDY_PLANS: EvStudyPlan[] = [
     ],
     curfew: [
       { day: '周一至周四', time: '17:10–22:00' },
-      { day: '周五', time: '17:10–24:00' },
+      { day: '周五', time: '05:00–24:00' },
       { day: '周六', time: '05:00–24:00' },
       { day: '周日', time: '05:00–22:00' },
     ],
@@ -291,11 +309,12 @@ export const EV_STUDY_PLANS: EvStudyPlan[] = [
 
 export const EV_SCHEDULE: EvScheduleItem[] = [
   { time: '06:30–07:30', title: '免费选修课', text: '按兴趣自愿参加。', appliesTo: '所有学生', icon: 'edit' },
-  { time: '07:00–08:00', title: '词汇早课（周一至周五）', text: '约25分钟，周五含词汇测验。', appliesTo: '斯巴达', icon: 'wb_sunny', highlighted: true },
+  { time: '07:00–08:00', title: '早餐', text: '学生餐厅自助。', appliesTo: '半斯巴达', icon: 'free_breakfast' },
+  { time: '07:00–08:00', title: '早餐 + 词汇早课（周一至周五）', text: '词汇课约25分钟，周五含词汇测验。', appliesTo: '斯巴达', icon: 'wb_sunny', highlighted: true },
   { time: '08:00–12:05', title: '上午5节课', text: '一对一、小团体和大团体课。', appliesTo: '所有学生', icon: 'menu_book' },
   { time: '12:05–13:05', title: '午餐', text: '校内餐厅自助。', appliesTo: '所有学生', icon: 'restaurant' },
   { time: '13:05–17:10', title: '下午5节课', text: '含2节选修或自习课。', appliesTo: '所有学生', icon: 'menu_book' },
-  { time: '17:15–18:00', title: '免费选修课 / 自由时间', text: '可休息、运动或上选修课。', appliesTo: '所有学生', icon: 'self_improvement' },
+  { time: '17:10–18:00', title: '自由时间 / 免费选修课', text: '可休息、运动或上选修课。', appliesTo: '所有学生', icon: 'self_improvement' },
   { time: '18:00–19:00', title: '晚餐 / 瑜伽、尊巴', text: '晚间活动自愿参加。', appliesTo: '所有学生', icon: 'nightlife' },
   { time: '19:00–20:00', title: '句型晚课（周一至周四）', text: '约25分钟。', appliesTo: '斯巴达', icon: 'school', highlighted: true },
   { time: '20:00–22:00', title: '晚自习', text: '按要求签到。', appliesTo: '斯巴达', icon: 'edit_note', highlighted: true },
@@ -317,7 +336,7 @@ export const EV_SERVICE_FACTS: EvInfoRow[] = [
 export const EV_CAMPUS_ACTIVITIES = ['每月主题派对：泡沫派对、泼水节、户外电影、音乐之夜', '万圣节、圣诞等节日活动', '每周五毕业典礼', '志愿者活动'];
 export const EV_WEEKEND_ACTIVITIES = ['跳岛游', 'Oslob看鲸鲨', '宿务市区观光', '海滩', '潜水'];
 export const EV_ACTIVITY_TIMES: EvInfoRow[] = [
-  { label: '晚间运动', value: '尊巴周二、周四18:30–19:30；瑜伽每周两晚18:00–19:00；健身指导周一、周四18:30–19:30' },
+  { label: '晚间运动', value: '尊巴周二、周四18:30–19:30；瑜伽周二、周三18:00–18:30或18:30–19:00；健身指导周一、周四18:30–19:30' },
   { label: '电影', value: '每周六14:00–16:00' },
   { label: '篮球场', value: '平日17:05–19:00，周末12:00–19:00' },
 ];
@@ -325,14 +344,16 @@ export const EV_WEEKEND_SIGNUP = '周末活动在周四16:30前到大厅付款�
 
 /** Monday of the first week. */
 export const EV_FIRST_DAY: EvInfoRow[] = [
-  { label: '08:00', value: '入学测试，拍学生证照片' },
-  { label: '中午', value: '新生说明会和新生合影' },
-  { label: '下午', value: '学校带去商场换比索、买日用品' },
-  { label: '16:30', value: '在大厅缴纳到校费用，领教材' },
-  { label: '晚上', value: '语法测试' },
+  { label: '07:00–07:50', value: '早餐' },
+  { label: '08:00–12:00', value: '入学测试，免费拍学生证照片；带上护照原件、往返机票复印件、电子签证复印件和黑笔' },
+  { label: '11:35–13:00', value: '午餐；12:10–13:00可带美元到会议室换汇' },
+  { label: '13:30–15:30', value: '新生合影和新生说明会，由中国经理介绍校园生活和规定' },
+  { label: '15:30–16:30', value: '学校带去附近商场换比索、买日用品' },
+  { label: '16:30–17:00', value: '在大厅窗口缴纳到校费用，到书店领教材' },
+  { label: '18:45–19:50', value: '语法测试（带手机）' },
 ];
 export const EV_FIRST_DAY_NOTES = [
-  '带上护照原件、往返机票复印件、电子签证复印件和黑色水笔。',
+  '入学测试成绩13:00贴在大厅公布栏；当天安排以学校通知为准。',
   '提前想好英文名，准备好英文版家庭住址，填表时要用。',
 ];
 export const EV_PACKING_NOTES = [
@@ -354,12 +375,12 @@ export const EV_DORM_RULES: EvRule[] = [
   { title: '楼层', text: '男生住2–3楼，女生住5–8楼；进入或停留异性房间、楼层会被开除。' },
   { title: '禁止事项', text: '校内禁止饮酒和带酒入校；宿舍不能做饭、不能用电磁炉；房间内禁烟。' },
   { title: '外宿旅行', text: '过夜旅行须在出发前一个工作日15:00前申请，并出示预订信息。' },
-  { title: '校外公寓', text: '不能带任何人进房间；房内吸烟罚款10,000比索；每周清洁一次，衣物可带到学校洗；最晚可在学校待到23:00。' },
-  { title: '公寓接驳车', text: '只在平日运行：公寓到学校07:15、08:15，学校回公寓17:30、18:45、21:30；每月最后一个周五只有13:45一班。周末和国定假日没有，错过可打车，约100比索。' },
+  { title: '校外公寓', text: '带任何人进房间、在房间吸烟（另罚10,000比索）、进入校内宿舍的异性房间、未请假缺席超过三天，都会被开除。每周清洁一次，衣物可带到学校洗；最晚可在学校待到23:00。' },
+  { title: '公寓接驳车', text: '平日公寓到学校07:15、08:15，学校回公寓17:30、18:45、21:30，每月最后一个周五（教师培训日）13:45回公寓；周末和国定假日公寓到学校07:15、14:10，学校回公寓13:45。车准时开，错过可打车，约100比索。' },
 ];
 
 export const EV_NOTES = [
-  '斯巴达平日不能外出，半斯巴达17:10后可外出；先确认自己能接受的管理强度。',
+  '斯巴达周一至周四不能外出，半斯巴达周一至周四17:10后可外出；先确认自己能接受的管理强度。',
   '雅思和雅思保分班只开设斯巴达；校外公寓只接受半斯巴达课程学生。',
   '出勤率低于90%不发结业证书；单周出勤低于50%周末不能外出，连续3周会被开除。',
   '违反校规会扣分，累计达到上限（1–12周学生10分、13–18周15分、19周以上20分）会被开除，学费和住宿费不退。',
@@ -369,13 +390,61 @@ export const EV_NOTES = [
 
 export const EV_FAQS: EvFaqItem[] = [
   { question: '菲律宾宿务EV语言学校适合第一次菲律宾游学吗？', answer: '适合目标明确、能接受一定管理的学生。如果更想轻松体验宿务生活，可以选半斯巴达经典ESL。' },
-  { question: 'EV的斯巴达和半斯巴达怎么选？', answer: '斯巴达有词汇早课、句型晚课和晚自习，周一至周四不能外出，适合冲刺型学生；半斯巴达没有早晚课和晚自习，平日17:10后可外出，22:00前返校。' },
+  { question: 'EV的斯巴达和半斯巴达怎么选？', answer: '斯巴达有词汇早课、句型晚课和晚自习，周一至周四不能外出，适合冲刺型学生；半斯巴达没有早晚课和晚自习，周一至周四17:10后可外出，22:00前返校。' },
   { question: '雅思保分班要学多久？', answer: '8周起，只开设斯巴达，考学术类雅思。学校按入学分数设定目标分，例如入学4.0分，8周目标5.5分、12周目标6.0分；6.0分以上每提高0.5分需要8周。' },
-  { question: '校外公寓和校内宿舍有什么不同？', answer: '校外公寓在IT Park附近，只接受半斯巴达课程学生，没有门禁，带小厨房和冰箱。平日有接驳车往返学校，周末和国定假日没有；可以使用校内设施，晚上最晚可在学校待到23:00。到校后的管理费比校内宿舍高。' },
-  { question: '页面上的报价包含全部费用吗？', answer: '不包含全部。前期支付包含注册费、95折后的课程费和住宿费，以及适用的旺季附加费和未成年管理费；到校后还要付SSP、SSP E-CARD、管理费、水电费、教材费和学生证，停留超过59天要办ACR I-Card，旅游签证按停留时间续签，首次续签另收ARP外国人登记费。接机和可退押金单独列示。' },
+  { question: '校外公寓和校内宿舍有什么不同？', answer: '校外公寓在IT Park附近，只接受半斯巴达课程学生，没有门禁，带小厨房和冰箱；双人间须两位学生同时报名一起入住，例如夫妻或朋友。有接驳车往返学校，周末和国定假日班次较少；可以使用校内设施，晚上最晚可在学校待到23:00。到校后的管理费比校内宿舍高。' },
+  { question: '页面上的报价包含全部费用吗？', answer: '不包含全部。前期支付包含注册费、95折后的课程费和住宿费，以及适用的旺季附加费和未成年管理费；到校后还要付SSP、SSP E-CARD、管理费、水电费、教材费和学生证；旅游签证按停留时间续签，首次续签时另办ACR I-Card并收ARP外国人登记费。接机和可退押金单独列示。' },
   { question: 'EV适合未成年学生吗？', answer: 'EV主要招收成人，15至17岁可以报名，未满15岁学校不接收。未成年学生平日不能外出，周末须监护人陪同，门禁21:00，监护人要签未成年学生协议书；每4周另收100美元管理费。陪同和住宿安排请报名时与顾问确认。' },
   { question: '思达启航会协助签证和入境吗？', answer: '会。通过思达启航报名EV，思达启航顾问会免费协助菲律宾入境及签证相关手续，学生只需要按顾问指引准备个人资料。' },
 ];
+
+/**
+ * Refunds after entry from EV's refund rules (2023-04-10), plus 思达启航's own deposit rule (user decision 2026-11-24).
+ * The school's pre-entry penalties are agency terms and stay off the page.
+ */
+export const EV_REFUND_COPY = {
+  summaryTitle: 'EV 取消、改期与退款规定',
+  summaryHint: '报名定金、改期与尾款、到校后退款比例、不退款的情况',
+  eyebrow: 'CANCELLATION & REFUND',
+  title: 'EV 取消与退款规定',
+  intro: '到校后按剩余周数退部分学费和住宿费；注册费不退，剩余不足4周不退。',
+  alert: '报名前请确认',
+  groups: [
+    {
+      title: '报名与入学前',
+      note: '',
+      rules: [
+        { when: '报名定金', text: '通过思达启航报名时预收定金2,000元人民币，为学生向学校订位；定金交了以后不退。' },
+        { when: '改期与保留', text: '入学4周前告诉顾问，可以免费改入学日期，或申请把定金保留1年。' },
+        { when: '尾款', text: '入学前2周还没有给学校付清尾款的，学校会直接取消学位，已预付的报名定金全部扣除。' },
+      ],
+      footnote: '',
+    },
+    {
+      title: '到校以后',
+      note: '',
+      rules: [
+        { when: '只报4周', text: '报名4周及以下，到校后不退款。' },
+        { when: '到校4周内申请', text: '退剩余周数学费和住宿费的50%（例：12周课程第3周申请，退剩余9周费用的50%）。' },
+        { when: '到校4周后申请', text: '退剩余周数学费和住宿费的25%（例：12周课程第5周申请，退剩余7周费用的25%）。' },
+        { when: '剩余不足4周', text: '不退款。' },
+        { when: '已享优惠', text: '申请退款后，已享受的优惠折扣取消。' },
+        { when: '办理方式', text: '到校后填写退费申请单交到办公室才生效；学费和住宿费由思达启航退给学生，到校学杂费由学校退。' },
+      ],
+      footnote: '',
+    },
+    {
+      title: '不退款的情况',
+      note: '',
+      rules: [
+        { when: '晚到或缺席', text: '不在周六、周日入住，或晚到、缺席，学校都不退费；航班延误、取消或天气原因也一样。' },
+        { when: '违规退学', text: '扣分满被开除，或学校按校规开除，不退款。' },
+        { when: '假日与不可抗力', text: '国定假日停课不补课、不退费；自然灾害等不可抗力造成的延误或取消不退款。' },
+      ],
+      footnote: EV_REFERENCE_NOTE,
+    },
+  ],
+};
 
 export const EV_SIDE_NAV: EvNavItem[] = [
   { label: '30秒看懂', target: 'overview', icon: 'dashboard' },

@@ -52,6 +52,7 @@ import {
 } from '../cia-school/cia-content-preview';
 import { applyCiaQuoteContent } from '../cia-school/cia-quote-engine';
 import { associationPeakRateForWeek } from '../association-peak-surcharge';
+import { syncSingleCoursePrices } from './course-price-years';
 import type {
   CiaVideoCard,
   CourseDetailGuide,
@@ -67,12 +68,19 @@ import type { PhCompareFocus, PhPlanComparison } from './ph-plan-compare';
 import type { PhSchoolQuote } from './ph-school-quote';
 import type {
   PhAlbumCategory,
+  PhOfferCard,
   PhPageStudent,
   PhRoomProfile,
   PhSchoolProfile,
   PhVideoItem,
   PhVideoTab,
 } from './ph-school-profile';
+
+/**
+ * Schools whose vertical videos still fill (crop) the frame. Every other school shows them whole over a blurred
+ * poster (user decision 2026-11-24); CIA stays as it was because its page is locked (user answer the same day).
+ */
+const TALL_VIDEO_CROPPED_SCHOOLS: ReadonlySet<string> = new Set(['CIA']);
 
 /** Imports of every school page component that renders ph-school-page.component.html. */
 export const PH_SCHOOL_PAGE_IMPORTS = [
@@ -282,7 +290,7 @@ export abstract class PhSchoolPageComponent<S extends PhPageStudent = PhPageStud
     return [
       student.visaLabel,
       student.selectedAgeGroup === 'minor' ? '未满18岁' : '18岁及以上',
-      student.returningStudent ? '老学员' : '新学员',
+      student.hideReturning ? '' : student.returningStudent ? '老学员' : '新学员',
       student.selectedRegistrationDate ? `报名日${student.selectedRegistrationDate.replace(/-/g, '/')}` : '',
     ].filter(Boolean).join(' · ');
   }
@@ -297,6 +305,15 @@ export abstract class PhSchoolPageComponent<S extends PhPageStudent = PhPageStud
   scheduleDayIndex = 0;
   readonly studyModes = this.profile.studyModes;
   readonly holidayCalendars = this.profile.holidayCalendars;
+  private readonly offerCards = this.profile.offers ?? [];
+  /** Offers above the quote that have not ended and whose promotion rules the applied content still enables. */
+  get visibleOffers(): readonly PhOfferCard[] {
+    if (!this.offerCards.length) return this.offerCards;
+    const now = new Date();
+    const today = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+    return this.offerCards.filter(card => (!card.until || today < card.until)
+      && (!card.promotionIds?.length || card.promotionIds.some(id => this.promotions.some(rule => rule.id === id && rule.enabled))));
+  }
   readonly ieltsComputerExamDates2027 = this.profile.ieltsComputerExamDates2027;
   readonly courseDetailGuides = this.profile.courseDetailGuides;
   courseFees: CourseFee[] = this.profile.initialCourseFees.map(course => ({ ...course }));
@@ -318,7 +335,10 @@ export abstract class PhSchoolPageComponent<S extends PhPageStudent = PhPageStud
 
   // ---- Compact layout (profile.compactLayout; the fixed layout for every school, CIA, EV, CPI and CPILS so far) ----
   readonly compactLayout = !!this.profile.compactLayout;
+  /** Vertical videos shown whole over a blurred poster (profile.tallVideoBackdrop, on unless the school is cropped). */
+  readonly tallVideoBackdrop = this.profile.tallVideoBackdrop ?? !TALL_VIDEO_CROPPED_SCHOOLS.has(this.profile.code);
   readonly overviewFacts = this.profile.overviewFacts ?? [];
+  readonly overviewReferenceNote = this.profile.overviewReferenceNote ?? false;
   readonly courseHighlights = this.profile.courseHighlights ?? {};
   readonly roomVideos = this.profile.roomVideos ?? {};
   /**
@@ -432,15 +452,22 @@ export abstract class PhSchoolPageComponent<S extends PhPageStudent = PhPageStud
     if (!calendar) return [];
     const year = calendar.year;
     const ranges = this.peakSeasonCalendarRanges.filter(range => range.enabled !== false);
+    const freeRanges = this.calendarFreePeakRanges;
     return Array.from({ length: 12 }, (_, offset) => {
       const month = offset + 1;
       const first = `${year}-${String(month).padStart(2, '0')}-01`;
       const last = `${year}-${String(month).padStart(2, '0')}-31`;
+      // A school-only range (HANA, IMS) marks the months of its class weeks: a week belongs to the month of its
+      // Wednesday, so IMS's week from Sunday 2027/05/30 marks June, not May.
+      const wednesdays = Array.from({ length: 31 }, (_, index) => new Date(Date.UTC(year, offset, index + 1)))
+        .filter(day => day.getUTCMonth() === offset && day.getUTCDay() === 3)
+        .map(day => day.toISOString().slice(0, 10));
       return {
         month,
         holidays: calendar.months.find(item => item.month === month)?.holidays ?? [],
         exams: year === 2027 ? this.ieltsComputerExamDates2027.find(item => item.month === month)?.days ?? [] : [],
-        peak: ranges.some(range => range.start <= last && range.end >= first),
+        peak: ranges.some(range => range.start <= last && range.end >= first)
+          || freeRanges.some(range => wednesdays.some(day => range.start <= day && range.end >= day)),
       };
     });
   }
@@ -450,6 +477,14 @@ export abstract class PhSchoolPageComponent<S extends PhPageStudent = PhPageStud
     return this.peakSeasonCalendarRanges.filter(range =>
       range.enabled !== false && range.end >= `${year}-01-01` && range.start <= `${year}-12-31`);
   }
+  /** School-only peak ranges without a surcharge (HANA) that touch the calendar year; CIA has none. */
+  get calendarFreePeakRanges(): CiaPeakSeasonRange[] {
+    const year = this.calendarYear;
+    return (this.profile.peakSeasonsWithoutSurcharge?.ranges ?? [])
+      .filter(range => range.end >= `${year}-01-01` && range.start <= `${year}-12-31`)
+      .map(range => ({ id: range.start, label: range.label, start: range.start, end: range.end, enabled: true }));
+  }
+  readonly freePeakTitle = this.profile.peakSeasonsWithoutSurcharge?.title ?? '';
   get calendarYear(): number {
     return (this.holidayCalendars.find(item => item.year === 2027) ?? this.holidayCalendars[0])?.year ?? 2027;
   }
@@ -462,9 +497,15 @@ export abstract class PhSchoolPageComponent<S extends PhPageStudent = PhPageStud
     this.isNarrowViewport = typeof window !== 'undefined' && window.innerWidth <= 760;
   }
   roomProfileForRate(room: RoomRateOption): PhRoomProfile | undefined {
+    // An empty room code never matches: rooms without codes (PINES, HANA) link only through `rateIds`, and only
+    // HANA's double room has photos.
     return this.roomComparisonProfiles.find(profile =>
       profile.rateIds?.includes(room.id)
-      || (profile.bookingCode ?? '').split('/').map(code => code.trim()).includes(room.code));
+      || (!!room.code && (profile.bookingCode ?? '').split('/').map(code => code.trim()).includes(room.code)));
+  }
+  /** False when some room cards have no photos (HANA), so the hint points at the 看照片 buttons instead. */
+  get everyRateRoomHasPhotos(): boolean {
+    return this.roomRateGroups.every(group => group.rooms.every(room => !!this.roomProfileForRate(room)));
   }
   get activeRateRoomId(): string {
     if (this.selectedRateRoomId) return this.selectedRateRoomId;
@@ -630,6 +671,10 @@ export abstract class PhSchoolPageComponent<S extends PhPageStudent = PhPageStud
   readonly studentTracks = this.profile.studentTracks;
 
   readonly officialStudentReviews = this.profile.studentReviews;
+  /** School-only short written reviews (HANA); CIA has none. */
+  readonly textReviews = this.profile.textReviews ?? [];
+  /** Short-stay lines replacing the price ratios (profile.shortStayRows; GLC). */
+  readonly shortStayRows = this.profile.shortStayRows ?? [];
 
   readonly sidaCiaReasons = this.profile.sidaReasons;
 
@@ -835,7 +880,8 @@ export abstract class PhSchoolPageComponent<S extends PhPageStudent = PhPageStud
     if (value?.schemaVersion !== 1 || value.schoolCode !== this.profile.code) {
       return;
     }
-    const content = this.profile.cloneContent(value);
+    // One-price schools keep tuition2027 equal to the price the editor edits; CIA and other two-price schools are unchanged.
+    const content = syncSingleCoursePrices(this.profile.cloneContent(value));
     this.previewContent = content;
     // Prices and rules for the calculator; the mini program applies the same function.
     applyCiaQuoteContent(this, content);
@@ -896,9 +942,30 @@ export abstract class PhSchoolPageComponent<S extends PhPageStudent = PhPageStud
       .subscribe((photos) => this.applyGalleryPhotos(photos));
   }
 
+  /**
+   * Whether an uploaded school photo or video belongs on this page. Every upload by default; a school whose
+   * campus pages share one school record (JIC) keeps only its own campus.
+   */
+  protected acceptUploadedMedia(_photo: SchoolPhotoDTO): boolean {
+    return true;
+  }
+
+  private uploadedMediaSource: SchoolPhotoDTO[] | null = null;
+  private galleryBeforeUploads: GalleryImage[] | null = null;
+
+  /** Applies the loaded uploads again after acceptUploadedMedia changed its answer (JIC: content with campus tags arrived). */
+  protected refreshUploadedMedia(): void {
+    if (!this.uploadedMediaSource) return;
+    if (this.galleryBeforeUploads) this.galleryImages = this.galleryBeforeUploads;
+    this.uploadedVideoCards = [];
+    this.applyGalleryPhotos(this.uploadedMediaSource);
+  }
+
   private applyGalleryPhotos(photos: SchoolPhotoDTO[]): void {
+    this.uploadedMediaSource = photos ?? [];
+    this.galleryBeforeUploads ??= this.galleryImages;
     const uploadedMedia = (photos ?? [])
-      .filter((photo) => Boolean(photo.url))
+      .filter((photo) => Boolean(photo.url) && this.acceptUploadedMedia(photo))
       .sort((a, b) => (a.displayOrder ?? 0) - (b.displayOrder ?? 0));
 
     if (uploadedMedia.length === 0) {
@@ -1061,8 +1128,10 @@ export abstract class PhSchoolPageComponent<S extends PhPageStudent = PhPageStud
   get selectedRoomGalleryCaptions(): string[] {
     const profile = this.selectedRoomProfile;
     const code = profile.bookingCode ? `${profile.bookingCode} ` : '';
+    // A room without a location (PINES) is named instead of saying 校内房型.
+    const name = profile.location ? `${profile.location}房型` : profile.label;
     return profile.gallery.map(
-      (_, index) => `${code}${profile.location}房型 · 第${index + 1}张实景`,
+      (_, index) => `${code}${name} · 第${index + 1}张实景`,
     );
   }
 
@@ -1182,6 +1251,10 @@ export abstract class PhSchoolPageComponent<S extends PhPageStudent = PhPageStud
   get exchangeRateSummary(): string { return this.quote.exchangeRateSummary; }
   get estimatedLocalFees(): LocalFeeEstimate[] { return this.quote.estimatedLocalFees; }
   get estimatedLocalFeeTotal(): number { return this.quote.estimatedLocalFeeTotal; }
+  /** A chosen group pickup counted in the total (BESA schools) must not be called excluded; CIA lists pickup apart. */
+  get localFeeTotalNote(): string {
+    return this.estimatedLocalFees.some(fee => fee.item.includes('接机') && fee.total > 0) ? '不含房间押金' : '不含接机及房间押金';
+  }
   get estimatedLocalFeeCny(): number { return this.quote.estimatedLocalFeeCny; }
   formatPhp(value: number): string { return this.quote.formatPhp(value); }
 
@@ -1228,6 +1301,19 @@ export abstract class PhSchoolPageComponent<S extends PhPageStudent = PhPageStud
 
   roomFeeFor(id: string): number {
     return this.roomFees.find((room) => room.id === id)?.fee ?? 0;
+  }
+
+  /** A room card's price: “1,234 美元”, or for a school whose course price holds a base room “+50 美元” / its label. */
+  roomPriceText(id: string): string {
+    const fee = this.roomFeeFor(id);
+    const baseLabel = this.copy.rooms.supplementBaseLabel;
+    if (baseLabel === undefined) return `${this.formatUsd(fee)} 美元`;
+    return fee > 0 ? `+${this.formatUsd(fee)} 美元` : baseLabel;
+  }
+
+  /** The “/ 4周” after a room card's price; left out where the card shows the base-room label. */
+  roomPriceHasUnit(id: string): boolean {
+    return this.copy.rooms.supplementBaseLabel === undefined || this.roomFeeFor(id) > 0;
   }
 
   /** Desktop room price table: each group is as wide as its number of rooms (CIA 3/3/4, EV 4/2). */

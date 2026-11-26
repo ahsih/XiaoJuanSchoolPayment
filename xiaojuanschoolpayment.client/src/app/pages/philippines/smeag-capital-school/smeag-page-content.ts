@@ -125,8 +125,12 @@ export const SMEAG_ALBUM_DESCRIPTIONS = {
  * from SMEAG's own pack (09_capital宣传视频 and the room folders); the partner-hotel clips there are not used, because their
  * opening shows a booking banner and the hotel address. The other ten are SMEAG's own 主校区 WeChat Channels clips
  * (user folder 2026-11-24); its 单人间 and 四人间 clips repeat the pack's room clips and are left out. Clips filmed
- * landscape inside a vertical frame are cropped to their 16:9 picture, which also drops the added captions. Check every
- * frame of a new clip for other companies or contact details.
+ * landscape inside a vertical frame are cropped to their 16:9 picture, which also drops the added captions. The promo
+ * film, orientation, summer party, lunch and student interview (2026-11-25) come from SMEAG's own YouTube channels
+ * (@smeagedu and @smeagtv, whose videos are tagged Capital Campus); the promo film was cut without its logo intro, its
+ * QR-code posters, flag row (it includes the flag of the Taiwan authorities), Cebu map, test-centre award plaques and
+ * the website end card, and the party without its logo intro and end card. Check every frame of a new clip for other
+ * companies, contact details or flags.
  */
 export interface SmeagVideo {
   name: string;
@@ -135,16 +139,19 @@ export interface SmeagVideo {
   duration: string;
   orientation: 'landscape' | 'portrait';
   /** Hero album group. */
-  topic: '校园' | '宿舍' | '课程' | '餐厅';
+  topic: '校园' | '宿舍' | '课程' | '餐厅' | '访谈';
 }
 
 export const smeagVideoSrc = (video: SmeagVideo) => `/assets/smeag-capital/videos/${video.name}.mp4`;
 export const smeagVideoPoster = (video: SmeagVideo) => `/assets/smeag-capital/videos/poster-${video.name}.jpg`;
 
 export const SMEAG_VIDEOS: SmeagVideo[] = [
+  { name: 'capital-promo-2025', title: '2025年翻新后宣传片', description: '学校官方宣传片：大堂、一对一和小组课、礼堂、大教室、咖啡厅、学生照片墙和健身房。', duration: '2:08', orientation: 'landscape', topic: '校园' },
   { name: 'lobby', title: '1楼大堂', description: '从大堂走过1楼走廊。', duration: '0:17', orientation: 'landscape', topic: '校园' },
   { name: 'lounge', title: '课间休息', description: '课间的学生休息室。', duration: '0:18', orientation: 'landscape', topic: '校园' },
   { name: 'office', title: '学校办公室', description: '学生到办公室办事。', duration: '0:21', orientation: 'landscape', topic: '校园' },
+  { name: 'orientation', title: '新生入学说明会', description: '每周一新生在礼堂参加入学说明会。', duration: '0:29', orientation: 'portrait', topic: '校园' },
+  { name: 'summer-party', title: '校园夏日派对', description: '2025年的全校夏日主题派对，老师和学生一起参加。', duration: '1:19', orientation: 'landscape', topic: '校园' },
   { name: 'single-room', title: '校内单人间', description: '单人间的卧室。', duration: '0:10', orientation: 'portrait', topic: '宿舍' },
   { name: 'single-room-bath', title: '单人间的小厨房和卫生间', description: '两间单人卧室共用的小厨房和卫生间。', duration: '0:12', orientation: 'portrait', topic: '宿舍' },
   { name: 'twin-room', title: '校内双人间', description: '从门口走进双人间：冰箱、卫生间和两张床。', duration: '0:23', orientation: 'portrait', topic: '宿舍' },
@@ -155,12 +162,14 @@ export const SMEAG_VIDEOS: SmeagVideo[] = [
   { name: 'group-class', title: '团体课', description: '团体课上课的样子。', duration: '0:15', orientation: 'landscape', topic: '课程' },
   { name: 'classrooms', title: '教室区域', description: '教室走廊和服务台。', duration: '0:07', orientation: 'portrait', topic: '课程' },
   { name: 'dining', title: '学生餐厅', description: '自助取餐区和用餐区。', duration: '0:13', orientation: 'portrait', topic: '餐厅' },
+  { name: 'lunch-buffet', title: '自助午餐', description: '厨师现场备餐，学生在餐厅自助取餐。', duration: '0:29', orientation: 'portrait', topic: '餐厅' },
   { name: 'cafe', title: '咖啡厅', description: '1楼咖啡厅，有饮料和零食。', duration: '0:20', orientation: 'landscape', topic: '餐厅' },
+  { name: 'student-interview', title: '日本学员访谈', description: '日本学员用英语讲来之前的英语水平、为什么选首都校区和在这里的收获（英文字幕）。', duration: '1:16', orientation: 'landscape', topic: '访谈' },
 ];
 
 const DORM_SERVICE = '每周打扫1次并换床单；洗衣每天收送';
 const HOTEL_SERVICE = '衣物自己拿到学校洗衣房送洗';
-const HOTEL_HIGHLIGHTS = ['步行约3分钟到学校，早晚有接送车', '门禁23:00', '房间没有冰箱，有Wi-Fi', '不收水电费'];
+const HOTEL_HIGHLIGHTS = ['步行约3分钟到学校，早晚有接送车', '门禁23:00', '房间没有冰箱，有Wi-Fi', '不收水电费，管理费每4周2,000比索'];
 const HOTEL_NOTE = '照片来自学校的三家合作酒店（Amethyst、Canberry、S Hotel），具体入住哪一家报名时向学校确认。';
 const numbered = (prefix: string, count: number) => Array.from({ length: count }, (_, index) => rooms(`${prefix}-${String(index + 1).padStart(2, '0')}`));
 
@@ -385,7 +394,7 @@ export const SMEAG_FAQS: FaqItem[] = [
   { question: 'SMEAG Capital 是斯巴达学校吗？', answer: '前4周必须上斯巴达课：雅思、托福、托业早晚都上，ESL、口语强化和商务英语只上晚上，亲子课程不强制。平日下课后可以外出，门禁23:00；外宿要提前申请。' },
   { question: '读雅思或托福送官方考试吗？', answer: '送。雅思、托福常规班报名12周以上，约入学第10周参加1次官方考试；预备班不送。12周内收到3次警告会失去这次考试。' },
   { question: '保分班怎么报？', answer: '报名12周以上，按学校指定的日期入学，报名时选好目标分数段；正课出勤100%、没有任何警告。读满后没达标可以免学费继续上课到达标，住宿费和到校学杂费照付。托业保分班目前暂停。' },
-  { question: '可以住校外吗？', answer: '可以住学校的合作酒店，步行约3分钟，早晚有接送车，门禁同样是23:00。酒店房费比校内同类房型高，不享受思达启航折扣；住酒店不收水电费，设施使用费照收。' },
+  { question: '可以住校外吗？', answer: '可以住学校的合作酒店，步行约3分钟，早晚有接送车，门禁同样是23:00。酒店房费比校内同类房型高，不享受思达启航折扣；住酒店不收水电费和设施使用费，只收管理费，每4周2,000比索。' },
   { question: '2026–2027年有什么优惠？', answer: '2026/08/23起入学，2026/08/23–2027/01/01期间每个学习周减25美元；就读期间涉及12/20–1/2、学习至少4周，再减100美元圣诞优惠。2027/03/01起入学，03/01–06/25期间每个学习周减25美元。所有课程适用，到校后延期不适用。报价器会按你的日期自动计算。' },
   { question: '未满15岁可以一个人去吗？', answer: '不可以，须有至少一位监护人陪读并上课。15岁以上可以单独就读，但学校只负责上课和基本的校园管理，不监督学习、不向家长汇报出勤、不代管手机，学生要自己带手机。' },
   { question: '页面上的报价包含全部费用吗？', answer: '学校费用包含注册费、课程费和住宿费，并自动扣除优惠；到校学杂费单独列出，接机和押金另外准备。两者分开显示，不相加。' },

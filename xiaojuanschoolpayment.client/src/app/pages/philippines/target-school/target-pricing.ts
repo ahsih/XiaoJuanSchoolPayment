@@ -85,7 +85,7 @@ export const TARGET_ROOMS: readonly TargetRoomOption[] = [
   { id: 'twin', name: '双人房', note: '适合同行朋友或希望减少室友人数的学生。' },
   { id: 'triple', name: '三人房', note: '预算和住宿人数较均衡。' },
   { id: 'quad', name: '四人房（上下铺）', note: '多人房，采用上下铺。' },
-  { id: 'six', name: '六人房（上下铺）', note: '学校价目表中价格最低的多人房。' },
+  { id: 'six', name: '六人房（上下铺）', note: '价格最低的多人房。' },
 ];
 
 type OfficialWeek = typeof TARGET_OFFICIAL_PRICE_WEEKS[number];

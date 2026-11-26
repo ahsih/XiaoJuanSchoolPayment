@@ -52,11 +52,6 @@ interface FaqItem {
   answer: string;
 }
 
-interface SourceLink {
-  label: string;
-  url: string;
-}
-
 @Component({
   selector: 'app-clark-study',
   standalone: true,
@@ -127,7 +122,7 @@ export class ClarkStudyComponent {
       location: 'Clark / Angeles, Pampanga',
       style: '外教、考试、亲子综合型',
       route: '/philippines-study/clark/cip-english-kepos',
-      startingPrice: '8,940元 / 4周起（Light ESL + 校内三人间 + 注册费600元；当地费另计）',
+      startingPrice: '1,390美元 / 4周起（2027年入学：Light ESL + 校内四人间 + 注册费100美元；到校学杂费另计）',
       courses: [
         'Light ESL',
         'Regular ESL / Native ESL',
@@ -138,18 +133,18 @@ export class ClarkStudyComponent {
         'Primary / Junior',
       ],
       accommodation:
-        '校内单人A/B、双人、三人间及仅限家庭的四人房；校外酒店约5分钟车程，有免费往返学校班车。',
+        '校内单人间A/B、双人间、三人间和四人间；校外 Clover Hotel 约5分钟车程，学校有免费接送车。',
       facilities:
-        '官网可确认一对一教室、小组教室、Academic Office、宿舍、Hotel、餐食服务和学习支持体系。',
+        '有一对一教室、小组教室、Academic Office、宿舍、Hotel、餐食服务和学习支持体系。',
       bestFor:
         '想要外教课、考试备考、商务英语或亲子青少年课程，同时重视住宿选择的人群。',
       consultantNote:
-        'CIP 是 Clark 选校时优先核对的综合型学校。低龄学生可关注官网列出的 Primary English 7-11 岁与 Junior 12-15 岁课程。',
+        'CIP 是 Clark 选校时优先核对的综合型学校。低龄学生可关注 Primary English 7-11 岁与 Junior 12-15 岁课程。',
     },
     {
       name: '菲律宾克拉克EG语言学校',
       image: '/assets/philippines/eg-campus-building.jpg',
-      location: 'Lot 2-B Friendship Highway, Cutcut, Angeles City',
+      location: 'Friendship Highway, Cutcut, Angeles City',
       style: 'ESL、Native、考试与Golf体验型',
       route: '/philippines-study/clark/eg-academy',
       startingPrice: 'USD 1,540 / 4周起（ESL 4 + 宿舍1&2四人间 + 注册费）',
@@ -163,13 +158,13 @@ export class ClarkStudyComponent {
         'Junior / Guardian',
       ],
       accommodation:
-        '2025年价目表列出宿舍1&2及宿舍3的单人、双人、三人和四人房；三人房仅限家庭，空房需按入学日确认。',
+        '宿舍1&2及宿舍3有单人、双人、三人和四人房；三人房仅限家庭，空房需按入学日确认。',
       facilities:
-        '官网概况列出1:1教室50间、团体教室20间、TOEIC考场、自习室、视听室、250码高尔夫练习场、咖啡厅和旅行社。',
+        '有1:1教室50间、团体教室20间、TOEIC考场、自习室、视听室、250码高尔夫练习场、咖啡厅和旅行社。',
       bestFor:
         '想在Clark做一般英语、Native口语、考试基础、商务英语、亲子陪读或高尔夫英语组合的人群。',
       consultantNote:
-        'EG 2025年价目表以USD列出课程和住宿，注册费USD100另计；教材、SSP、接机、延签和Golf追加费用多以PHP到校支付。',
+        'EG 2025年课程和住宿以美元计价，注册费100美元另计；教材、SSP、接机、延签和Golf追加费用多以比索到校支付。',
     },
     {
       name: '菲律宾克拉克WE Academy语言学校',
@@ -187,13 +182,13 @@ export class ClarkStudyComponent {
         'Swimming',
       ],
       accommodation:
-        '学校位于 farm resort 式环境，官网强调宿舍、教室、健身房、大型泳池和便利店集中在校园内。',
+        '学校位于 farm resort 式环境，宿舍、教室、健身房、大型泳池和便利店集中在校园内。',
       facilities:
-        '官网介绍从 Clark International Airport 到学校约 25 分钟，并强调舒适、安全、自由的校园生活。',
+        '从 Clark International Airport 到学校约 25 分钟，校园生活舒适、安全、自由。',
       bestFor:
         '亲子家庭、低龄学生、希望学习节奏较自由、也看重校内活动和生活舒适度的人群。',
       consultantNote:
-        '2026年价目表已列出4周USD课程与住宿费，注册费USD100另计。学校适合“学习 + 陪读 + 生活体验”组合；到校费用和其他周数仍需确认。',
+        '2026年4周课程与住宿费以美元计价，注册费100美元另计。学校适合“学习 + 陪读 + 生活体验”组合；到校费用和其他周数仍需确认。',
     },
     {
       name: '菲律宾克拉克TALK Academy语言学校',
@@ -213,9 +208,9 @@ export class ClarkStudyComponent {
         'TOEIC / IELTS',
       ],
       accommodation:
-        '官方FAQ写明有Single、Twin、Triple、Quad和Family房型；2026公开价目另列1人、2人、3+1老师、4人和家庭房口径。',
+        '有Single、Twin、Triple、Quad和Family房型；2026年价格按1人、2人、3+1老师、4人和家庭房分别计价。',
       facilities:
-        '官方页面列出校内宿舍、学习休息区、餐厅、学生支持服务，并强调Clark机场、SM City Clark和高尔夫资源距离较近。',
+        '有校内宿舍、学习休息区、餐厅和学生支持服务，Clark机场、SM City Clark和高尔夫资源距离较近。',
       bestFor:
         '想在Clark舒适环境里用一对一课程提升口语，同时考虑熟龄英语、亲子、商务或高尔夫英语组合的人群。',
       consultantNote:
@@ -230,12 +225,12 @@ export class ClarkStudyComponent {
       startingPrice: 'USD 1,500 / 4周课程住宿起，注册费USD 100另计',
       courses: ['ESL', 'ESL Intensive', 'IELTS / TOEIC', 'Business English', 'Family / Junior'],
       accommodation:
-        '2026年价目表列出Quadra、Triple、Double、Single房型；宿舍费按4周计算，含校内餐食和饮用水，空房需按入学日确认。',
-      facilities: '官方Clark页面列出1:1教室、小组教室、大讲堂、宿舍、泳池、运动场、餐厅、便利店和Clinic等设施。',
+        '有Quadra、Triple、Double、Single房型；宿舍费按4周计算，含校内餐食和饮用水，空房需按入学日确认。',
+      facilities: '有1:1教室、小组教室、大讲堂、宿舍、泳池、运动场、餐厅、便利店和Clinic等设施。',
       bestFor:
         '偏好老牌HELP体系、Sparta节奏、EOP、IELTS/TOEIC考试路线和Clark机场便利的学生。',
       consultantNote:
-        'HELP Clark公开了USD课程住宿价目和PHP当地费用表，报价时要把课程住宿、当地费用、EOP规则、晚自习和接机分开核对。',
+        'HELP Clark的课程住宿以美元计价、当地费用以比索计价，报价时要把课程住宿、当地费用、EOP规则、晚自习和接机分开核对。',
     },
     {
       name: '菲律宾克拉克AELC语言学校',
@@ -253,38 +248,38 @@ export class ClarkStudyComponent {
         'Family / Junior',
       ],
       accommodation:
-        '公开资料按Center 1二人房、Center 2四人房列出课程住宿套餐；单人、双人、三人房差额和空房需当期确认。',
+        '课程住宿套餐按Center 1二人房、Center 2四人房计价；单人、双人、三人房差额和空房需当期确认。',
       facilities:
-        '资料页列出TOEIC考试中心、食堂、泳池、宿舍和生活设施；旧官方域名目前无法解析，当前招生需复核。',
+        '有TOEIC考试中心、食堂、泳池、宿舍和生活设施；当前招生需由顾问向学校确认。',
       bestFor:
         '明确想要更多Native外教口语、发音纠正、TOEIC/IELTS或商务表达训练，同时接受先复核学校当前状态的人群。',
       consultantNote:
-        '菲律宾克拉克AELC语言学校适合放入Clark外教型候选清单，但不建议只凭旧资料直接报名；需先确认校区、招生、房型、课表和最新报价。',
+        '菲律宾克拉克AELC语言学校适合放入Clark外教型候选清单，但不建议只凭往期信息直接报名；需先确认校区、招生、房型、课表和最新报价。',
     },
     {
       name: '菲律宾克拉克HANA Academy',
-      image: 'https://media.loveitopcdn.com/29958/campus-hana-min.jpg',
-      location: 'Lot 3-2a Cutcut, Friendship Highway, Angeles City',
-      style: 'Native口语、亲子、Golf与Senior舒适型',
+      image: '/assets/hana/campus/pool-fountain.webp',
+      location: '克拉克－安吉利斯市，距克拉克国际机场约25分钟车程',
+      style: '菲师一对一＋美国外教，成人、亲子与乐龄舒适型',
       route: '/philippines-study/clark/hana-academy',
-      startingPrice: 'USD 1,430 / 4周起（Light ESL + 双人房，2026注册费减免）',
+      startingPrice: '4周1,470美元起（Light ESL＋双人间；注册费和当地费用另计）',
       courses: [
         'Light ESL / General ESL',
         'Native ESL / Native Only',
         'IELTS / TOEIC',
-        'Junior / Kindergarten',
-        'Guardian / Family',
-        'Golf Intensive / Leisure',
-        'Senior Course',
+        'Junior / 幼儿园',
+        '陪读家长 / 青少年英语营',
+        '高尔夫强化班 / 休闲班',
+        '乐龄课程（50岁以上）',
       ],
       accommodation:
-        '官网列普通宿舍与Hotel Dormitory；普通房型有1 bed、2 beds、3 beds和Family room，Hotel Dormitory距学校约3km并有接驳安排。',
+        '校内单人间、双人间、三人间和3–5人家庭房，每间有空调和独立卫浴；含餐、每周2次清洁和洗衣。',
       facilities:
-        '官网列宿舍、教室与自习区、餐厅、泳池、50米内Golf和Badminton、1km内健身房，周边100米内有咖啡、餐厅、超市和ATM。',
+        '校内有花园泳池、竹凉亭和自习室；出校门步行1分钟有高尔夫练习场、羽毛球场、超市和餐厅。',
       bestFor:
-        '想在Clark兼顾Native口语、亲子低龄、Senior、Golf English和生活便利的学生或家庭。',
+        '想轻松学英语的成人、带3–17岁孩子的亲子家庭、50岁以上乐龄学员和想边学英语边打高尔夫的学员。',
       consultantNote:
-        'HANA不是高压Sparta路线，适合舒适生活和多年龄课程组合；2026价目表注明注册费减免，报价时仍要把Native课比例、房型和PHP当地费用拆开核对。',
+        'HANA不是斯巴达路线，成人没有门禁；旺季不加价，淡季住得越久折扣越多，淡季成人Light ESL住双人间可付4周读8周。',
     },
   ];
 
@@ -332,7 +327,7 @@ export class ClarkStudyComponent {
     },
     {
       title: '最新优惠和活动',
-      text: 'CIP、菲律宾克拉克EG语言学校、菲律宾克拉克WE Academy语言学校、菲律宾克拉克TALK Academy语言学校等学校会不定期更新优惠、学生比例、接送费或宿舍资讯，最终以学校当期报价和回函为准。',
+      text: 'CIP、菲律宾克拉克EG语言学校、菲律宾克拉克WE Academy语言学校、菲律宾克拉克TALK Academy语言学校等学校会不定期更新优惠、学生比例、接送费或宿舍资讯，最终以学校当期报价为准。',
     },
   ];
 
@@ -384,41 +379,6 @@ export class ClarkStudyComponent {
       answer:
         '确认校区、课程开放、外教课比例、房型空位、接送机场、年龄限制、当地费用和优惠有效期。',
     },
-  ];
-
-  readonly sources: SourceLink[] = [
-    { label: 'CIP English 官方网站', url: 'https://cipenglish.com/' },
-    {
-      label: 'CIP Dormitory 官方说明',
-      url: 'https://cipenglish.com/dormitory/',
-    },
-    { label: 'CIP Hotel 官方说明', url: 'https://cipenglish.com/hotel/' },
-    { label: 'EG Academy 官方网站', url: 'https://egesl.com/' },
-    {
-      label: 'EG Academy 官方概况',
-      url: 'https://egesl.com/bbs/board.php?bo_table=overview',
-    },
-    {
-      label: 'EG Academy 官方费用PDF',
-      url: 'https://www.egesl.com/study/cost/cost_2025.pdf',
-    },
-    {
-      label: 'EG Academy 官方Golf页面',
-      url: 'https://www.egesl.com/study/golf/',
-    },
-    { label: '菲律宾克拉克WE Academy语言学校官方网站', url: 'https://clarkweacademy.com/' },
-    { label: '菲律宾克拉克TALK Academy语言学校官方网站', url: 'https://clarktalkacademy.com/' },
-    { label: 'TALK Academy 2026费用表公开资料', url: 'https://www.ph-ryugaku.com/school/clark-talk-academy/' },
-    { label: '菲律宾克拉克HELP English语言学校官方Clark页面', url: 'https://www.helpenglish.org/p/clark-campus.html' },
-    { label: '菲律宾克拉克AELC语言学校资料页', url: 'https://philippine-english.jp/clark/aelc.php' },
-    { label: 'AELC旧域名与位置记录', url: 'https://philippines.worldplaces.me/view-place/42879050-aelc-american-english-learning-center.html' },
-    { label: 'HANA Academy 官方网站', url: 'https://clarkhana.com/' },
-    { label: 'iOutback 菲律宾游学结构参考', url: 'https://www.ioutback.com/' },
-    {
-      label: 'StudyTourA 菲律宾学校分类参考',
-      url: 'https://www.studytoura.com/cebu-schools/',
-    },
-    { label: '格仲游学菲律宾学校比较参考', url: 'https://gezhong.com.tw/' },
   ];
 
   readonly page = createCityStudyPage({

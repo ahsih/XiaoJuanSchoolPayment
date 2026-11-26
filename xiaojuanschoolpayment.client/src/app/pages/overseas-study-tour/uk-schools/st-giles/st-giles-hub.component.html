@@ -1,0 +1,242 @@
+<app-cia-school>
+<div class="cia-page st-giles-page">
+  <div class="page-grid">
+    <main class="page-main">
+      <section class="hero-section" id="top">
+        <div class="hero-copy">
+          <a class="back-link" routerLink="/overseas-study-tour/uk">
+            <mat-icon>arrow_back</mat-icon>
+            返回英国游学
+          </a>
+          <p class="breadcrumb">{{ hub.breadcrumb }}</p>
+          <h1>{{ hub.title }}</h1>
+          <p class="hero-lead">{{ hub.lead }}</p>
+          <div class="hero-tags" aria-label="St Giles特点">
+            <span *ngFor="let tag of hub.tags"><mat-icon>{{ tag.icon }}</mat-icon>{{ tag.text }}</span>
+          </div>
+          <div class="hero-actions">
+            <a class="primary-action" href="#campuses" (click)="scrollToSection('campuses', $event)">
+              查看5个校区
+              <mat-icon>location_on</mat-icon>
+            </a>
+            <a class="secondary-action" href="#junior" (click)="scrollToSection('junior', $event)">
+              青少年夏校
+              <mat-icon>wb_sunny</mat-icon>
+            </a>
+            <a class="secondary-action" href="#contact" (click)="scrollToSection('contact', $event)">
+              联系顾问
+              <mat-icon>support_agent</mat-icon>
+            </a>
+          </div>
+          <p class="trust-note"><mat-icon>verified</mat-icon>{{ trust }}</p>
+        </div>
+
+        <div class="hero-media" aria-label="St Giles图片展示">
+          <figure class="feature-photo">
+            <img [src]="hub.heroPhoto" alt="St Giles伦敦中心校区屋顶露台" />
+            <figcaption>伦敦中心校区：学校楼顶的学生露台</figcaption>
+          </figure>
+          <div class="media-strip" aria-label="St Giles校区缩略图">
+            <figure *ngFor="let item of campuses.slice(2)">
+              <img [src]="item.image.src" [alt]="item.name" loading="lazy" />
+              <figcaption>{{ item.name }}</figcaption>
+            </figure>
+          </div>
+        </div>
+      </section>
+
+      <nav class="mobile-anchor-nav" aria-label="手机端快捷导航">
+        <a *ngFor="let item of nav" [href]="'#' + item.target" (click)="scrollToSection(item.target, $event)">
+          <mat-icon>{{ item.icon }}</mat-icon>{{ item.label }}
+        </a>
+      </nav>
+
+      <section class="section-block" id="campuses">
+        <div class="section-heading">
+          <span>英国校区</span>
+          <h2>5个全年校区，每个校区单独介绍和报价</h2>
+          <p>{{ hub.campusIntro }}</p>
+        </div>
+        <div class="sg-campus-grid">
+          <a class="sg-campus-card" *ngFor="let item of campuses" [routerLink]="item.link">
+            <img [src]="item.image.src" [alt]="item.name + '：' + item.image.description" loading="lazy" />
+            <div>
+              <h3>{{ item.name }}<small>{{ item.nameEn }}</small></h3>
+              <ul class="sg-tags"><li *ngFor="let tag of item.tags">{{ tag }}</li></ul>
+              <p>{{ item.text }}</p>
+              <strong>{{ item.price }}</strong>
+              <span class="sg-more">查看{{ item.name }}<mat-icon>arrow_forward</mat-icon></span>
+            </div>
+          </a>
+        </div>
+      </section>
+
+      <section class="section-block" id="compare">
+        <div class="section-heading"><span>校区对比</span><h2>5个校区一张表看清</h2></div>
+        <div class="bt-table-wrap">
+          <table class="bt-table sg-compare">
+            <thead><tr><th *ngFor="let column of hub.compareColumns">{{ column }}</th></tr></thead>
+            <tbody>
+              <tr *ngFor="let row of compareRows">
+                <th scope="row"><a [routerLink]="'/overseas-study-tour/uk/st-giles/' + row.id">{{ row.name }}</a></th>
+                <td>{{ row.city }}</td><td class="bt-strong">{{ row.minAge }}</td><td>{{ row.size }}</td>
+                <td>{{ row.averageAge }}</td><td>{{ row.stay }}</td><td>{{ row.summer }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="section-block" id="videos">
+        <div class="section-heading">
+          <span>{{ sections.hubVideos.eyebrow }}</span>
+          <h2>{{ sections.hubVideos.title }}</h2>
+          <p>{{ sections.hubVideos.intro }}</p>
+        </div>
+        <div class="sg-videos">
+          <figure *ngFor="let item of videos">
+            <video controls preload="none" playsinline [poster]="item.poster" [src]="item.src"></video>
+            <figcaption>
+              <i class="sg-video-tag" [class.adult]="item.tag.zone === 'adult'" [class.junior]="item.tag.zone === 'junior'">{{ item.tag.label }}</i>
+              <strong>{{ item.title }}<em>{{ item.duration }}</em></strong><span>{{ item.description }}</span>
+            </figcaption>
+          </figure>
+        </div>
+      </section>
+
+      <div class="bt-zone bt-zone--junior">
+        <section class="section-block bt-zone-section" id="junior">
+          <div class="section-heading">
+            <p class="bt-eyebrow"><b>暑期项目</b>{{ sections.junior.eyebrow }}（8–17岁）</p>
+            <h2>5个城市的青少年全包夏校</h2>
+            <p>{{ hub.juniorIntro }}</p>
+          </div>
+          <ul class="sg-includes"><li *ngFor="let item of hub.juniorIncludes"><mat-icon>check_circle</mat-icon>{{ item }}</li></ul>
+          <div class="sg-junior-grid">
+            <article class="sg-junior" *ngFor="let card of juniorCards" [id]="'junior-' + card.id">
+              <h3>{{ card.name }}<em *ngIf="card.isNew">2027年新开</em></h3>
+              <dl class="sg-mini-facts"><div *ngFor="let item of card.facts"><dt>{{ item.label }}</dt><dd>{{ item.value }}</dd></div></dl>
+              <div class="sg-junior-prices"><strong>{{ card.residential }}</strong><span>{{ card.dayOnly }}</span></div>
+              <details>
+                <summary>看活动和出游</summary>
+                <p><b>出游：</b>{{ card.excursions }}</p>
+                <p><b>一周活动举例：</b>{{ card.sampleWeek }}</p>
+                <p><b>晚间活动：</b>{{ card.evenings }}</p>
+                <p *ngIf="card.extra"><b>可加：</b>{{ card.extra }}</p>
+              </details>
+              <a class="bt-card-link" *ngIf="card.campusLink" [routerLink]="card.campusLink">查看所在校区<mat-icon>arrow_forward</mat-icon></a>
+            </article>
+          </div>
+          <div class="sg-photo-row">
+            <figure *ngFor="let image of juniorGallery">
+              <img [src]="image.src" [alt]="image.description" loading="lazy" />
+              <figcaption>{{ image.title }}</figcaption>
+            </figure>
+          </div>
+          <p class="bt-note" [class.bt-reference]="last" *ngFor="let note of juniorNotes; let last = last">{{ note }}</p>
+        </section>
+
+        <section class="section-block bt-zone-section" id="family">
+          <div class="section-heading">
+            <p class="bt-eyebrow"><b>暑期项目</b>{{ sections.family.eyebrow }}</p>
+            <h2>5个校区都有亲子课程</h2>
+            <p>{{ hub.familyIntro }}</p>
+          </div>
+          <div class="bt-table-wrap">
+            <table class="bt-table bt-wide">
+              <thead><tr><th>校区</th><th>孩子年龄</th><th>日期</th><th>孩子全包</th><th>家长全包</th></tr></thead>
+              <tbody>
+                <tr *ngFor="let row of familyRows">
+                  <th scope="row"><a [routerLink]="'/overseas-study-tour/uk/st-giles/' + row.id" fragment="family">{{ row.name }}</a></th>
+                  <td>{{ row.ages }}</td><td>{{ row.dates }}</td><td class="bt-strong">{{ row.child }}</td><td>{{ row.adult }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <p class="bt-note">全包含寄宿家庭、早餐和午餐、孩子课程和全部家庭活动；也可以不住宿。点校区名查看详情和在线报价。</p>
+        </section>
+      </div>
+
+      <section class="section-block" id="quote">
+        <div class="section-heading">
+          <span>{{ sections.quote.eyebrow }}</span>
+          <h2>青少年夏校：算算我的费用</h2>
+          <p>选夏校、日期和周数，最多3个方案并排对比。成人课程和亲子课程请到各校区页面报价。</p>
+        </div>
+        <app-st-giles-quote-calculator></app-st-giles-quote-calculator>
+      </section>
+
+      <section class="section-block" id="faq">
+        <div class="section-heading"><span>{{ sections.faq.eyebrow }}</span><h2>{{ sections.faq.title }}</h2></div>
+        <div class="faq-list">
+          <article *ngFor="let item of faqs"><h3>{{ item.title }}</h3><p>{{ item.text }}</p></article>
+        </div>
+      </section>
+
+      <section class="section-block" id="service">
+        <div class="section-heading">
+          <span>{{ sections.service.eyebrow }}</span>
+          <h2>{{ sections.service.title }}</h2>
+          <p>{{ sections.service.intro }}</p>
+        </div>
+        <ol class="bt-service-steps">
+          <li *ngFor="let item of service; let index = index">
+            <span class="bt-step-no">{{ index + 1 }}</span>
+            <div><strong><mat-icon>{{ item.icon }}</mat-icon>{{ item.title }}</strong><p>{{ item.text }}</p></div>
+          </li>
+        </ol>
+      </section>
+
+      <section class="section-block bt-contact-section" id="contact">
+        <div class="bt-review">
+          <span>思达顾问点评</span>
+          <h2>{{ hub.advisor.heading }}</h2>
+          <p *ngFor="let paragraph of hub.advisor.paragraphs">{{ paragraph }}</p>
+        </div>
+        <div class="bt-consultants-head">
+          <h3>{{ contact.title }}</h3>
+          <p>{{ contact.text }}</p>
+        </div>
+        <div class="bt-consultants">
+          <article class="bt-consultant" *ngFor="let consultant of consultants">
+            <div class="bt-consultant-top">
+              <span class="bt-avatar">
+                <img [src]="consultant.avatarSrc" [alt]="consultant.name + ' 顾问照片'" loading="lazy"
+                  [style.transform]="'scale(' + consultant.avatarCrop.scale + ')'" [style.transform-origin]="'50% ' + consultant.avatarCrop.originY" />
+              </span>
+              <div>
+                <strong>{{ consultant.name }}</strong>
+                <span>{{ consultant.title }}</span>
+              </div>
+            </div>
+            <p>{{ consultant.description }}</p>
+            <a class="bt-phone" [href]="consultant.phoneHref"><mat-icon>call</mat-icon>{{ consultant.phone }}</a>
+            <figure class="bt-qr">
+              <img [src]="consultant.qrSrc" [alt]="consultant.name + ' 微信二维码'" loading="lazy" />
+              <figcaption>扫码添加 {{ consultant.name }} 的微信</figcaption>
+            </figure>
+          </article>
+        </div>
+      </section>
+    </main>
+
+    <aside class="side-panel" aria-label="页面快捷导航">
+      <div class="side-card">
+        <span>St Giles 英国</span>
+        <p>5个全年校区，暑期还有5个城市的青少年夏校；选好校区后可以在线算费用。</p>
+        <a class="primary-action" href="#campuses" (click)="scrollToSection('campuses', $event)">选择校区<mat-icon>location_on</mat-icon></a>
+      </div>
+      <nav class="side-nav">
+        <a *ngFor="let item of nav" [href]="'#' + item.target" (click)="scrollToSection(item.target, $event)">
+          <mat-icon>{{ item.icon }}</mat-icon>{{ item.label }}
+        </a>
+      </nav>
+    </aside>
+  </div>
+
+  <div class="mobile-bottom-actions" aria-label="手机端固定操作">
+    <a href="#quote" (click)="scrollToSection('quote', $event)"><mat-icon>calculate</mat-icon>夏校报价</a>
+    <a href="#contact" (click)="scrollToSection('contact', $event)"><mat-icon>support_agent</mat-icon>联系顾问</a>
+  </div>
+</div>
+</app-cia-school>

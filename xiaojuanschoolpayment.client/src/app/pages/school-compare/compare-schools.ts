@@ -13,6 +13,7 @@ import { cloneCpilsContentConfig, createDefaultCpilsContentConfig } from '../phi
 import { CpilsPageStudent, type CpilsQuotePricing } from '../philippines/cpils-school/cpils-page-quote';
 import { cpilsRooms2027, cpilsVisibleCourses } from '../philippines/cpils-school/cpils-pricing';
 import { cloneEvContentConfig, createDefaultEvContentConfig, EV_IELTS_GUARANTEE_ID } from '../philippines/ev-school/ev-content-config';
+import { syncSingleCoursePrices } from '../philippines/school-page/course-price-years';
 import { EvPageStudent, type EvQuotePricing } from '../philippines/ev-school/ev-page-quote';
 import { PhCompareSchool } from './ph-compare-school';
 import type { CompareSchool } from './school-compare';
@@ -102,7 +103,7 @@ export function createEvCompareSource(): CompareSchoolSource {
     pricingSchoolName: 'EV Academy',
     applyPublished: value => {
       if (!isContentFor('EV', value)) return;
-      const content = cloneEvContentConfig(value);
+      const content = syncSingleCoursePrices(cloneEvContentConfig(value));
       applyCiaQuoteContent(pricing, content);
       pricing.minorManagementFeePerPeriod = content.quoteSettings.minorManagementFeePerPeriod ?? 100;
     },
@@ -187,7 +188,7 @@ export function createCpiCompareSource(): CompareSchoolSource {
     school,
     pricingSchoolName: '菲律宾宿务CPI语言学校',
     applyPublished: value => {
-      if (isContentFor('CPI', value)) applyCiaQuoteContent(pricing, cloneCpiContentConfig(value));
+      if (isContentFor('CPI', value)) applyCiaQuoteContent(pricing, syncSingleCoursePrices(cloneCpiContentConfig(value)));
     },
   };
 }

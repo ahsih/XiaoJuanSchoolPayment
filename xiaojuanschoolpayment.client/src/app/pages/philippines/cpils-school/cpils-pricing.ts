@@ -2,7 +2,16 @@ import { CiaContentConfig, CiaCourseContent, CiaPromotionRule } from '../cia-sch
 import { QuotePlanKind, QuotePlanRow, SchoolQuotePlan } from '../../../components/school-quote-plan';
 
 const DAY = 86400000;
-export const CPILS_POLICY_VERSION = 2;
+export const CPILS_POLICY_VERSION = 5;
+
+/** ACR I-CARD comes with the first tourist-visa extension (user rule 2026-11-24); ARP stays with the second. */
+export const CPILS_ACR_NOTE = '第一次续签时办理（30天签证第5周起，59天签证第9周起），学校统一带队到移民局。';
+export const CPILS_ARP_NOTE = '第二次续签时办理一次（59天签证的首次续签即为第二次）；长期签证另行确认。';
+/** The version-2 notes that said ACR I-CARD came with the second extension; untouched copies are replaced once. */
+export const CPILS_OLD_ACR_NOTES: Readonly<Record<string, readonly string[]>> = {
+  'acr-i-card': ['第二次续签时办理（59天签证的首次续签即为第二次），学校统一带队到移民局。'],
+  arp: ['与ACR I-CARD同时办理一次；长期签证另行确认。'],
+};
 export const cpilsMoney = (value: number) => Math.round((value + Number.EPSILON) * 100) / 100;
 export const cpilsMonday = (sunday: string) => {
   const time = Date.parse(`${sunday}T00:00:00Z`);
@@ -54,6 +63,136 @@ export function upgradeCpils2027(config: CiaContentConfig): void {
   const version = config.quoteSettings.cpilsPolicy?.version ?? 0;
   if (version < 1) addCpils2027Notice(config);
   if (version < 2) addCpilsVersion2(config);
+  if (version < 3) addCpilsVersion3(config);
+  if (version < 4) addCpilsVersion4(config);
+  if (version < 5) addCpilsVersion5(config);
+}
+
+// The school's 2026 price list (received 2026-11-24): 1-3-week prices and the courses it prices for 2026.
+const course2026: Record<string, { price?: number; prices?: Record<string, number>; weeks?: number[] }> = {
+  'general-esl-light': { prices: short(246, 390, 510) },
+  'general-esl': { prices: short(383, 608, 795) },
+  'general-esl-plus': { prices: short(383, 608, 795) },
+  'esl-premium': { price: 1040, prices: short(426, 676, 884) },
+  'premier-sparta': { prices: short(426, 676, 884) },
+  'toeic-course': { prices: short(426, 676, 884) },
+  'toefl-course': { prices: short(426, 676, 884) },
+  'business-english': { weeks: [4, 8] },
+  'power-speaking-and-modern-communication': { weeks: [4, 8] },
+  ...Object.fromEntries(['medical-english', 'tesol', 'barista-beverage', 'hotel-hospitality', 'working-holiday']
+    .map(id => [id, { price: 1040, weeks: [4, 8, 12] }])),
+};
+const room2026: Record<string, [number | null, number, number]> = {
+  'regular-single': [408, 647, 846], 'regular-twin': [344, 546, 714],
+  'regular-triple': [318, 504, 659], 'regular-quad': [null, 455, 595],
+  'no-window-single': [408, 647, 846], 'no-window-twin': [344, 546, 714],
+  'premium-single': [445, 705, 922], 'premium-twin': [373, 592, 774],
+  'premium-triple': [348, 552, 722], 'premium-quad': [null, 507, 663],
+};
+const DISCOUNT_TEXT_V4: Record<string, [string, string]> = {
+  'cpils-sida': ['课程费和住宿费享9折。', '学校优惠之后，课程费和住宿费再享9折。'],
+  'cpils-off-season-spring': ['思达启航9折后再享95折；单个课程或住宿项目须满4周。', '课程费和住宿费减去学校立减后享95折；单个课程或住宿项目须满4周。'],
+  'cpils-off-season-fall': ['思达启航9折后再享95折；单个课程或住宿项目须满4周。', '课程费和住宿费减去学校立减后享95折；单个课程或住宿项目须满4周。'],
+  'cpils-no-window': ['淡季入住无对外窗单人房或双人房，每满4周优惠50美元。', '淡季入住无对外窗单人房或双人房，每满4周优惠50美元，最多300美元。'],
+};
+
+/**
+ * The school's 2026 price list and its formula (user 2026-11-24): 2026 short stays, the 2026 prices of
+ * ESL Premium and the career courses, weekly management, and wording for the school's order of the
+ * discounts, which version 5 replaced. Only untouched values change.
+ */
+function addCpilsVersion4(config: CiaContentConfig): void {
+  for (const item of config.courses) {
+    const next = course2026[item.id];
+    if (next?.price && !item.tuition) item.tuition = next.price;
+    if (next?.prices) item.feeByWeeks = { ...next.prices, ...(item.feeByWeeks ?? {}) };
+    if (next?.weeks && !item.allowedWeeks) item.allowedWeeks = [...next.weeks];
+    if (item.id === 'ielts-guarantee-12-weeks' && item.feeByWeeks?.['12'] === 3569.1) item.feeByWeeks['12'] = 3569;
+  }
+  for (const item of config.rooms) {
+    const next = room2026[item.id];
+    if (next && !Object.keys(item.feeByWeeks ?? {}).length) item.feeByWeeks = short(...next);
+  }
+  const management = config.localFees.find(item => item.id === 'management');
+  if (management?.amount === 2000 && management.periodWeeks === 4 && management.note === '每4周2,000比索。') {
+    Object.assign(management, { amount: 500, periodWeeks: 1, rounding: 'proportional', note: '每周500比索。' });
+    if (config.quoteImageSettings.localFeeNotes?.['management'] === '每4周2,000比索。') config.quoteImageSettings.localFeeNotes['management'] = management.note;
+  }
+  for (const rule of config.quoteSettings.promotions) {
+    const text = DISCOUNT_TEXT_V4[rule.id];
+    if (text && rule.description === text[0]) rule.description = text[1];
+  }
+  config.quoteSettings.cpilsPolicy = { ...config.quoteSettings.cpilsPolicy!, version: 4 };
+}
+
+/** Version-4 wording and the wording of the order that costs the student least (user decision 2026-11-24). */
+const DISCOUNT_TEXT_V5: Record<string, [string, string]> = {
+  'cpils-sida': [DISCOUNT_TEXT_V4['cpils-sida'][1], '课程费和住宿费按原价享9折，学校优惠在此之后叠加。'],
+  'cpils-off-season-spring': [DISCOUNT_TEXT_V4['cpils-off-season-spring'][1], DISCOUNT_TEXT_V4['cpils-off-season-spring'][0]],
+  'cpils-off-season-fall': [DISCOUNT_TEXT_V4['cpils-off-season-fall'][1], DISCOUNT_TEXT_V4['cpils-off-season-fall'][0]],
+};
+
+/**
+ * The order that costs the student least (user decision 2026-11-24): 思达启航's 10% on the full price, then
+ * the school's 5%, then the fixed school deductions. Only untouched version-4 wording changes.
+ */
+function addCpilsVersion5(config: CiaContentConfig): void {
+  for (const rule of config.quoteSettings.promotions) {
+    const text = DISCOUNT_TEXT_V5[rule.id];
+    if (text && rule.description === text[0]) rule.description = text[1];
+  }
+  config.quoteSettings.cpilsPolicy = { ...config.quoteSettings.cpilsPolicy!, version: 5 };
+}
+
+/**
+ * Every CPILS IELTS course; their weeks together count toward the 12-week official IELTS exam gift
+ * (school answer 2026-11-23: Pre-IELTS too), and an IELTS Guarantee of either length gets it as well.
+ */
+export const CPILS_IELTS_COURSE_IDS = ['pre-ielts-course', 'ielts-course', 'ielts-guarantee-8-weeks', 'ielts-guarantee-12-weeks'];
+
+/** The five career-training courses of the 2027 career offer (school poster, 2026-11-23). */
+export const CPILS_CAREER_COURSE_IDS = ['medical-english', 'tesol', 'barista-beverage', 'hotel-hospitality', 'working-holiday'];
+
+/**
+ * The school's four 2027 posters (received 2026-11-23): Easter and Christmas / New Year deductions for a
+ * study period covering the holiday week, a career-course deduction by course weeks, and two free weekend
+ * activities. All stack with the other offers; the activities and deductions cannot be cashed or transferred.
+ */
+function addCpilsVersion3(config: CiaContentConfig): void {
+  const settings = config.quoteSettings;
+  const rule = (id: string, name: string, description: string, sortOrder: number, extra: Partial<CiaPromotionRule>): CiaPromotionRule => ({
+    id, name, description, enabled: true, sortOrder, priority: sortOrder * 10, stackable: true, newStudentsOnly: false,
+    discountType: 'fixed', discountValue: 0, appliesTo: 'school-total', waiveRegistration: false,
+    minimumCourseWeeks: 0, minimumAccommodationWeeks: 0, coverageTarget: 'none', ...extra,
+  });
+  const holidays = { registrationStart: '2026-11-23', coverageTarget: 'course' as const };
+  const rules = [
+    rule('cpils-easter-2027', '2027复活节优惠', '2026/11/23–2027/03/21报名，至少4周，学习期涵盖2027/03/21–03/27。', 11, {
+      ...holidays, discountValue: 75, minimumCourseWeeks: 4, registrationEnd: '2027-03-21', coverageStart: '2027-03-21', coverageEnd: '2027-03-27',
+    }),
+    rule('cpils-christmas-2027', '2027圣诞优惠', '2026/11/23–2027/12/26报名，学习期涵盖2027/12/19–12/25。', 12, {
+      ...holidays, discountValue: 50, registrationEnd: '2027-12-26', coverageStart: '2027-12-19', coverageEnd: '2027-12-25',
+    }),
+    rule('cpils-new-year-2027', '2027圣诞及新年优惠', '2026/11/23–2027/12/26报名，学习期涵盖2027/12/19–2028/01/01。', 13, {
+      ...holidays, discountValue: 100, registrationEnd: '2027-12-26', coverageStart: '2027-12-19', coverageEnd: '2028-01-01',
+    }),
+    rule('cpils-career-2027', '2027职业培训课程优惠', '2027年开课的职业培训课程：4–7周减50美元，8–11周减100美元，12–15周减150美元，16周及以上减200美元。', 14, {
+      appliesTo: 'tuition', minimumCourseWeeks: 4, eligibleCourseIds: [...CPILS_CAREER_COURSE_IDS],
+      discountValue: 50, discountTiers: { '4': 50, '8': 100, '12': 150, '16': 200 }, arrivalStart: '2027-01-01', arrivalEnd: '2027-12-31',
+    }),
+    rule('cpils-weekend-2027', '2027周末活动赠送', '2027/01/02–05/29开课、至少报名8周：免费参加奥斯洛布观鲸鲨1次、跳岛游1次（均含餐饮）。', 15, {
+      discountType: 'none', discountValue: 2, minimumCourseWeeks: 8, arrivalStart: '2027-01-02', arrivalEnd: '2027-05-29',
+    }),
+  ];
+  for (const item of rules) if (!settings.promotions.some(existing => existing.id === item.id)) settings.promotions.push(item);
+  // Every IELTS course, Pre-IELTS included, counts toward the 12-week exam gift, and the 8-week
+  // IELTS Guarantee gets the exam too (school answers 2026-11-23).
+  const ielts = settings.promotions.find(item => item.id === 'cpils-ielts-exam-2027');
+  if (ielts) {
+    ielts.eligibleCourseIds = [...new Set([...(ielts.eligibleCourseIds ?? []), ...CPILS_IELTS_COURSE_IDS])];
+    ielts.description = ielts.description.replace('雅思课程一次注册12周及以上，', '雅思课程（含预备雅思）一次注册12周及以上，或雅思保分班一次性注册8周，');
+  }
+  settings.cpilsPolicy = { ...settings.cpilsPolicy!, version: 3 };
 }
 
 /** Courses of a family (PCP) quote; they may only use the premium twin, triple or quad rooms. */
@@ -151,11 +290,12 @@ function addCpilsVersion2(config: CiaContentConfig): void {
   for (const rule of settings.stayPolicies ?? []) {
     if (rule.note === '斯巴达、保证班、未成年及考试要求以学校当期通知为准。') rule.note = '斯巴达、保分班、未成年及考试要求以学校当期通知为准。';
   }
-  // The June 2026 orientation handbook: ARP is 200 pesos, and ACR I-CARD and ARP come with the
-  // second immigration extension (the first one a 59-day visa needs). Only untouched defaults change.
+  // The June 2026 orientation handbook: ARP is 200 pesos and comes with the second immigration extension
+  // (the first one a 59-day visa needs). ACR I-CARD comes with the first extension of either visa (user rule
+  // 2026-11-24, replacing the handbook's second extension). Only untouched defaults change.
   const notes: Record<string, [string, string]> = {
-    'acr-i-card': ['首次旅游签证续签时办理，学校统一带队到移民局。', '第二次续签时办理（59天签证的首次续签即为第二次），学校统一带队到移民局。'],
-    arp: ['旅游签证首次续签或长期签证时计入一次，须由顾问确认。', '与ACR I-CARD同时办理一次；长期签证另行确认。'],
+    'acr-i-card': ['首次旅游签证续签时办理，学校统一带队到移民局。', CPILS_ACR_NOTE],
+    arp: ['旅游签证首次续签或长期签证时计入一次，须由顾问确认。', CPILS_ARP_NOTE],
     'visa-extension': ['按所选签证和完整停留时间预估，最终以移民局收费为准。', '30天签证首次续签5,130比索，第二次6,400比索；59天签证首次续签按第二次计；之后每次4,440比索。最终以移民局收费为准。'],
   };
   for (const item of config.localFees) {
@@ -172,7 +312,7 @@ function addCpilsVersion2(config: CiaContentConfig): void {
     }
     if (item.note !== oldNote && config.quoteImageSettings.localFeeNotes?.[item.id] === oldNote) config.quoteImageSettings.localFeeNotes[item.id] = item.note;
   }
-  config.quoteSettings.cpilsPolicy = { ...config.quoteSettings.cpilsPolicy!, version: CPILS_POLICY_VERSION };
+  config.quoteSettings.cpilsPolicy = { ...config.quoteSettings.cpilsPolicy!, version: 2 };
 }
 
 function addCpils2027Notice(config: CiaContentConfig): void {
@@ -235,7 +375,7 @@ function addCpils2027Notice(config: CiaContentConfig): void {
   const promos = [
     promotion('cpils-scholarship-2027', '2027年奖学金优惠', `${terms}至少注册4周，学费及住宿费减免5%，可与思达启航优惠叠加。`, 7, { discountType: 'percentage', discountValue: 5 }),
     promotion('cpils-no-window-2027', '2027年无对外窗房优惠', `${terms}无对外窗单人／双人房：4–7周50美元、8–11周100美元、12–15周150美元、16–19周200美元、20–23周250美元、24周300美元；可与其他优惠同享。`, 8, { discountType: 'fixed', discountValue: 50, appliesTo: 'accommodation', eligibleRoomIds: ['no-window-single', 'no-window-twin'], minimumAccommodationWeeks: 4, incrementWeeks: 4, incrementValue: 50 }),
-    promotion('cpils-ielts-exam-2027', '2027年雅思官方考试赠送', `${terms}雅思课程一次注册12周及以上，赠1次官方考试，可与其他优惠同享。`, 9, { minimumCourseWeeks: 12, eligibleCourseIds: ['ielts-course', 'ielts-guarantee-12-weeks'], discountValue: 1 }),
+    promotion('cpils-ielts-exam-2027', '2027年雅思官方考试赠送', `${terms}雅思课程（含预备雅思）一次注册12周及以上，或雅思保分班一次性注册8周，赠1次官方考试，可与其他优惠同享。`, 9, { minimumCourseWeeks: 12, eligibleCourseIds: [...CPILS_IELTS_COURSE_IDS], discountValue: 1 }),
     promotion('cpils-toeic-exam-2027', '2027年托业官方考试赠送', `${terms}托业课程4–7周赠1次，每满4周增加1次，24周赠6次；可与其他优惠同享。`, 10, { eligibleCourseIds: ['toeic-course', 'toeic-guarantee'], discountValue: 1, incrementWeeks: 4, incrementValue: 1 }),
   ];
   for (const rule of promos) if (!settings.promotions.some(item => item.id === rule.id)) settings.promotions.push(rule);
