@@ -438,7 +438,7 @@ const routes: Routes = [
       {
         path: 'philippines-study/cebu/philinter-academy',
         loadComponent: () =>
-          import('./pages/philippines/philinter-school/philinter-school-detail.component').then((m) => m.PhilinterSchoolDetailComponent),
+          import('./pages/philippines/philinter-school/philinter-school-page.component').then((m) => m.PhilinterSchoolPageComponent),
       },
       {
         path: 'philippines-study/cebu',
