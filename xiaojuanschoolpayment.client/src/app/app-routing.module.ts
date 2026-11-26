@@ -677,7 +677,7 @@ const routes: Routes = [
       {
         path: 'philippines-study/iloilo/mk-language-training-center',
         loadComponent: () =>
-          import('./pages/philippines/mk-school/mk-school.component').then((m) => m.MkSchoolComponent),
+          import('./pages/philippines/mk-school/mk-school-page.component').then((m) => m.MkSchoolPageComponent),
       },
       {
         path: 'philippines-study/iloilo',
@@ -831,6 +831,13 @@ const routes: Routes = [
         loadComponent: () =>
           import('./pages/overseas-study-tour/ireland-tour/ireland-tour.component').then(
             (m) => m.IrelandTourComponent,
+          ),
+      },
+      {
+        path: 'overseas-study-tour/ireland/babel-academy-of-english',
+        loadComponent: () =>
+          import('./pages/overseas-study-tour/ireland-schools/babel-academy/babel-academy.component').then(
+            (m) => m.BabelAcademyComponent,
           ),
       },
       {

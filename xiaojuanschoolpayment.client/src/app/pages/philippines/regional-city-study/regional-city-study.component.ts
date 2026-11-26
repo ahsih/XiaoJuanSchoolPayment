@@ -107,9 +107,9 @@ const cityPages: Record<string, RegionalCityStudyPage> = {
       },
       {
         icon: 'school',
-        image: 'https://philenglish.net/upload/product/review-mk-academy-moi-truong-hoc-tap-an-toan-chuan-quoc-te-tai-iloilo-24.jpg',
+        image: '/assets/mk/campus/main-building.webp',
         title: 'MK Language Training Center',
-        tag: 'Semi-Sparta / ESL / Family',
+        tag: 'ESL / IELTS / Family',
         text: '适合想在Iloilo安静城市里控制预算，比较ESL、IELTS、TESOL、Internship和Family课程的学生。',
         route: '/philippines-study/iloilo/mk-language-training-center',
       },

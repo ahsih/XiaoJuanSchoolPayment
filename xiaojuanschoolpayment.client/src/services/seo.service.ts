@@ -99,6 +99,12 @@ export const SEO_PAGES: Record<string, SeoPage> = {
     keywords: 'Burlington School, 伦敦语言学校, 英国游学, 英国暑期游学, 伦敦青少年夏校, 英国语言学校费用, Burlington报价',
     image: '/assets/burlington/campus-courtyard.jpg',
   },
+  '/overseas-study-tour/ireland/babel-academy-of-english': {
+    title: '爱尔兰都柏林Babel Academy of English语言学校｜课程、半工半读与在线报价',
+    description: '都柏林市中心Babel Academy of English介绍：成人短期英语课程（每周一开课，最短1周）、18岁以上25周半工半读、寄宿家庭与学生公寓价格，可在线计算费用并保存报价图片；思达启航提供爱尔兰游学选校与报名咨询。',
+    keywords: 'Babel Academy of English, 都柏林语言学校, 爱尔兰游学, 爱尔兰半工半读, 爱尔兰语言学校费用, Babel报价',
+    image: '/assets/babel/school-entrance.webp',
+  },
   '/overseas-study-tour/singapore/canadian-education-college': {
     title: '新加坡加拿大教育学院Canadian Education College｜课程学费与开课日期',
     description: '新加坡加拿大教育学院（Canadian Education College）介绍：全日制英语证书课程（零基础初级班2026年12月14日开课）、雅思预备课程、2026–2027儿童冬季营（6–13岁）学费、学期日历和课堂照片视频；思达启航提供新加坡游学报名咨询。',
@@ -381,12 +387,12 @@ export const SEO_PAGES: Record<string, SeoPage> = {
     image: '/assets/philippines/baguio-study-hero.webp',
   },
   '/philippines-study/iloilo/mk-language-training-center': {
-    title: '菲律宾伊洛伊洛MK Language Training Center | ESL雅思亲子课程费用',
+    title: '菲律宾伊洛伊洛MK语言学校 | 课程住宿费用与报价',
     description:
-      '菲律宾伊洛伊洛MK Language Training Center页面，整理MK Iloilo的ESL Basic至Intensive、IELTS、TESOL、Business、Working Holiday、Junior、Internship课程、短期与4周USD课程住宿费、PHP当地费用和报名注意事项。',
+      '菲律宾伊洛伊洛MK Language Training Center介绍：综合英语、雅思保分班、实习和亲子课程，单人间到四人间住宿费与2026、2027年优惠，可在线计算报价并保存报价图片；思达启航提供伊洛伊洛游学选校与申请咨询。',
     keywords:
-      '菲律宾伊洛伊洛MK Language Training Center, MK Iloilo, MK Education Iloilo, 伊洛伊洛语言学校, 菲律宾ESL学校, 菲律宾亲子游学, 菲律宾IELTS学校',
-    image: '/assets/philippines/baguio-study-hero.webp',
+      '菲律宾伊洛伊洛MK Language Training Center, MK Iloilo, MK Education Iloilo, MK报价, MK费用, 伊洛伊洛语言学校, 菲律宾亲子游学, 菲律宾雅思保分班',
+    image: '/assets/mk/campus/main-building.webp',
   },
   '/philippines-study/davao': {
     title: '达沃菲律宾留学与英语游学 | Davao语言学校',

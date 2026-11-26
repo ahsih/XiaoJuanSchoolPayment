@@ -6,6 +6,7 @@
 /philippines-study/cebu/cia-cebu-international-academy
 /philippines-study/cebu/ciec
 /overseas-study-tour/uk/burlington-school
+/overseas-study-tour/ireland/babel-academy-of-english
 /overseas-study-tour/uk/st-giles
 /overseas-study-tour/uk/st-giles/london-central
 /overseas-study-tour/uk/st-giles/london-highgate

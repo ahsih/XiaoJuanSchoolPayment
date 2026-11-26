@@ -68,9 +68,9 @@ export class IloiloStudyComponent {
       {
         name: 'MK Language Training Center',
         shortName: 'MK',
-        image: 'https://philenglish.net/upload/product/review-mk-academy-moi-truong-hoc-tap-an-toan-chuan-quoc-te-tai-iloilo-24.jpg',
+        image: '/assets/mk/campus/main-building.webp',
         location: 'Iloilo City',
-        style: '半斯巴达 / ESL / Family',
+        style: 'ESL / IELTS / Family',
         route: '/philippines-study/iloilo/mk-language-training-center',
         courses: ['ESL', 'IELTS', 'TESOL', 'Internship', 'Family'],
         bestFor: '想控制预算，同时比较 ESL、考试、实习与家庭课程的学生。',
@@ -96,7 +96,7 @@ export class IloiloStudyComponent {
     ],
     selectionImages: [
       'https://www.philja.com/school/sch_img/we_i/main4.jpg',
-      'https://philenglish.net/upload/product/review-mk-academy-moi-truong-hoc-tap-an-toan-chuan-quoc-te-tai-iloilo-24.jpg',
+      '/assets/mk/campus/main-building.webp',
       'https://cdn.imweb.me/thumbnail/20230903/9a0c5f67d2ada.jpg',
       'https://gitc-jp.com/wp-content/uploads/2018/06/Schoolbuilding1-e1529989504687.jpg',
     ],
