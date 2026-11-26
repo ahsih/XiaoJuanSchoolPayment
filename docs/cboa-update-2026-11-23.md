@@ -66,7 +66,22 @@ was not checked (user decision 2026-11-26). Files are 720p H.264 in `public/asse
 | `student-interview-diving` | "Chinese Student Explains" (2025-12), English | None; the student gives only his first name. |
 | `student-vlog` | "Student Vlog" (2025-11), Chinese narration | Removed the intro card, the smoking-area line, and the supermarket, fruit stand and restaurants outside the gate. About 3:21, longer than the 2:30 first estimated. |
 
-The tour also shows the EGI single, twin and triple rooms, but in one clip, so it opens no room album.
+The tour also shows the EGI single, twin and triple rooms, but in one clip, so it opens no room album. The separate
+`egi-rooms` clip below holds only its twin and triple shots and opens the EGI room album.
+
+### More clips from the same channel (2026-11-27)
+
+The user chose to add four more; the hero album gains a 课程 chip, and the EGI price cards open with `egi-rooms`.
+
+| File | Source | Cuts |
+| --- | --- | --- |
+| `pickup-first-day` | "How Cebu Blue Ocean Academy Welcomes You!" (2025) | Removed the opening road shots, the airport banner with a fast-food logo, two taxi-company shots, the road shots with a fast-food sign, the close-ups of a filled-in registration form and the end logo. |
+| `textbooks-and-classes` | "Personalized English Learning" (2025) | Removed the intro logo, a third-party publisher's textbook, the IELTS logo shot, the PINES logo shot, a workbook page with QR codes, students holding certificates with their names and the end card. |
+| `teacher-method` | "The Secret Behind My English Classes" (2025), English with subtitles | Starts after the intro and title card; ends before the end card. Students' first-name stickers and ordinary clothing brands remain. |
+| `egi-rooms` | The 2025 school tour | Only the shots the school labels TWIN BED and TRIPLE BED (4 seconds). |
+
+Not used: the activity films (long rows of small national flags that cannot be checked one by one) and the
+family-course interview (it names two children).
 
 Left out: clips with the Taiwan authorities' flag or Taiwan named as a country, clips with other companies' brands
 (test centres, cafés, fast food, supermarkets), QR codes, students' full names, and trips that are not the school.
