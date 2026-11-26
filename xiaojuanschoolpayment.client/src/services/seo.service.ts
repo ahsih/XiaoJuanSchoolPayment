@@ -501,6 +501,12 @@ export const SEO_PAGES: Record<string, SeoPage> = {
     keywords: '菲律宾热门语言学校, 菲律宾学校推荐, 宿务英语学校, 碧瑶英语学校, 克拉克英语学校',
     image: '/assets/philippines/beci-eop-campus.webp',
   },
+  '/study-tour-guide/phone-top-up': {
+    title: '海外手机话费充值 | 菲律宾、爱尔兰、英国手机号在线充值',
+    description:
+      '思达启航学员服务：在国内用人民币给菲律宾、爱尔兰和英国的手机号充值话费和流量，支持Globe、Smart、Vodafone、Three等当地运营商，家长也能帮孩子充。',
+    keywords: '菲律宾话费充值, 爱尔兰话费充值, 英国话费充值, 海外手机充值, 留学生话费充值, 游学话费充值',
+  },
   '/study-tour-guide/philippines': {
     title: '菲律宾游学攻略 | 英语课程选校费用与行前准备',
     description:
@@ -681,6 +687,7 @@ const BREADCRUMB_LABELS: Record<string, string> = {
   cebu: '宿务',
   baguio: '碧瑶',
   'airport-pickup': '碧瑶接机指南',
+  'phone-top-up': '海外手机话费充值',
   clark: '克拉克',
   iloilo: '伊洛伊洛',
   bacolod: '巴科洛德',

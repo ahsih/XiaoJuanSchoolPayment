@@ -24,6 +24,7 @@
 /philippines-study/schools/by-style
 /philippines-study/schools/popular
 /study-tour-guide/philippines
+/study-tour-guide/phone-top-up
 /philippines-study/cebu/cia-cebu-international-academy/student-reviews/cebu-city-night-with-friends
 /philippines-study/cebu/cia-cebu-international-academy/student-reviews/first-overseas-english-study
 /philippines-study/cebu/cia-cebu-international-academy/student-reviews/cebu-nature-and-culture

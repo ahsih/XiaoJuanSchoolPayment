@@ -951,6 +951,11 @@ const routes: Routes = [
           ),
       },
       {
+        path: 'study-tour-guide/phone-top-up',
+        loadComponent: () =>
+          import('./pages/phone-top-up/phone-top-up.component').then((m) => m.PhoneTopUpComponent),
+      },
+      {
         path: 'study-tour-guide/online-english',
         loadComponent: () =>
           import('./pages/study-tour-guide/online-english-guide/online-english-guide.component').then(
