@@ -538,7 +538,7 @@ export const ANJ_OFFERS: PhOfferCard[] = [
     until: '2027-12-27', promotionIds: ['anj-low-2027-1', 'anj-low-2027-2'],
   },
   {
-    icon: 'cake', title: '生日优惠', amount: '减100美元', text: '报名至少4周，入学时提交生日证明。2026年12月入学：出生日期尾数是0、1或5；2027年起：出生月份与入学月份相同。',
+    icon: 'cake', title: '生日优惠', amount: '减100美元', text: '报名至少4周，入学时提交生日证明。2026年12月入学：出生日期尾数是0、1或5；2027/01/01起报名：出生月份与入学月份相同。',
     promotionIds: ['anj-birthday'],
   },
   {

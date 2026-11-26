@@ -57,7 +57,8 @@ test-course exam gift were not used; only the Eco Sparta Plus rename, which the 
   arrivals, 300 for 2027/03/01–06/26 and 2027/08/22–12/26 arrivals (peak weeks do not count). The offer summary puts
   2027/01/10–02/28 arrivals on the regular table and starts the low season on 03/01, so a Sunday 02/28 arrival keeps
   the regular offer and the first 2027 low-season arrival is 03/07. Birthday 100 dollars with at least 4 weeks: 2026
-  by birth-day ending per arrival quarter, from 2027 birth month = arrival month.
+  by birth-day ending per arrival quarter, from 2027 birth month = arrival month. The page and offer text say
+  "2027/01/01起报名" as in the offer summary PDF (user 2026-11-26); the calculator still decides by arrival date.
 - Year-end offer: 2026/12/06 or 12/13 arrival with at least 4 course weeks, 300 dollars once, stacking with the others.
 - IELTS course 12 weeks or more: one free official IELTS test, taken in Baguio (non-cash row). Guarantee courses are whole packages:
   IELTS 12/20/24 weeks (3,150/5,250/6,300), TOEIC 12/16 weeks (2,850/3,800); the course list shows the 12-week price.
