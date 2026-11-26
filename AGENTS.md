@@ -57,7 +57,7 @@ Topics in `docs/agents/`:
 - `quote-images.md`: quote-image export and layout conventions.
 - `employee-backend.md`: `/admin`, the visual school editors and their preview handshake. `api.md`: endpoint groups and roles.
 - `student-portal.md`: student applications, documents, payments, uploads, emails and reminders.
-- `mini-program.md`, `seo-and-brand.md` (SEO tags, prerendering, brand facts, `llms.txt`), `deployment.md`, `local-setup.md`, `study60.md`, `price-compare.md`.
+- `mini-program.md`, `seo-and-brand.md` (SEO tags, prerendering, brand facts, `llms.txt`), `deployment.md`, `local-setup.md`, `study60.md`, `price-compare.md`, `school-knowledge-pack.md`.
 - `pages/`: one record per non-school page: `service-process.md`, `baguio-airport-pickup.md`, `phone-top-up.md`, `mid-autumn-story.md`.
 
 Rules from `quote-rules.md` that apply to every Philippine quote: returning students waive registration unless the school's file says otherwise; ACR I-Card is charged once with the first tourist-visa extension (week 5 on a 30-day visa, week 9 on a 59-day visa); arrival is a Sunday and leaving a Saturday, and next-year dates keep the weekday; the price tier comes from each student's own total course weeks; the BESA/CALA 2027 peak is 60 dollars per unique week outside every discount; exchange rates come only from Frankfurter/ECB with no fixed fallback.
@@ -115,6 +115,7 @@ MySQL/MariaDB database
 - `.github/workflows/deploy-server.yml`: every `main` push deploys production by pushing over SSH to the server, which never pulls from GitHub. Never add `--volumes` or `-a` image pruning. Details: `docs/agents/deployment.md`.
 - `.github/workflows/deploy-github-pages.yml`: builds and publishes the static Angular frontend to GitHub Pages. API-dependent features require a separate reachable backend and will not work from a static-only deployment without additional configuration.
 - `study60/`: source for `public/study60/`; see `docs/agents/study60.md`.
+- `tools/school-knowledge-pack/`: builds the knowledge pack for the planned 百问百答 student Q&A bot from the schools' own materials on the user's G: drive (never from the website); runs only on the user's PC. See `docs/agents/school-knowledge-pack.md`.
 - `Logo/`, the Chinese `.docx` files, and the Chinese `.xlsx` files at the root are reference/source material, not runtime code.
 - PNG files and `*.log` files near the client root are development screenshots/logs, not Angular source assets.
 
