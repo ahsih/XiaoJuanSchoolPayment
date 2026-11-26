@@ -2,7 +2,8 @@
 // campuses) for the WeChat mini program, which bundles them through quote-engine.ts. Each entry builds the
 // same pricing object the school's page component holds after a content document is applied
 // (PhSchoolPageComponent.applyContentConfig: applyCiaQuoteContent, then the page's afterContentApplied), so the
-// mini program quotes exactly like the website. Keep it pure: no Angular, DOM or storage.
+// mini program quotes exactly like the website (one-price schools also get syncSingleCoursePrices, as the page does).
+// Keep it pure: no Angular, DOM or storage.
 import { associationPeakRateForWeek } from '../pages/philippines/association-peak-surcharge';
 import type { CiaContentConfig } from '../pages/philippines/cia-school/cia-content-config';
 import { applyCiaQuoteContent, createCiaQuotePricing, type CiaQuotePricing } from '../pages/philippines/cia-school/cia-quote-engine';
@@ -14,6 +15,7 @@ import { CpilsQuote, type CpilsQuotePricing } from '../pages/philippines/cpils-s
 import { cpilsRooms2027, cpilsShortStayRatios, cpilsVisibleCourses } from '../pages/philippines/cpils-school/cpils-pricing';
 import { cloneEvContentConfig } from '../pages/philippines/ev-school/ev-content-config';
 import { EvQuote, type EvQuotePricing } from '../pages/philippines/ev-school/ev-page-quote';
+import { syncSingleCoursePrices } from '../pages/philippines/school-page/course-price-years';
 import type { PhSchoolQuote } from '../pages/philippines/school-page/ph-school-quote';
 import type { PhPageStudent } from '../pages/philippines/school-page/ph-school-profile';
 
@@ -67,7 +69,7 @@ const EV: MiniQuoteSchool = {
   school: 'EV',
   schoolCode: 'EV',
   isContent: isContentFor('EV'),
-  clone: cloneEvContentConfig,
+  clone: value => syncSingleCoursePrices(cloneEvContentConfig(value)),
   createPricing: content => ({ ...createCiaQuotePricing(content), minorManagementFeePerPeriod: evMinorFee(content) }) as EvPricing,
   applyContent(pricing, content) {
     applyCiaQuoteContent(pricing, content);
@@ -149,7 +151,7 @@ function cellaSchool(campus: CellaCampus): MiniQuoteSchool {
     school: campus === 'uni' ? 'CELLA Uni' : 'CELLA Premium',
     schoolCode: code,
     isContent: isContentFor(code),
-    clone: value => cloneCellaContentConfig(value, campus),
+    clone: value => syncSingleCoursePrices(cloneCellaContentConfig(value, campus)),
     createPricing(content) {
       const pricing = createCiaQuotePricing(content);
       applyCellaFamilyPackages(pricing as CiaQuotePricing & CellaQuotePricing);

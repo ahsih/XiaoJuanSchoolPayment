@@ -36,7 +36,7 @@
           <aside class="hero-price-card">
             <span>1周参考</span>
             <strong>USD 598 <small>起</small></strong>
-            <p>GENERAL + 6人Share House，已加官方入学金约USD 110</p>
+            <p>GENERAL + 6人Share House，已加入学金约110美元</p>
             <ul>
               <li><mat-icon>check_circle</mat-icon>4周同方案为USD 1,318起</li>
               <li><mat-icon>info</mat-icon>当地费用、餐食、机票和保险另计</li>
@@ -95,7 +95,7 @@
       <section class="cia-section" id="environment">
         <div class="section-heading">
           <h2>学校环境与住宿图片</h2>
-          <p>图片来自First English官方教室与住宿页面，先看教室、儿童空间、Share House和Mactan Newtown公寓的真实风格。</p>
+          <p>先看教室、儿童空间、Share House和Mactan Newtown公寓的风格。图片仅供参考，具体以学校实际安排为准。</p>
         </div>
         <div class="gallery-tabs" role="tablist" aria-label="First English图片分类">
           <button type="button" *ngFor="let category of galleryCategories" [class.active]="selectedGalleryCategory === category" (click)="setGalleryCategory(category)">{{ category }}</button>
@@ -130,7 +130,7 @@
           <label>课程 / 房型组合<select [(ngModel)]="selectedPackageId"><option *ngFor="let item of feePackages" [value]="item.id">{{ item.category }} · {{ item.course }} · {{ item.room }}</option></select></label>
           <label>预计入学日<input type="date" [(ngModel)]="selectedStartDate" /></label>
           <button type="button" class="primary-action" (click)="calculateQuote()">更新费用<mat-icon>calculate</mat-icon></button>
-            <p>这里已换算为美元，先按官方2025年11月后基础费用+入学金做前期参考，不含机票、保险、当地PHP费用和个人消费。</p>
+            <p>这里已换算为美元，按2025年11月起的基础费用+入学金做前期参考，不含机票、保险、当地比索费用和个人消费。</p>
         </div>
         <div class="quote-result-card">
           <div class="quote-result-head">
@@ -140,7 +140,7 @@
             <strong>{{ selectedWeeks }}周</strong>
           </div>
           <div class="result-lines">
-            <div><span>官方基础费用</span><strong>{{ baseFeeText }}</strong></div>
+            <div><span>基础费用</span><strong>{{ baseFeeText }}</strong></div>
             <div><span>入学金</span><strong>{{ entranceFeeText }}</strong></div>
             <div><span>预计入学日</span><strong>{{ selectedStartDate }}</strong></div>
             <div><span>费用说明</span><strong>{{ selectedPackage.note }}</strong></div>
@@ -160,8 +160,8 @@
       <section class="tables-section" id="fee-structure">
         <div>
           <h2><mat-icon>receipt_long</mat-icon>2025年11月后费用美元参考</h2>
-          <p class="table-intro">以下摘取官网2025年11月后公开费用中常用组合的4周价格，并按参考汇率换算为美元。基础费用通常包含课程、住宿和清扫；入学金、当地费用、机票保险等另计。</p>
-          <div class="data-table first-fee-table" role="table" aria-label="First English 4周官方费用参考">
+          <p class="table-intro">以下为2025年11月起常用组合的4周价格，按参考汇率换算为美元。基础费用通常包含课程、住宿和清扫；入学金、当地费用、机票保险等另计。</p>
+          <div class="data-table first-fee-table" role="table" aria-label="First English 4周费用参考">
             <div class="table-row table-head" role="row">
               <span role="columnheader">课程</span>
               <span role="columnheader">4周费用</span>
@@ -177,8 +177,8 @@
         <aside class="price-note">
           <h3>费用阅读重点</h3>
           <ul>
-            <li>官方费用页列有1、2、3、4、8、12、16、20、24周价格，本页报价器按原表录入并换算为美元。</li>
-            <li>入学金约USD 110，已在报价器中单独加入。</li>
+            <li>可选1、2、3、4、8、12、16、20、24周，报价器已换算为美元。</li>
+            <li>入学金约110美元，已在报价器中单独加入。</li>
             <li>亲子家庭通常使用Mactan Newtown公寓，Share House更偏成人学生。</li>
             <li>当地费用、餐食、接机、签证、旺季规则和保险要按入学日期与学校当期规则确认。</li>
             <li>{{ exchangeRateNote }}</li>
@@ -200,12 +200,12 @@
           <article>
             <img [src]="galleryImages[4].src" alt="First English Share House房间" />
             <h3><mat-icon>groups</mat-icon>Share House宿舍</h3>
-            <p>成人学生可选1、2、4、6人间，学校说明车程约5分钟到教室，部分教师同住，交流机会更多。</p>
+            <p>成人学生可选1、2、4、6人间，车程约5分钟到教室，部分教师同住，交流机会更多。</p>
           </article>
           <article>
             <img [src]="galleryImages[2].src" alt="First English儿童学习空间" />
             <h3><mat-icon>family_restroom</mat-icon>亲子与看护</h3>
-            <p>官方介绍有0岁起看护服务和儿童英语课程，低龄儿童席位与看护安排建议提前确认。</p>
+            <p>学校有0岁起看护服务和儿童英语课程，低龄儿童席位与看护安排建议提前确认。</p>
           </article>
         </div>
       </section>
@@ -213,7 +213,7 @@
       <section class="cia-section" id="local-fees">
         <div class="section-heading">
           <h2>费用之外还要确认什么</h2>
-          <p>官网费用表是基础费用入口，正式预算还要把当地支付项目、餐食、机票保险和个人消费补齐。</p>
+          <p>基础费用之外，正式预算还要把当地支付项目、餐食、机票保险和个人消费补齐。</p>
         </div>
         <div class="check-grid first-local-grid">
           <article *ngFor="let fee of localFees">
@@ -222,19 +222,6 @@
             <strong>{{ fee.amount }}</strong>
             <p>{{ fee.note }}</p>
           </article>
-        </div>
-      </section>
-
-      <section class="cia-section source-section">
-        <div class="section-heading">
-          <h2>资料来源</h2>
-          <p>本页学校定位、课程、住宿和费用参考First English官方公开页面。学校政策可能更新，报名前以顾问向学校确认的正式报价和空房为准。</p>
-        </div>
-        <div class="source-links">
-          <a *ngFor="let source of sourceLinks" [href]="source.url" target="_blank" rel="noopener noreferrer">
-            <mat-icon>open_in_new</mat-icon>
-            {{ source.label }}
-          </a>
         </div>
       </section>
 
@@ -252,11 +239,11 @@
         </details>
         <details>
           <summary>亲子游学费用怎么判断？</summary>
-          <p>先确认孩子年龄、家庭人数、家长是否上课、是否需要看护和公寓房型。官网亲子常见4周参考折合约USD 1,830起，入学金和当地费用另计。</p>
+          <p>先确认孩子年龄、家庭人数、家长是否上课、是否需要看护和公寓房型。亲子常见4周参考约1,830美元起，入学金和当地费用另计。</p>
         </details>
         <details>
-          <summary>官网价格是不是总价？</summary>
-          <p>不是完整总价。官网基础费用包含课程、住宿和清扫等项目，但入学金、当地费用、机票保险、餐食和个人消费仍需另行准备。</p>
+          <summary>这里的价格是不是总价？</summary>
+          <p>不是完整总价。基础费用包含课程、住宿和清扫等项目，但入学金、当地费用、机票保险、餐食和个人消费仍需另行准备。</p>
         </details>
         <details>
           <summary>成人学生应该选Share House还是公寓？</summary>

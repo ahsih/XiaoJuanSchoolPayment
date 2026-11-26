@@ -8,6 +8,7 @@ import {
   JIC_PROMOTION_COPY,
   JIC_REGISTRATION_FEE,
   JIC_ROOM_FEES,
+  JIC_SCHOOL_PACK_VERSION,
   JicCampus,
 } from './jic-pricing';
 
@@ -64,12 +65,12 @@ export const JIC_DEFAULT_MEDIA: CiaMediaContent[] = [
   staticMedia(1, 'challenger', 'Campus', 'Challenger 校园航拍', '菲律宾碧瑶JIC语言学校 Challenger 校区整体环境。', '/assets/philippines/jic-campus-hero.webp'),
   staticMedia(2, 'challenger', 'Campus', 'Challenger 校区全景', 'Challenger／Main校区整体视角。', '/assets/philippines/jic-main-campus-overview.webp'),
   staticMedia(3, 'challenger', 'Campus', 'Challenger 校园中庭', '校舍、中庭与户外休息空间。', '/assets/philippines/jic-challenger-campus-courtyard.webp'),
-  staticMedia(4, 'challenger', 'Classroom', 'Challenger 一对一教室', '学校课堂资料中的独立一对一教室实景。', '/assets/philippines/jic-challenger-one-on-one-classroom.webp'),
+  staticMedia(4, 'challenger', 'Classroom', 'Challenger 一对一教室', '独立一对一教室实景。', '/assets/philippines/jic-challenger-one-on-one-classroom.webp'),
   staticMedia(5, 'challenger', 'Classroom', 'Challenger 一对一教学区', '多间独立一对一教室组成的教学区。', '/assets/philippines/jic-challenger-one-on-one-area.webp'),
-  staticMedia(6, 'challenger', 'Classroom', 'Challenger 团体教室', '学校课堂资料中的标准团体课教室。', '/assets/philippines/jic-challenger-group-classroom.webp'),
+  staticMedia(6, 'challenger', 'Classroom', 'Challenger 团体教室', '标准团体课教室。', '/assets/philippines/jic-challenger-group-classroom.webp'),
   staticMedia(7, 'challenger', 'Classroom', 'Challenger 团体课堂实景', '团体课教室与学生课堂活动实景。', '/assets/philippines/jic-challenger-active-group-class.webp'),
   staticMedia(8, 'challenger', 'Classroom', 'Challenger 小组课教室', '适合小组讨论与互动课程的教室空间。', '/assets/philippines/jic-challenger-small-group-classroom.webp'),
-  staticMedia(9, 'challenger', 'Classroom', 'Challenger 教学实景', 'East Building Classrooms资料中的教师授课场景。', '/assets/philippines/jic-challenger-teaching-scene.webp'),
+  staticMedia(9, 'challenger', 'Classroom', 'Challenger 教学实景', 'East Building教室中的教师授课场景。', '/assets/philippines/jic-challenger-teaching-scene.webp'),
   staticMedia(10, 'challenger', 'Classroom', 'Challenger 电脑教室', '配备电脑的学习与测试空间。', '/assets/philippines/jic-challenger-computer-room.webp'),
   staticMedia(11, 'challenger', 'Classroom', 'Challenger 口语测试区', '独立电脑口语测试席位。', '/assets/philippines/jic-challenger-speaking-test-room.webp'),
   staticMedia(12, 'challenger', 'Accommodation', 'Challenger 标准单人房（R1 Studio）', '标准单人房实景。', '/assets/philippines/jic-challenger-single-room.webp'),
@@ -80,9 +81,9 @@ export const JIC_DEFAULT_MEDIA: CiaMediaContent[] = [
   staticMedia(17, 'challenger', 'Accommodation', 'Challenger 四人复式房视频', 'R4 Loft学校原始房型实拍（原素材无配音）。', '/assets/philippines/jic-challenger-quad-duplex-room-video.mp4', 'video/mp4'),
   staticMedia(18, 'challenger', 'Accommodation', 'Challenger 四人上下铺房（R4 Studio）', '标准四人上下铺房实景。', '/assets/philippines/jic-challenger-quad-bunk-room.webp'),
   staticMedia(19, 'challenger', 'Accommodation', 'Challenger 四人上下铺房视频', 'R4 Studio学校原始房型实拍（原素材无配音）。', '/assets/philippines/jic-challenger-quad-bunk-room-video.mp4', 'video/mp4'),
-  staticMedia(20, 'challenger', 'Dining', 'Challenger 室内餐厅', '学校餐厅资料中的室内用餐空间。', '/assets/philippines/jic-challenger-cafeteria-indoor.webp'),
+  staticMedia(20, 'challenger', 'Dining', 'Challenger 室内餐厅', '校内室内用餐空间。', '/assets/philippines/jic-challenger-cafeteria-indoor.webp'),
   staticMedia(21, 'challenger', 'Dining', 'Challenger 户外用餐区', '餐厅旁的半户外用餐与交流空间。', '/assets/philippines/jic-challenger-cafeteria-outdoor.webp'),
-  staticMedia(22, 'challenger', 'Dining', 'Challenger 校餐实拍', '学校餐食资料中的一餐实拍，实际菜单以当期安排为准。', '/assets/philippines/jic-challenger-meal-set.webp'),
+  staticMedia(22, 'challenger', 'Dining', 'Challenger 校餐实拍', '一餐实拍，实际菜单以当期安排为准。', '/assets/philippines/jic-challenger-meal-set.webp'),
   staticMedia(23, 'challenger', 'Dining', 'Challenger 餐食参考', '学校展示的餐食搭配与菜品，实际供应会随菜单调整。', '/assets/philippines/jic-challenger-meal-variety.webp'),
   staticMedia(24, 'challenger', 'Facility', 'Challenger 公共厨房', '公共厨房配有烹饪区、水槽、餐具及常用电器。', '/assets/philippines/jic-challenger-common-kitchen.webp'),
   staticMedia(25, 'challenger', 'Facility', 'Challenger 公共厨房使用场景', '学生使用公共厨房进行简单烹饪的实景。', '/assets/philippines/jic-challenger-common-kitchen-use.webp'),
@@ -91,7 +92,7 @@ export const JIC_DEFAULT_MEDIA: CiaMediaContent[] = [
   staticMedia(28, 'challenger', 'Facility', 'Challenger K-Mart校内商店', '校内商店提供零食、饮料及常用生活用品。', '/assets/philippines/jic-challenger-campus-store.webp'),
   staticMedia(29, 'challenger', 'Facility', 'Challenger Terminal Cafe', '校内咖啡厅与课后交流空间。', '/assets/philippines/jic-challenger-terminal-cafe.webp'),
   staticMedia(30, 'challenger', 'Facility', 'Challenger West Garden安静区', 'West Garden户外桌椅与安静交流区域。', '/assets/philippines/jic-challenger-west-garden.webp'),
-  staticMedia(31, 'challenger', 'Accommodation', 'Challenger Loft房型', 'Main Campus Rooms资料展示的Loft住宿空间。', '/assets/philippines/jic-main-room-loft.webp'),
+  staticMedia(31, 'challenger', 'Accommodation', 'Challenger Loft房型', 'Main Campus的Loft住宿空间。', '/assets/philippines/jic-main-room-loft.webp'),
   staticMedia(32, 'challenger', 'Facility', 'Challenger 自习与Library', '适合IELTS与长期备考学生的Library学习空间。', '/assets/philippines/jic-main-library.webp'),
   staticMedia(33, 'premium', 'Campus', 'Premium 高级校区官方介绍片', '学校最新有声官方介绍片，完整展示Premium校区的课堂、住宿与生活环境。', '/assets/philippines/jic-premium-campus-intro.mp4', 'video/mp4'),
   staticMedia(34, 'premium', 'Campus', 'JIC Premium Campus环境', 'Premium校区学习生活环境。', '/assets/philippines/jic-premium-campus-overview.jpg', 'image/jpeg'),
@@ -108,13 +109,13 @@ export const JIC_DEFAULT_MEDIA: CiaMediaContent[] = [
   staticMedia(45, 'premium', 'Accommodation', 'Premium 四人间（无阳台）视频', '学校原始四人房实拍（原素材无配音）。', '/assets/philippines/jic-premium-quad-no-balcony-video.mp4', 'video/mp4'),
   staticMedia(46, 'premium', 'Accommodation', 'Premium 四人间（带阳台）', '带阳台四人上下铺房实景。', '/assets/philippines/jic-premium-quad-balcony.webp'),
   staticMedia(47, 'premium', 'Accommodation', 'Premium 四人间（带阳台）视频', '学校原始四人房实拍（原素材无配音）。', '/assets/philippines/jic-premium-quad-balcony-video.mp4', 'video/mp4'),
-  staticMedia(48, 'premium', 'Accommodation', 'Premium 四人房', 'Premium Campus Rooms资料展示的四人房。', '/assets/philippines/jic-premium-quad-room.webp'),
-  staticMedia(49, 'premium', 'Dining', 'Premium 校区餐食', 'Premium Cafeteria & Meals资料展示的学校餐食。', '/assets/philippines/jic-premium-meal.webp'),
+  staticMedia(48, 'premium', 'Accommodation', 'Premium 四人房', 'Premium Campus四人房。', '/assets/philippines/jic-premium-quad-room.webp'),
+  staticMedia(49, 'premium', 'Dining', 'Premium 校区餐食', 'Premium校区学校餐食。', '/assets/philippines/jic-premium-meal.webp'),
   staticMedia(50, 'premium', 'Dining', 'Premium Cafe', '校内Cafe课后休息和交流空间。', '/assets/philippines/jic-premium-cafe.webp'),
   staticMedia(51, 'premium', 'Facility', 'Premium Student Center', '学生中心与休息空间。', '/assets/philippines/jic-premium-student-center.webp'),
 ];
 
-type JicQuoteSettings = CiaContentConfig['quoteSettings'] & { jicPolicyVersion?: number };
+type JicQuoteSettings = CiaContentConfig['quoteSettings'] & { jicPolicyVersion?: number; jicSchoolPackVersion?: number };
 
 export const createDefaultJicContentConfig = (): CiaContentConfig => {
   const content: CiaContentConfig = {
@@ -292,6 +293,7 @@ export const createDefaultJicContentConfig = (): CiaContentConfig => {
     media: structuredClone(JIC_DEFAULT_MEDIA),
   };
   (content.quoteSettings as JicQuoteSettings).jicPolicyVersion = JIC_POLICY_VERSION;
+  (content.quoteSettings as JicQuoteSettings).jicSchoolPackVersion = JIC_SCHOOL_PACK_VERSION;
   content.campusQuoteImageSettings = {
     challenger: structuredClone(content.quoteImageSettings),
     premium: structuredClone(content.quoteImageSettings),
@@ -302,11 +304,8 @@ export const createDefaultJicContentConfig = (): CiaContentConfig => {
 export const jicQuoteImageSettings = (content: CiaContentConfig, campus: JicCampus): CiaQuoteImageSettings =>
   content.campusQuoteImageSettings?.[campus] ?? content.quoteImageSettings;
 
-export const cloneJicContentConfig = (value: CiaContentConfig): CiaContentConfig => {
-  const cloned = structuredClone(value);
-  const latest = createDefaultJicContentConfig();
-  // Published employee content may predate the September 2026 school files.
-  // Preserve editorial visibility/order, but always upgrade school-issued facts.
+/** The 2026-11 school pack's course, room and local-fee facts, written over a saved document (run once per pack). */
+function applyJicSchoolPack(cloned: CiaContentConfig, latest: CiaContentConfig): void {
   cloned.courses = latest.courses.map((fallback) => {
     const existing = cloned.courses.find(item => item.id === fallback.id);
     return existing ? {
@@ -349,13 +348,24 @@ export const cloneJicContentConfig = (value: CiaContentConfig): CiaContentConfig
   });
   cloned.quoteSettings.shortStayRatios = { ...latest.quoteSettings.shortStayRatios };
   cloned.quoteSettings.courseTableNote = latest.quoteSettings.courseTableNote;
+}
+
+export const cloneJicContentConfig = (value: CiaContentConfig): CiaContentConfig => {
+  const cloned = structuredClone(value);
+  const latest = createDefaultJicContentConfig();
+  const settings = cloned.quoteSettings as JicQuoteSettings;
+  // Published employee content may predate the 2026-11 school pack: its facts move in once, keeping editorial
+  // visibility and order. After that the saved document wins, so prices edited in the content editor stay.
+  if ((settings.jicSchoolPackVersion ?? 0) < JIC_SCHOOL_PACK_VERSION) {
+    applyJicSchoolPack(cloned, latest);
+    settings.jicSchoolPackVersion = JIC_SCHOOL_PACK_VERSION;
+  }
   if ((cloned.quoteSettings.peakSeasonPolicyVersion ?? 0) < ASSOCIATION_PEAK_POLICY_VERSION) {
     const confirmed = latest.quoteSettings.peakSeasonRanges.find(range => range.id === 'jic-peak-2027')!;
     const saved = cloned.quoteSettings.peakSeasonRanges.find(range => range.id === confirmed.id || range.label.includes('2027'));
     if (saved) Object.assign(saved, confirmed); else cloned.quoteSettings.peakSeasonRanges.push(structuredClone(confirmed));
     cloned.quoteSettings.peakSeasonPolicyVersion = ASSOCIATION_PEAK_POLICY_VERSION;
   }
-  const settings = cloned.quoteSettings as JicQuoteSettings;
   if ((settings.jicPolicyVersion ?? 0) < JIC_POLICY_VERSION) upgradeJicPolicy(cloned, latest);
   const latestRegistration = latest.quoteSettings.promotions.find(rule => rule.ruleKind === 'jic-registration')!;
   const registrationIndex = cloned.quoteSettings.promotions.findIndex(rule => rule.ruleKind === 'jic-registration');
@@ -398,7 +408,7 @@ export const cloneJicContentConfig = (value: CiaContentConfig): CiaContentConfig
 /**
  * The 2026-11 school pack (JIC_POLICY_VERSION): the off-season, long-term and holiday rules (now counted by study
  * week and exact term-start arrival dates) replace the saved ones, and the page and quote-image copy move to the
- * template's wording. Course and room facts always come from the defaults; employee prices and other edits stay.
+ * template's wording. Course, room and local-fee facts come from applyJicSchoolPack; other edits stay.
  */
 function upgradeJicPolicy(cloned: CiaContentConfig, latest: CiaContentConfig): void {
   const settings = cloned.quoteSettings as JicQuoteSettings;

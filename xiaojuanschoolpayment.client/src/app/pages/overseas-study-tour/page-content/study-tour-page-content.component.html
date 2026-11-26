@@ -57,7 +57,7 @@
           <h3>{{ school.name }}</h3>
           <p>{{ school.text }}</p>
           <span class="school-tags"><span *ngFor="let tag of school.tags">{{ tag }}</span></span>
-          <strong>查看课程、价格和在线报价<mat-icon>chevron_right</mat-icon></strong>
+          <strong>{{ school.cta || '查看课程、价格和在线报价' }}<mat-icon>chevron_right</mat-icon></strong>
         </div>
       </a>
     </div>

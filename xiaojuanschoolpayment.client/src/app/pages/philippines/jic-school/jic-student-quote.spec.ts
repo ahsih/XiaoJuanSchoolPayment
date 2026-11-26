@@ -304,6 +304,32 @@ describe('JicStudentQuote', () => {
     expect(student.registrationDiscount).toBe(125);
   });
 
+  it('moves the school pack into a saved document once, then keeps employee price edits', () => {
+    const pack = createDefaultJicContentConfig();
+    const legacy = createDefaultJicContentConfig();
+    delete (legacy.quoteSettings as { jicSchoolPackVersion?: number }).jicSchoolPackVersion;
+    legacy.courses[0].tuition = 1;
+    legacy.rooms[0].fee = 1;
+    legacy.localFees.find(fee => fee.id === 'utilities')!.amount = 1;
+    const upgraded = cloneJicContentConfig(legacy);
+    expect(upgraded.courses[0].tuition).toBe(pack.courses[0].tuition);
+    expect(upgraded.rooms[0].fee).toBe(pack.rooms[0].fee);
+    expect(upgraded.localFees.find(fee => fee.id === 'utilities')!.amount).toBe(3000);
+
+    // What an employee saves from the editor afterwards stays on every later load.
+    upgraded.courses[0].tuition += 100;
+    upgraded.courses[0].tuition2027 = upgraded.courses[0].tuition;
+    upgraded.rooms[0].fee += 50;
+    upgraded.localFees.find(fee => fee.id === 'utilities')!.amount = 3200;
+    upgraded.quoteSettings.courseTableNote = '员工改过的说明';
+    const reloaded = cloneJicContentConfig(JSON.parse(JSON.stringify(upgraded)));
+    expect(reloaded.courses[0].tuition).toBe(pack.courses[0].tuition + 100);
+    expect(reloaded.courses[0].tuition2027).toBe(pack.courses[0].tuition + 100);
+    expect(reloaded.rooms[0].fee).toBe(pack.rooms[0].fee + 50);
+    expect(reloaded.localFees.find(fee => fee.id === 'utilities')!.amount).toBe(3200);
+    expect(reloaded.quoteSettings.courseTableNote).toBe('员工改过的说明');
+  });
+
   it('upgrades a published legacy registration rule to the universal Sida waiver', () => {
     const legacy = createDefaultJicContentConfig();
     const registration = legacy.quoteSettings.promotions.find((item) => item.ruleKind === 'jic-registration')!;

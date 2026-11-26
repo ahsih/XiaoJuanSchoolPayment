@@ -14,7 +14,7 @@
               <span>位于Angeles City的farm resort式英语学校。</span>
               <span>适合亲子、低龄和Native Mix口语。</span>
               <span>也适合轻中强度ESL、Golf或Swimming体验。</span>
-              <span>资料参考WE官网课程和活动页面。</span>
+              <span>下方列出2026年4周课程与住宿费用。</span>
             </p>
             <div class="hero-tags" aria-label="WE Academy特点">
               <span><mat-icon>location_on</mat-icon>Clark / Angeles</span>
@@ -28,7 +28,7 @@
                 <mat-icon>request_quote</mat-icon>
               </a>
               <a class="secondary-action" href="#local-fees" (click)="scrollToSection('local-fees', $event)">
-                查看公开活动费用
+                查看活动与到校费用
                 <mat-icon>payments</mat-icon>
               </a>
               <a class="secondary-action" routerLink="/about-sida/contact">
@@ -38,14 +38,14 @@
             </div>
             <p class="trust-note">
               <mat-icon>verified</mat-icon>
-              页面已按2026年价目表更新4周USD课程费、住宿费和USD100注册费；其他周数及到校费用以学校回函为准。
+              已列出2026年4周课程费、住宿费和100美元注册费；其他周数及到校费用以学校正式报价为准。
             </p>
           </div>
 
           <div class="hero-media" aria-label="WE Academy校园图片展示">
             <figure class="feature-photo">
               <img src="assets/philippines/we-hero.webp" alt="菲律宾克拉克WE Academy语言学校泳池和校园标识" />
-              <figcaption>WE官方图片：泳池、草坪与校园标识</figcaption>
+              <figcaption>WE校园：泳池、草坪与校园标识</figcaption>
             </figure>
             <div class="media-strip" aria-label="WE Academy图片缩略图">
               <figure *ngFor="let image of galleryImages.slice(3, 6)">
@@ -54,8 +54,8 @@
               </figure>
             </div>
             <aside class="hero-price-card">
-              <span>费用状态</span>
-              <strong>4周USD价格已更新</strong>
+              <span>费用参考</span>
+              <strong>2026年4周价格</strong>
               <p>ESL 4 + 四人间 + 注册费：USD1,500起</p>
               <ul>
                 <li>
@@ -69,7 +69,7 @@
               </ul>
             </aside>
             <p class="photo-source">
-              图片来源：WE Academy官网首页、Program、Golf和Swimming页面。
+              图片仅供参考，具体以学校实际安排为准。
             </p>
           </div>
         </section>
@@ -95,7 +95,7 @@
         <section class="section-block" id="gallery">
           <div class="section-heading">
             <span>校园图片</span>
-            <h2>使用WE官方图片核对校园、课堂、亲子和活动环境</h2>
+            <h2>WE校园、课堂、亲子和活动环境</h2>
             <p>WE的判断重点是舒适校园、低龄支持、Native Mix和活动资源，图片能帮助家庭先判断氛围是否合适。</p>
           </div>
           <div class="gallery-tabs" role="tablist" aria-label="WE Academy图片分类">
@@ -211,7 +211,7 @@
             <div class="section-heading">
               <span>2026课程费</span>
               <h2>WE 4周课程费用</h2>
-              <p>以下为2026年价目表中的4周USD课程费，注册费和住宿费另计。</p>
+              <p>以下为2026年4周课程费（美元），注册费和住宿费另计。</p>
             </div>
             <div class="data-table course-fee-table" role="table" aria-label="WE Academy课程核价清单">
               <div class="table-row table-head" role="row">
@@ -238,7 +238,7 @@
           <div class="section-block" id="daily-schedule">
             <div class="section-heading">
               <span>学习节奏</span>
-              <h2>官网公开的常规日课表参考</h2>
+              <h2>常规日课表参考</h2>
             </div>
             <div class="timeline">
               <article *ngFor="let item of schedule">
@@ -254,7 +254,7 @@
             <div class="section-heading">
               <span>2026住宿费</span>
               <h2>普通宿舍与公寓房型</h2>
-              <p>以下为2026年价目表中的4周USD住宿费；房间空位、押金、餐食和入住人数仍需按入学日确认。</p>
+              <p>以下为2026年4周住宿费（美元）；房间空位、押金、餐食和入住人数仍需按入学日确认。</p>
             </div>
             <div class="data-table room-fee-table" role="table" aria-label="WE Academy住宿核价清单">
               <div class="table-row table-head" role="row">
@@ -294,29 +294,29 @@
               <div><span>注册费</span><strong>{{ registrationFeeText }}</strong></div>
               <div><span>课程</span><strong>{{ selectedCourse.name }} · {{ formatMoney(selectedCourse.tuition, selectedCourse.currencyCode) }}</strong></div>
               <div><span>住宿</span><strong>{{ selectedRoom.name }} · {{ formatMoney(selectedRoom.fee, selectedRoom.currencyCode) }}</strong></div>
-              <div><span>公开活动价</span><strong>Golf PHP750；Swimming PHP500-700/次</strong></div>
+              <div><span>活动价</span><strong>Golf PHP750；Swimming PHP500-700/次</strong></div>
             </div>
             <div class="quote-result">
               <span>当前选择</span>
               <strong>{{ quoteSummary }}</strong>
               <em>{{ quoteText }}</em>
-              <p *ngIf="quoteCalculated">已根据2026年4周价目表生成参考。正式报价仍需确认房型空位、年龄规则、到校费用、航班接机和学校回函。</p>
+              <p *ngIf="quoteCalculated">已按2026年4周价格生成参考。正式报价仍需确认房型空位、年龄规则、到校费用、航班接机和学校回函。</p>
             </div>
             <div class="quote-actions">
               <button type="button" class="primary-action" (click)="requestQuote()">生成核价清单<mat-icon>request_quote</mat-icon></button>
               <a class="secondary-action" routerLink="/about-sida/contact">获取顾问确认报价<mat-icon>support_agent</mat-icon></a>
             </div>
             <p class="fee-alert">
-              注意：附件仅提供4周价格，因此页面不自行推算1、2、3、8周等其他周数；正式付款以学校账单为准。
+              注意：这里只列4周价格，1、2、3、8周等其他周数需向学校确认；正式付款以学校账单为准。
             </p>
           </section>
         </section>
 
         <section class="section-block" id="local-fees">
           <div class="section-heading">
-            <span>公开费用与到校费用</span>
-            <h2>Golf和Swimming有官网公开单次价，其余当地费用需核价</h2>
-            <p>以下按WE官方Golf、Swimming和课程页面整理，正式预算还要加入SSP、教材、押金、水电、接机和活动安排。</p>
+            <span>活动费用与到校费用</span>
+            <h2>Golf和Swimming按次收费，其余当地费用需确认</h2>
+            <p>以下金额可能随菲律宾政策和学校规则调整，以学校实际收取为准；正式预算还要加入SSP、教材、押金、水电、接机和活动安排。</p>
           </div>
           <div class="local-fee-grid desktop-local-fees">
             <article *ngFor="let fee of localFees">
@@ -326,7 +326,7 @@
             </article>
           </div>
           <details class="mobile-only mobile-details">
-            <summary>查看公开费用与到校费用全部明细</summary>
+            <summary>查看活动费用与到校费用全部明细</summary>
             <div class="local-fee-grid mobile-local-fees">
               <article *ngFor="let fee of localFees">
                 <span>{{ fee.item }}</span>
@@ -340,9 +340,9 @@
         <section class="notice-panel" id="price-note">
           <mat-icon>info</mat-icon>
           <div>
-            <h2>价格更新时间与资料说明</h2>
+            <h2>价格说明</h2>
             <p>
-              课程、住宿和注册费已按WE Academy 2026年价目表更新；官网首页、Program、Curriculum、Golf、Swimming和Teachers页面继续用于课程与活动资料参考。最终以学校正式账单为准。
+              课程、住宿和注册费为WE Academy 2026年价格，课程和活动安排可能调整，最终以学校正式账单为准。
             </p>
           </div>
         </section>
@@ -382,19 +382,6 @@
           </ul>
         </section>
 
-        <section class="section-block" id="sources">
-          <div class="section-heading">
-            <span>资料来源</span>
-            <h2>WE官方参考链接</h2>
-          </div>
-          <div class="source-list">
-            <a *ngFor="let source of sources" [href]="source.url" target="_blank" rel="noopener">
-              <mat-icon>open_in_new</mat-icon>
-              {{ source.label }}
-            </a>
-          </div>
-        </section>
-
         <section class="faq-section" id="faq">
           <div class="section-heading"><span>常见问题</span><h2>报名WE前常被问到的问题</h2></div>
           <details *ngFor="let faq of faqs"><summary>{{ faq.question }}</summary><p>{{ faq.answer }}</p></details>
@@ -407,7 +394,7 @@
           <strong>{{ selectedWeeks }}周</strong>
           <p>{{ selectedCourse.name }}<br />{{ selectedRoom.name }}</p>
           <div class="side-price">{{ quoteText }}</div>
-          <small>2026年4周价目表参考；其他周数需确认</small>
+          <small>2026年4周价格参考；其他周数需确认</small>
           <a class="primary-action" href="#quote" (click)="scrollToSection('quote', $event)">生成清单<mat-icon>request_quote</mat-icon></a>
           <a class="secondary-action" routerLink="/about-sida/contact">咨询顾问<mat-icon>chat</mat-icon></a>
         </div>

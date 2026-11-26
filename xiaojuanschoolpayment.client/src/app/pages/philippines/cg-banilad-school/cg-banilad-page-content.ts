@@ -131,9 +131,12 @@ export const CG_BANILAD_ALBUM_DESCRIPTIONS = {
 } as const;
 
 /**
- * A clip in public/assets/cg-banilad/videos/ (720p H.264 with a poster each), from CG's own Google Drive folder.
- * The school film had its classroom shots with the flag of the Taiwan authorities cut out. Check every frame of a
- * new clip for other companies, flags and contact details before adding it.
+ * A clip in public/assets/cg-banilad/videos/ (H.264 with a poster each), from CG's own Google Drive folder or CG's
+ * official YouTube channel (only clips whose title or signs name the Banilad campus). Cuts made: the school film's
+ * classroom shots and the second student-day clip's classroom collage showed the flag of the Taiwan authorities;
+ * the interview's opening card showed the school website; the first-day clip lost its mall and shop shots and its
+ * end cards and was cut out of its vertical frame. Check every frame of a new clip for other companies, flags and
+ * contact details before adding it.
  */
 export interface CgBaniladVideo {
   name: string;
@@ -141,14 +144,20 @@ export interface CgBaniladVideo {
   description: string;
   duration: string;
   orientation: 'landscape' | 'portrait';
+  /** The hero album's video chip. */
+  topic: '校园' | '学员访谈' | '学员日常';
 }
 
 export const cgBaniladVideoSrc = (video: CgBaniladVideo) => `/assets/cg-banilad/videos/${video.name}.mp4`;
 export const cgBaniladVideoPoster = (video: CgBaniladVideo) => `/assets/cg-banilad/videos/poster-${video.name}.jpg`;
 
 export const CG_BANILAD_VIDEOS: CgBaniladVideo[] = [
-  { name: 'campus-film', title: 'CG Banilad 校园介绍', description: '校园、教室、宿舍、餐厅和泳池。', duration: '2:38', orientation: 'landscape' },
-  { name: 'student-day', title: '学员的一天', description: '一位学员在 Banilad 校区的一天：上课、吃饭和课后生活。', duration: '1:17', orientation: 'portrait' },
+  { name: 'campus-film', title: 'CG Banilad 校园介绍', description: '校园、教室、宿舍、餐厅和泳池。', duration: '2:38', orientation: 'landscape', topic: '校园' },
+  { name: 'purple-building', title: '紫色校舍一圈', description: '2024年拍摄：泳池、教学楼、宿舍楼和篮球场。', duration: '0:50', orientation: 'portrait', topic: '校园' },
+  { name: 'interview-irisa', title: '中国学员 Irisa 的分享', description: '2026年：读综合英语12周，用英语聊她在 Banilad 校区的学习和生活。', duration: '1:13', orientation: 'portrait', topic: '学员访谈' },
+  { name: 'student-day', title: '学员的一天', description: '一位学员在 Banilad 校区的一天：上课、吃饭和课后生活。', duration: '1:17', orientation: 'portrait', topic: '学员日常' },
+  { name: 'student-day-2', title: '另一位学员的一天', description: '2025年：早餐、一对一和小组课、自助餐、咖啡厅、游泳、健身和尊巴课。', duration: '0:57', orientation: 'portrait', topic: '学员日常' },
+  { name: 'first-day', title: '到校第一天', description: '2024年：接机、入学说明、参观校园、交学杂费、领课表和分级测试结果。', duration: '0:54', orientation: 'landscape', topic: '学员日常' },
 ];
 
 const DORM_SERVICE = '可申请打扫，每周最多2次；衣服交洗衣房洗';

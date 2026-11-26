@@ -63,9 +63,19 @@ export interface PhPageCopy {
   calendar?: Optional<CiaCopy['calendar'], 'badge' | 'provisionalLabel' | 'footnote'>;
   ielts?: CiaCopy['ielts'];
   videos: Optional<CiaCopy['videos'], 'lifeTitle' | 'interviewTitle'>;
-  rooms: Optional<CiaCopy['rooms'], 'videoLink' | 'dormRulesTitle' | 'dormRulesNote' | 'tableHint'>;
+  rooms: Optional<CiaCopy['rooms'], 'videoLink' | 'dormRulesTitle' | 'dormRulesNote' | 'tableHint'> & {
+    /**
+     * A school whose course price already holds a base room (ELSA: course + five-person room + meals): room cards then
+     * show each room's extra charge as “+50 美元”, and a room without one shows this label instead of a price.
+     */
+    supplementBaseLabel?: string;
+  };
   /** The step and summary labels are read only by the compact layout's quote (CIA). */
-  quote: Optional<CiaCopy['quote'], 'conditionsStepTitle' | 'conditionsStepHint' | 'summaryTitle' | 'localFeeLinkLabel'>;
+  quote: Optional<CiaCopy['quote'], 'conditionsStepTitle' | 'conditionsStepHint' | 'summaryTitle' | 'localFeeLinkLabel'> & {
+    /** The quote summary's 课程费 and 住宿费 labels, for a school that prices them differently (ELSA). */
+    courseFeeLabel?: string;
+    roomFeeLabel?: string;
+  };
   fees: CiaCopy['fees'];
   refund?: CiaCopy['refund'];
   studentCare?: CiaCopy['studentCare'];
@@ -193,6 +203,11 @@ export interface PhSchoolProfile {
    * instead of the surcharge line. CIA leaves it out and charges its surcharge from the content document.
    */
   peakSeasonsWithoutSurcharge?: { title: string; ranges: ReadonlyArray<{ start: string; end: string; label: string }> };
+  /**
+   * School-only: lines shown instead of the 1/2/3-week price ratios in the room rules' short-stay block, for a school
+   * whose short stays are priced by the week plus a separate charge (GLC: 每周60美元短期附加费). CIA leaves it out.
+   */
+  shortStayRows?: ReadonlyArray<{ label: string; text: string }>;
   /**
    * School-only: short written reviews without the reviewers' names, shown as cards in the reviews section
    * (HANA; styles in ph-school-page-options.css). CIA uses studentReviews instead.

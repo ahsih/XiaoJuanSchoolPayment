@@ -50,6 +50,14 @@ export const JIC_ODD_WEEK_FEE = 8000;
  */
 export const JIC_POLICY_VERSION = 20261123;
 
+/**
+ * School-pack facts (course and room names, prices, schedules and notes, the local-fee rows, the short-stay ratios
+ * and the course-table note) move into a saved document once; after that an employee's edits in the content editor
+ * stay (2026-11-26; before, every load restored them, so edited JIC course prices never reached the page). Bump this
+ * only when a new school pack changes those facts.
+ */
+export const JIC_SCHOOL_PACK_VERSION = 20261126;
+
 const DAY = 86400000;
 /** JIC starts a term every second Sunday (2027 calendar: 1/10, 1/24 … 12/26; 2026: 11/29, 12/13, 12/27). */
 const TERM_ANCHOR = Date.parse('2026-11-29T00:00:00Z');

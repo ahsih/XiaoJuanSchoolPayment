@@ -139,9 +139,9 @@
       "name": "English Fella",
       "city": "宿务",
       "tag": "半斯巴达",
-      "desc": "双校区选择，课程与管理方式灵活，环境舒适。",
+      "desc": "两个校区：第一校区斯巴达，第二校区自律型或半斯巴达。",
       "image": "/assets/fella/campus-main.webp",
-      "path": "/philippines-study/cebu/english-fella"
+      "path": "/philippines-study/cebu/english-fella-first-campus"
     }
   ],
   "universities": [

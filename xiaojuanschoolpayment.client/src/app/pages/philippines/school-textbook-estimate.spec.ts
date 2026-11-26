@@ -3,7 +3,8 @@ import { BECI_CAMPUS_PRICING } from './beci-quote/beci-pricing';
 import { createDefaultBeciContentConfig } from './beci-school/beci-content-config';
 import { CellaStudentQuote } from './cella-quote/cella-student-quote';
 import { CELLA_COURSES, CELLA_ROOMS } from './cella-quote/cella-pricing';
-import { ImsStudentQuote } from './ims-school/ims-student-quote';
+import { ImsPageStudent } from './ims-school/ims-page-quote';
+import { createDefaultImsContentConfig } from './ims-school/ims-content-config';
 import { textbookGroups, textbookPeriods } from './school-textbook-estimate';
 import { CgPageStudent } from './cg-page-quote';
 import { CG_BANILAD_RULES } from './cg-banilad-school/cg-banilad-page-quote';
@@ -11,8 +12,13 @@ import { CG_SPARTA_RULES } from './cg-sparta-school/cg-sparta-page-quote';
 import { createCiaQuotePricing } from './cia-school/cia-quote-engine';
 import { createDefaultCgBaniladContentConfig, cloneCgBaniladContentConfig } from './cg-banilad-school/cg-banilad-content-config';
 import { createDefaultCgSpartaContentConfig, cloneCgSpartaContentConfig } from './cg-sparta-school/cg-sparta-content-config';
-import { FellaStudentQuote } from './fella-school/fella-student-quote';
-import { FELLA_COURSE_FEES, FELLA_ROOM_FEES } from './fella-school/fella-pricing';
+import { FellaPageStudent } from './fella-school/fella-page-quote';
+import { createDefaultFellaContentConfig, fellaCampusContent } from './fella-school/fella-content-config';
+const fellaStudent = (campus: 'campus1' | 'campus2' = 'campus2', edit?: (books: { amount: number; secondaryAmount?: number }) => void) => {
+  const content = fellaCampusContent(createDefaultFellaContentConfig(), campus);
+  if (edit) edit(content.localFees.find(x => x.id === 'books')!);
+  return new FellaPageStudent(createCiaQuotePricing(content), campus);
+};
 const row = (id: number, optionId: string, weeks: number, startDate = '2027-02-14') => ({id, optionId, weeks, startDate});
 describe('Course-type textbook budgets', () => {
   it('combines same-type rows but separates IELTS and business', () => {
@@ -51,21 +57,23 @@ describe('Course-type textbook budgets', () => {
       expect(clone(upgraded).quoteSettings.promotions.find(x=>x.id===rule.id)!.enabled).toBeFalse();
     });
   }
-  it('preserves Fella prices and charges separate types rather than duplicate segments',()=>{
-    const q=new FellaStudentQuote({courseFees:FELLA_COURSE_FEES.map(x=>({...x})),roomFees:FELLA_ROOM_FEES.map(x=>({...x})),registrationFee:100});
-    q.quotePlan.courses=[row(1,'esl',4),row(2,'esl',4)];
+  it('charges Fella one set per course and does not repeat it for split rows',()=>{
+    const q=fellaStudent();
+    q.quotePlan.courses=[row(1,'pic-4',4),row(2,'pic-4',4)];
     expect(q.localFees.find(x=>x.item==='教材费')!.total).toBe(2500);
-    q.quotePlan.courses[1].optionId='ielts';
+    q.quotePlan.courses[1].optionId='pift';
     expect(q.localFees.find(x=>x.item==='教材费')!.total).toBe(5000);
+    q.quotePlan.courses=[row(1,'pic-4',6),row(2,'ebc',2,'2027-03-28')];
+    expect(q.localFees.find(x=>x.item==='教材费')!.total).toBe(4000);
   });
 });
 
 describe('IMS textbook course switches',()=>{
   it('retains its own 3000-peso price for each type and combines repeated rows',()=>{
-    const q=new ImsStudentQuote();
-    q.quotePlan.courses=[row(1,'esl',4),row(2,'esl',4)];
+    const q=new ImsPageStudent(createCiaQuotePricing(createDefaultImsContentConfig()) as any);
+    q.quotePlan.courses=[row(1,'essential-esl-4',4),row(2,'premium-esl',4)];
     expect(q.localFees.find(x=>x.item==='教材费')!.total).toBe(3000);
-    q.quotePlan.courses[1].optionId='business';
+    q.quotePlan.courses[1].optionId='business-english';
     expect(q.localFees.find(x=>x.item==='教材费')!.total).toBe(6000);
   });
 });
@@ -87,11 +95,9 @@ describe('Published textbook price overrides',()=>{
     expect(q.localFees.find(x=>x.item===fee.name)!.total).toBe(4600);
     fee.includeInTotal=false;expect(q.localFees.some(x=>x.item===fee.name)).toBeFalse();
   });
-  it('Fella groups PIC and IELTS aliases from its real catalog',()=>{
-    const rules=[{id:'books',name:'教材费',amount:1800,currency:'PHP' as const,billingRule:'per-course-period' as const,periodWeeks:8,enabled:true,includeInTotal:true,sortOrder:0,note:'实购'}];
-    const q=new FellaStudentQuote({courseFees:FELLA_COURSE_FEES,roomFees:FELLA_ROOM_FEES,registrationFee:100,localFeeRules:rules});
-    q.quotePlan.courses=[row(1,'pic-4',4),row(2,'pic-5',4)];expect(q.localFees.find(x=>x.item==='教材费')!.total).toBe(1800);
-    q.quotePlan.courses=[row(1,'pift',4),row(2,'pirc',4)];expect(q.localFees.find(x=>x.item==='教材费')!.total).toBe(1800);
-    q.quotePlan.courses[1].optionId='ebc';expect(q.localFees.find(x=>x.item==='教材费')!.total).toBe(3600);
+  it('Fella reads the published textbook amounts',()=>{
+    const q=fellaStudent('campus2',books=>{books.amount=1800;books.secondaryAmount=1200;});
+    q.quotePlan.courses=[row(1,'pic-4',4),row(2,'pic-5',4)];expect(q.localFees.find(x=>x.item==='教材费')!.total).toBe(3600);
+    q.quotePlan.courses=[row(1,'gec',8)];expect(q.localFees.find(x=>x.item==='教材费')!.total).toBe(1200);
   });
 });

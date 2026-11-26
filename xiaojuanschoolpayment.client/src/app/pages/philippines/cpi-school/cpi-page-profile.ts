@@ -184,13 +184,16 @@ const albumVideo = (name: string): PhVideoItem => {
 
 /** Videos in the hero album, one chip per topic; the school film opens the album, newer clips come next. */
 const CPI_VIDEO_TABS: PhVideoTab[] = [
-  { label: '校园视频', icon: 'videocam', items: ['school-intro', 'campus-walk', 'pool', 'gym', 'campus-night', 'teachers'].map(albumVideo) },
+  {
+    label: '校园视频', icon: 'videocam',
+    items: ['school-intro', 'teachers-day', 'new-students', 'campus-walk', 'pool', 'gym', 'campus-night', 'teachers'].map(albumVideo),
+  },
   { label: '宿舍视频', icon: 'videocam', items: ['room-a-double', 'dorm-tour'].map(albumVideo) },
   {
     label: '课程视频', icon: 'videocam',
     items: ['class-one-to-one', 'class-group', 'exam-room', 'junior-program', 'ukulele-class'].map(albumVideo),
   },
-  { label: '餐厅与活动视频', icon: 'videocam', items: ['dining', 'meals-activities', 'graduation', 'foam-festival'].map(albumVideo) },
+  { label: '餐厅与活动视频', icon: 'videocam', items: ['dining', 'meals-activities', 'graduation', 'coolture-festival', 'foam-festival'].map(albumVideo) },
 ];
 
 export const CPI_PAGE_PROFILE: PhSchoolProfile = {

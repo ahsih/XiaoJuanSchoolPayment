@@ -100,7 +100,7 @@ function jicCopy(campus: JicCampus): PhPageCopy {
     videos: {
       eyebrow: 'SCHOOL VIDEOS',
       title: `用视频了解 ${page.shortName}`,
-      intro: '学校官方介绍片和房型实拍。',
+      intro: '学校官方介绍片、房型实拍、课堂和学员视频。',
       badge: `${page.shortName} 视频`,
     },
     rooms: {

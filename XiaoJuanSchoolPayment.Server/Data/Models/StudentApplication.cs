@@ -82,7 +82,18 @@ namespace XiaoJuanSchoolPayment.Server.Data.Models
 
     public string? PublishedSnapshotJson { get; set; }
 
+    /// <summary>Fees the student owes (name, amount, currency, due date), shown to the student after publishing.</summary>
+    public string? FeeItemsJson { get; set; }
+
+    /// <summary>Files the consultant asks the student to upload (document type and an optional note).</summary>
+    public string? RequestedDocumentsJson { get; set; }
+
+    /// <summary>The 思达启航 consultant in charge (Jenny, Lemon, Perrin, Iris or Lisa); the clients add the avatar and QR code.</summary>
+    [MaxLength(50)]
+    public string? ConsultantName { get; set; }
+
     public ICollection<StudentApplicationDocument> Documents { get; set; } = new List<StudentApplicationDocument>();
     public ICollection<StudentPayment> Payments { get; set; } = new List<StudentPayment>();
+    public ICollection<StudentSubmission> Submissions { get; set; } = new List<StudentSubmission>();
   }
 }

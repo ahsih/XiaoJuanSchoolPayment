@@ -46,6 +46,21 @@
     <span class="summary-icon payment"><mat-icon>payments</mat-icon></span>
     <span><small>{{ canPublish ? '待审核付款' : '付款审核中' }}</small><strong>{{ pendingPaymentCount }}</strong></span>
   </button>
+  <button type="button" [class.active]="activeFilter === 'uploads'" (click)="setFilter('uploads')">
+    <span class="summary-icon uploads"><mat-icon>upload_file</mat-icon></span>
+    <span><small>学员上传待确认</small><strong>{{ pendingUploadCount }}</strong></span>
+  </button>
+</section>
+
+<section class="follow-up-strip" aria-label="需要跟进">
+  <span class="follow-up-title"><mat-icon>notifications_active</mat-icon>需要跟进</span>
+  <button type="button" [class.active]="activeFilter === 'due-soon'" [class.has-items]="dueSoonCount > 0" (click)="setFilter('due-soon')">
+    <mat-icon>event</mat-icon>7天内要付款<b>{{ dueSoonCount }}</b>
+  </button>
+  <button type="button" [class.active]="activeFilter === 'departing'" [class.has-items]="departingCount > 0" (click)="setFilter('departing')">
+    <mat-icon>flight_takeoff</mat-icon>14天内出发，资料或费用未齐<b>{{ departingCount }}</b>
+  </button>
+  <small>系统会在付款截止前7天和前1天、出发前14天和前3天自动提醒有账号的学员，并把名单发到公司邮箱；没有账号的学员需要顾问联系。</small>
 </section>
 
 <section class="workflow-guide">
@@ -190,9 +205,13 @@
         </div>
       </details>
 
+      <p class="follow-up-note" *ngIf="followUpNote(application) as note"><mat-icon>notifications_active</mat-icon>{{ note }}</p>
+
       <div class="card-foot">
         <span><mat-icon>description</mat-icon>{{ application.documents.length }} 份资料</span>
         <span><mat-icon>payments</mat-icon>{{ paymentCount(application, 'Confirmed') }} 笔到账<span *ngIf="paymentCount(application, 'PendingReview')"> · {{ paymentCount(application, 'PendingReview') }} 笔待审核</span></span>
+        <span><mat-icon>support_agent</mat-icon>{{ application.consultantName || '未指定顾问' }}</span>
+        <span class="upload-alert" *ngIf="pendingUploads(application)"><mat-icon>upload_file</mat-icon>{{ pendingUploads(application) }} 份学员上传待确认</span>
         <span><mat-icon>schedule</mat-icon>更新于 {{ application.lastUpdated | date:'yyyy-MM-dd HH:mm' }}</span>
       </div>
 
@@ -364,7 +383,7 @@
               <mat-form-field appearance="outline">
                 <mat-label>对应学员</mat-label>
                 <mat-select formControlName="participantKey">
-                  <mat-option *ngFor="let person of participantOptions" [value]="person.key">{{ person.name }}</mat-option>
+                  <mat-option *ngFor="let person of participantOptions; trackBy: trackParticipant" [value]="person.key">{{ person.name }}</mat-option>
                 </mat-select>
               </mat-form-field>
               <mat-form-field appearance="outline" class="plan-name">
@@ -399,7 +418,7 @@
               <mat-form-field appearance="outline">
                 <mat-label>对应入住人</mat-label>
                 <mat-select formControlName="participantKey">
-                  <mat-option *ngFor="let person of participantOptions" [value]="person.key">{{ person.name }}</mat-option>
+                  <mat-option *ngFor="let person of participantOptions; trackBy: trackParticipant" [value]="person.key">{{ person.name }}</mat-option>
                 </mat-select>
               </mat-form-field>
               <mat-form-field appearance="outline" class="plan-name">
@@ -425,8 +444,82 @@
 
       </section>
 
+      <section class="form-section">
+        <div class="form-section-title"><b>3</b><span><strong>顾问、费用和学员资料</strong><small>发布后学员在学员中心看到负责顾问、应付费用和需要上传的资料</small></span></div>
+        <div class="form-grid">
+          <mat-form-field appearance="outline" class="wide">
+            <mat-label>负责顾问</mat-label>
+            <mat-select formControlName="consultantName">
+              <mat-option value="">暂不指定</mat-option>
+              <mat-option *ngFor="let name of consultantNames" [value]="name">{{ name }}</mat-option>
+            </mat-select>
+            <mat-hint>学员中心会显示这位顾问的头像和微信二维码</mat-hint>
+          </mat-form-field>
+        </div>
+
+        <div class="plan-block">
+          <div class="subsection-heading compact">
+            <div><strong>应付费用</strong><small>每笔一行；学员中心按币种显示应付、已确认付款和还需支付</small></div>
+            <button mat-stroked-button type="button" (click)="addFee()"><mat-icon>add</mat-icon>添加费用</button>
+          </div>
+          <p class="extras-empty" *ngIf="!feeItemsArray.length">还没有登记费用。学校费用和到校学杂费请分开写，不要相加。</p>
+          <div class="repeater-list" formArrayName="feeItems" *ngIf="feeItemsArray.length">
+            <div class="repeater-card fee-card" *ngFor="let fee of feeItemsArray.controls; let i = index" [formGroupName]="i">
+              <div class="repeater-index">{{ i + 1 }}</div>
+              <mat-form-field appearance="outline" class="fee-name">
+                <mat-label>费用名称</mat-label>
+                <input matInput formControlName="name" placeholder="例如：学费和住宿费" />
+              </mat-form-field>
+              <mat-form-field appearance="outline">
+                <mat-label>金额</mat-label>
+                <input matInput type="number" min="0.01" step="0.01" formControlName="amount" />
+              </mat-form-field>
+              <mat-form-field appearance="outline">
+                <mat-label>币种</mat-label>
+                <mat-select formControlName="currencyCode">
+                  <mat-option *ngFor="let currency of feeCurrencies" [value]="currency">{{ currencyName(currency) }}</mat-option>
+                </mat-select>
+              </mat-form-field>
+              <mat-form-field appearance="outline">
+                <mat-label>付款截止日期（可选）</mat-label>
+                <input matInput type="date" formControlName="dueDate" />
+              </mat-form-field>
+              <mat-form-field appearance="outline" class="fee-note">
+                <mat-label>说明（可选）</mat-label>
+                <input matInput formControlName="note" placeholder="例如：入学前2周付给学校" />
+              </mat-form-field>
+              <button class="remove-row" type="button" aria-label="删除费用" (click)="removeFee(i)"><mat-icon>delete</mat-icon></button>
+            </div>
+          </div>
+        </div>
+
+        <div class="plan-block">
+          <div class="subsection-heading compact">
+            <div><strong>请学员上传的资料</strong><small>学员可在官网或小程序的学员中心直接上传，你在“资料与付款”里确认收到</small></div>
+            <button mat-stroked-button type="button" (click)="addRequest()"><mat-icon>add</mat-icon>添加资料</button>
+          </div>
+          <p class="extras-empty" *ngIf="!requestedDocumentsArray.length">暂时不需要学员上传资料。</p>
+          <div class="repeater-list" formArrayName="requestedDocuments" *ngIf="requestedDocumentsArray.length">
+            <div class="repeater-card request-card" *ngFor="let request of requestedDocumentsArray.controls; let i = index" [formGroupName]="i">
+              <div class="repeater-index">{{ i + 1 }}</div>
+              <mat-form-field appearance="outline">
+                <mat-label>资料类型</mat-label>
+                <mat-select formControlName="documentType">
+                  <mat-option *ngFor="let type of submissionTypes" [value]="type">{{ type }}</mat-option>
+                </mat-select>
+              </mat-form-field>
+              <mat-form-field appearance="outline">
+                <mat-label>给学员的说明（可选）</mat-label>
+                <input matInput formControlName="note" placeholder="例如：彩色、四角完整、看得清" />
+              </mat-form-field>
+              <button class="remove-row" type="button" aria-label="删除资料" (click)="removeRequest(i)"><mat-icon>delete</mat-icon></button>
+            </div>
+          </div>
+        </div>
+      </section>
+
       <section class="form-section notes-section">
-        <div class="form-section-title"><b>3</b><span><strong>跟进与学生通知</strong><small>内部信息和学生可见内容分开填写</small></span></div>
+        <div class="form-section-title"><b>4</b><span><strong>跟进与学生通知</strong><small>内部信息和学生可见内容分开填写</small></span></div>
         <mat-form-field appearance="outline" class="block-field">
           <mat-label>内部跟进备注（学生看不到）</mat-label>
           <textarea matInput rows="4" formControlName="internalNotes" placeholder="例如：待确认护照姓名；已微信提醒补交材料"></textarea>
@@ -434,12 +527,12 @@
         <mat-form-field appearance="outline" class="block-field student-visible-field">
           <mat-label>审核后给学生看的说明</mat-label>
           <textarea matInput rows="4" formControlName="studentVisibleNotes" placeholder="例如：学校已收到申请，下一步等待入学通知书"></textarea>
-          <mat-hint>只有管理发布后才会同步到学生账号</mat-hint>
+          <mat-hint>只有管理发布后才会同步到学生账号；发布后会给已注册的学员发邮件</mat-hint>
         </mat-form-field>
       </section>
 
       <section class="form-section future-documents">
-        <div class="form-section-title"><b>4</b><span><strong>后续办理资料</strong><small>先建档即可，不需要现在全部上传</small></span></div>
+        <div class="form-section-title"><b>5</b><span><strong>后续办理资料</strong><small>先建档即可，不需要现在全部上传</small></span></div>
         <div class="future-document-grid">
           <span><mat-icon>request_quote</mat-icon>学生报价单</span>
           <span><mat-icon>receipt_long</mat-icon>账单／学生发票</span>
@@ -478,6 +571,24 @@
         <div><strong>{{ paymentCount(selectedApplication, 'Confirmed') }}</strong><span>已确认到账</span></div>
         <div><strong>{{ confirmedPaymentTotals(selectedApplication) }}</strong><span>已确认金额</span></div>
       </div>
+
+      <section class="fee-overview" *ngIf="feeSummaries(selectedApplication).length; else noFees">
+        <div class="checklist-heading"><strong>费用汇总</strong><small>按已登记的应付费用和已确认的付款自动计算；学员中心显示的是最近一次发布的费用</small></div>
+        <div class="fee-overview-grid">
+          <div class="fee-overview-card" *ngFor="let summary of feeSummaries(selectedApplication)" [class.settled]="summary.remaining <= 0">
+            <span class="fee-currency">{{ currencyName(summary.currencyCode) }}</span>
+            <dl>
+              <div><dt>应付</dt><dd>{{ money(summary.totalDue, summary.currencyCode) }}</dd></div>
+              <div><dt>已付</dt><dd>{{ money(summary.paid, summary.currencyCode) }}</dd></div>
+              <div class="fee-remaining"><dt>还需支付</dt><dd>{{ summary.remaining > 0 ? money(summary.remaining, summary.currencyCode) : '已付清' }}</dd></div>
+              <div *ngIf="summary.nextDueDate && summary.remaining > 0"><dt>下一笔截止</dt><dd>{{ summary.nextDueDate | date:'yyyy-MM-dd' }}<ng-container *ngIf="summary.nextDueAmount"> · {{ money(summary.nextDueAmount, summary.currencyCode) }}</ng-container></dd></div>
+            </dl>
+          </div>
+        </div>
+      </section>
+      <ng-template #noFees>
+        <p class="extras-empty fee-empty"><mat-icon>request_quote</mat-icon>还没有登记应付费用。在“编辑档案”的第 3 步添加后，学员中心会显示应付、已付和还需支付。</p>
+      </ng-template>
 
       <section class="payment-workspace">
         <header class="payment-heading">
@@ -555,6 +666,45 @@
             <button mat-flat-button color="primary" type="submit" [disabled]="!!paymentBusyId"><mat-icon>send</mat-icon>{{ editingPaymentId ? '重新提交审核' : '提交管理审核' }}</button>
           </div>
         </form>
+      </section>
+
+      <section class="student-uploads">
+        <div class="checklist-heading"><strong>学员上传的资料</strong><small>学员在官网或小程序上传；确认收到或退回后，学员中心会更新状态，退回时学员会收到邮件</small></div>
+        <div class="request-chips" *ngIf="selectedApplication.requestedDocuments?.length">
+          <span *ngFor="let request of selectedApplication.requestedDocuments" [attr.data-status]="request.uploadStatus">
+            <mat-icon>{{ request.uploadStatus === '已收到' ? 'check_circle' : request.uploadStatus === '待确认' ? 'hourglass_top' : request.uploadStatus === '需重新上传' ? 'error' : 'radio_button_unchecked' }}</mat-icon>
+            {{ request.documentType }} · {{ request.uploadStatus || '未上传' }}
+          </span>
+        </div>
+        <div class="upload-list" *ngIf="selectedApplication.submissions?.length; else noUploads">
+          <article
+            class="upload-row"
+            *ngFor="let submission of selectedApplication.submissions"
+            [id]="'submission-' + submission.id"
+            [attr.data-status]="submission.reviewStatus"
+            [class.review-target]="targetSubmissionId === submission.id"
+          >
+            <span class="document-type-icon"><mat-icon>upload_file</mat-icon></span>
+            <div class="upload-details">
+              <div class="payment-title-row">
+                <strong>{{ submission.documentType }}</strong>
+                <span class="payment-status">{{ submissionStatusLabel(submission) }}</span>
+              </div>
+              <small>{{ submission.originalFileName }} · {{ fileSize(submission.sizeBytes) }} · {{ submission.submittedAt | date:'yyyy-MM-dd HH:mm' }} 上传</small>
+              <p *ngIf="submission.studentNote">学员留言：{{ submission.studentNote }}</p>
+              <p class="return-note" *ngIf="submission.reviewStatus === 'Returned'">退回原因：{{ submission.reviewNote }}</p>
+              <small *ngIf="submission.reviewedByName && submission.reviewStatus !== 'PendingReview'">{{ submission.reviewedByName }} 于 {{ submission.reviewedAt | date:'yyyy-MM-dd HH:mm' }} 处理</small>
+            </div>
+            <div class="payment-actions">
+              <button mat-stroked-button type="button" (click)="downloadSubmission(submission)"><mat-icon>download</mat-icon>下载</button>
+              <button *ngIf="submission.reviewStatus === 'PendingReview'" mat-stroked-button type="button" (click)="returnSubmission(submission)" [disabled]="submissionBusyId === submission.id">退回重传</button>
+              <button *ngIf="submission.reviewStatus === 'PendingReview'" mat-flat-button color="primary" type="button" (click)="acceptSubmission(submission)" [disabled]="submissionBusyId === submission.id"><mat-icon>done</mat-icon>确认收到</button>
+            </div>
+          </article>
+        </div>
+        <ng-template #noUploads>
+          <p class="extras-empty"><mat-icon>inbox</mat-icon>学员还没有上传资料。</p>
+        </ng-template>
       </section>
 
       <section class="document-checklist">

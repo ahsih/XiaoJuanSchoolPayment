@@ -1,0 +1,61 @@
+<article class="tu-page" aria-labelledby="tu-title">
+  <header class="tu-hero">
+    <div class="tu-wrap">
+      <p class="tu-eyebrow">{{ c.eyebrow }}</p>
+      <h1 id="tu-title">{{ c.title }}</h1>
+      <p class="tu-lead">{{ c.lead }}</p>
+    </div>
+  </header>
+
+  <div class="tu-wrap tu-body">
+    <ul class="tu-cards">
+      @for (country of countries; track country.id) {
+        <li class="tu-card">
+          <div class="tu-card__head">
+            <span class="tu-card__code" lang="en">{{ country.dialCode }}</span>
+            <h2>{{ country.name }}话费充值</h2>
+          </div>
+          <dl class="tu-card__facts">
+            <div>
+              <dt>可充值</dt>
+              <dd>{{ country.products.join('、') }}（{{ country.currency }}面额）</dd>
+            </div>
+            <div>
+              <dt>运营商</dt>
+              <dd lang="en">{{ country.carriers.join(' · ') }}</dd>
+            </div>
+          </dl>
+          <p class="tu-card__tip">{{ country.tip }}</p>
+          <div class="tu-card__actions">
+            <a class="tu-btn tu-btn--main" [href]="country.url" target="_blank" rel="noopener">
+              <mat-icon aria-hidden="true">phone_iphone</mat-icon>{{ c.open }}
+            </a>
+            <button type="button" class="tu-btn tu-btn--ghost" (click)="copyLink(country)">
+              <mat-icon aria-hidden="true">{{ copiedId() === country.id ? 'check' : 'content_copy' }}</mat-icon>
+              {{ copiedId() === country.id ? c.copied : c.copy }}
+            </button>
+          </div>
+        </li>
+      }
+    </ul>
+
+    <section class="tu-section" aria-labelledby="tu-steps">
+      <h2 id="tu-steps">怎么充值</h2>
+      <ol class="tu-steps">
+        @for (step of c.steps; track step; let i = $index) {
+          <li><span class="tu-steps__no">{{ i + 1 }}</span>{{ step }}</li>
+        }
+      </ol>
+    </section>
+
+    <section class="tu-section" aria-labelledby="tu-notes">
+      <h2 id="tu-notes">注意事项</h2>
+      <ul class="tu-notes">
+        @for (note of c.notes; track note) {
+          <li>{{ note }}</li>
+        }
+      </ul>
+      <p class="tu-reference">{{ c.referenceNote }}</p>
+    </section>
+  </div>
+</article>

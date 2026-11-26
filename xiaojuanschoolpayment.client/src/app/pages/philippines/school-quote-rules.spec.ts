@@ -7,21 +7,22 @@ import { CpiSchoolPageComponent } from './cpi-school/cpi-school-page.component';
 import { CpilsSchoolPageComponent } from './cpils-school/cpils-school-page.component';
 import { EvSchoolPageComponent } from './ev-school/ev-school-page.component';
 import { PinesSchoolPageComponent } from './pines-school/pines-school-page.component';
-import { MonolSchoolDetailComponent } from './monol-school/monol-school-detail.component';
+import { MonolSchoolPageComponent } from './monol-school/monol-school-page.component';
 import { MonolSpartaSchoolPageComponent } from './monol-sparta-school/monol-sparta-school-page.component';
-import { PhilinterSchoolDetailComponent } from './philinter-school/philinter-school-detail.component';
+import { PhilinterSchoolPageComponent } from './philinter-school/philinter-school-page.component';
 import { BCebuSchoolPageComponent } from './bcebu-school/bcebu-school-page.component';
-import { GlcSchoolComponent } from './glc-school/glc-school.component';
+import { GlcSchoolPageComponent } from './glc-school/glc-school-page.component';
 import { IbreezeSchoolPageComponent } from './ibreeze-school/ibreeze-school-page.component';
 import { AnjSchoolPageComponent } from './anj-school/anj-school-page.component';
-import { ImsSchoolComponent } from './ims-school/ims-school.component';
+import { ImsSchoolPageComponent } from './ims-school/ims-school-page.component';
 import { BeciQuoteCalculatorComponent } from './beci-quote/beci-quote-calculator.component';
 import { JicChallengerSchoolComponent } from './jic-school/jic-challenger-school.component';
 import { JicPremiumSchoolComponent } from './jic-school/jic-premium-school.component';
 import { IuSchoolComponent } from './iu-school/iu-school.component';
 import { IclSchoolComponent } from './icl-school/icl-school.component';
 import { CellaQuoteCalculatorComponent } from './cella-quote/cella-quote-calculator.component';
-import { FellaSchoolDetailComponent } from './fella-school/fella-school-detail.component';
+import { FellaFirstCampusSchoolComponent } from './fella-school/fella-first-campus-school.component';
+import { FellaSecondCampusSchoolComponent } from './fella-school/fella-second-campus-school.component';
 import { BtesSchoolComponent } from './btes-school/btes-school.component';
 import { CboaSchoolPageComponent } from './cebu-blue-ocean-school/cboa-school-page.component';
 import { WalesSchoolDetailComponent } from './wales-school/wales-school-detail.component';
@@ -44,7 +45,7 @@ const schools = [
   { name: 'BECI Sparta', create: () => { const p = new BeciQuoteCalculatorComponent(); p.campus = 'sparta'; return p; } },
   { name: 'BECI City', create: () => { const p = new BeciQuoteCalculatorComponent(); p.campus = 'city'; return p; } },
   { name: 'JIC Premium', create: () => new JicPremiumSchoolComponent() },
-  { name: 'Fella Second', create: () => { const p = new FellaSchoolDetailComponent(); p.students[0].setCampus('campus2'); return p; } },
+  { name: 'Fella Second', create: () => new FellaSecondCampusSchoolComponent() },
   { name: 'CELLA Premium', create: () => { const p = new CellaQuoteCalculatorComponent(); p.initialCampus = 'premium'; return p; } },
   { name: "CIA", create: () => new CiaSchoolComponent() },
   { name: "CG Banilad", create: () => new CgBaniladSchoolPageComponent() },
@@ -54,20 +55,20 @@ const schools = [
   { name: "CPILS", create: () => new CpilsSchoolPageComponent() },
   { name: "EV", create: () => new EvSchoolPageComponent() },
   { name: "PINES", create: () => new PinesSchoolPageComponent() },
-  { name: "MONOL", create: () => new MonolSchoolDetailComponent() },
+  { name: "MONOL", create: () => new MonolSchoolPageComponent() },
   { name: "MONOL Sparta", create: () => new MonolSpartaSchoolPageComponent() },
-  { name: "PHILINTER", create: () => new PhilinterSchoolDetailComponent() },
+  { name: "PHILINTER", create: () => new PhilinterSchoolPageComponent() },
   { name: "B'Cebu", create: () => new BCebuSchoolPageComponent() },
-  { name: "GLC", create: () => new GlcSchoolComponent() },
+  { name: "GLC", create: () => new GlcSchoolPageComponent() },
   { name: "I.BREEZE", create: () => new IbreezeSchoolPageComponent() },
   { name: "A&J", create: () => new AnjSchoolPageComponent() },
-  { name: "IMS", create: () => new ImsSchoolComponent() },
+  { name: "IMS", create: () => new ImsSchoolPageComponent() },
   { name: "BECI", create: () => new BeciQuoteCalculatorComponent() },
   { name: "JIC", create: () => new JicChallengerSchoolComponent() },
   { name: "IU", create: () => new IuSchoolComponent() },
   { name: "ICL", create: () => new IclSchoolComponent() },
   { name: "CELLA", create: () => new CellaQuoteCalculatorComponent() },
-  { name: "Fella", create: () => new FellaSchoolDetailComponent() },
+  { name: "Fella", create: () => new FellaFirstCampusSchoolComponent() },
   { name: "BTES", create: () => new BtesSchoolComponent() },
   { name: "Blue Ocean", create: () => new CboaSchoolPageComponent() },
   { name: "WALES", create: () => new WalesSchoolDetailComponent() },
@@ -199,19 +200,6 @@ describe('confirmed common quote rules across completed routes', () => {
     expect(fixture.nativeElement.querySelector('.quote-local-fees')).not.toBeNull();
     expect(page.quoteError).toBe('');
     fixture.destroy();
-  });
-  it('GLC synchronizes members explicitly sharing a family course while leaving another student independent', () => {
-    const page = initialize(() => new GlcSchoolComponent()); page.setQuoteMode('group'); page.studentCount = 3;
-    page.students[0].calculator.plan.courses[0].optionId = 'family-package-2';
-    page.students[1].sharedCourseOwner = 1;
-    const [owner, member, other] = page.activeStudents.map((student: any) => student.calculator.plan);
-    owner.updateWeeks('course', owner.courses[0].id, 8);
-    expect(member.roomWeeks).toBe(8);
-    member.updateStartDate('room', member.rooms[0].id, '2026-11-08');
-    expect(owner.rooms[0].startDate).toBe('2026-11-08');
-    expect(other.courseWeeks).toBe(4);
-    expect(other.startDate).not.toBe('2026-11-08');
-    expect(page.quoteError).toBe('');
   });
   for (const factory of [() => new CellaQuoteCalculatorComponent(), () => new EnglishMintSchoolComponent()]) it('renders split course/room amounts into a real PNG without internal algorithms', async () => {
     const page = initialize(factory), plan = planOf(page);
