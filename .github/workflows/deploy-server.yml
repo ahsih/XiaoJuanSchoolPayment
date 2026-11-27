@@ -139,6 +139,10 @@ jobs:
           git merge --ff-only "$target_sha"
           test "$(git rev-parse HEAD)" = "$target_sha"
 
+          # The Angular build needs up to 4 GB of Node heap (Dockerfile NODE_OPTIONS); log memory and swap
+          # so a failed build shows whether the server ran short.
+          free -m || true
+
           sudo -n docker compose --env-file /opt/sida/.env -f compose.production.yml up -d --build app caddy
           sudo -n docker compose --env-file /opt/sida/.env -f compose.production.yml ps
 

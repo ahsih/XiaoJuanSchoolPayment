@@ -11,6 +11,10 @@ COPY xiaojuanschoolpayment.client ./
 # (scripts/prerender-school-pages.cjs). If the site cannot be reached, that step is skipped
 # and those pages are rendered in the browser as before.
 ENV SIDA_PRERENDER_API_ORIGIN=https://sidaqihang.com
+# Node's default heap is sized from the machine's memory and was too small for the Angular compiler on the
+# server: "Worker terminated due to reaching memory limit: JS heap out of memory" (2026-11-27). The limit
+# applies to the compiler's worker threads too, and only to this build stage, not to the running site.
+ENV NODE_OPTIONS=--max-old-space-size=4096
 RUN npm run build
 
 FROM mcr.microsoft.com/dotnet/sdk:10.0 AS server-build
