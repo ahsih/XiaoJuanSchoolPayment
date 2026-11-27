@@ -22,6 +22,12 @@ WORKDIR /src
 
 COPY XiaoJuanSchoolPayment.Server ./XiaoJuanSchoolPayment.Server
 
+# Wait for the client build before compiling the server. BuildKit runs stages that do not depend on each other
+# at the same time, and the production server has only 3.6 GB of memory: the Angular compiler and
+# `dotnet publish` together do not fit. Copying one small file from the finished client build makes this stage
+# start after it, without storing the photos and videos again.
+COPY --from=client-build /src/xiaojuanschoolpayment.client/package.json /tmp/client-build-finished
+
 # The Visual Studio SPA project reference is only needed for local development.
 # The container builds Angular separately and serves the compiled files from wwwroot.
 RUN sed -i '/<ProjectReference Include=.*xiaojuanschoolpayment.client.esproj/,/<\/ProjectReference>/d' ./XiaoJuanSchoolPayment.Server/XiaoJuanSchoolPayment.Server.csproj
