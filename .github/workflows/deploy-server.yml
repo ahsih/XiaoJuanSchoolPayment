@@ -21,14 +21,10 @@ jobs:
     environment: production
 
     steps:
-      # The runner fetches from GitHub and pushes to the server over SSH, so the
-      # production server never needs to reach GitHub or a third-party mirror.
-      - name: Check out repository
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-          persist-credentials: false
-
+      # The server first fetches the commit itself through the gh-proxy.org
+      # GitHub mirror, which is fast from mainland China. If the mirror is down
+      # or too slow, the runner pushes the commit over SSH instead (slow across
+      # the border, but it does not depend on any third party).
       - name: Configure SSH
         env:
           SSH_PRIVATE_KEY: ${{ secrets.SERVER_SSH_KEY }}
@@ -75,7 +71,43 @@ jobs:
           fi
           REMOTE
 
+      # The former mirror gh.gitwarp.top was down from 2026-11-09 to 2026-11-15,
+      # so a mirror failure must never fail the deploy: it only switches to the
+      # SSH push below. The fetch gives up when it stays under 10 KB/s for two
+      # minutes or runs for 40 minutes.
+      - name: Fetch commit on server from GitHub mirror
+        id: mirror
+        env:
+          SERVER_HOST: ${{ secrets.SERVER_HOST }}
+          SERVER_USER: ${{ secrets.SERVER_USER }}
+          MIRROR_URL: https://gh-proxy.org/https://github.com/${{ github.repository }}.git
+        run: |
+          if ssh -i ~/.ssh/id_ed25519 -o BatchMode=yes -o IdentitiesOnly=yes "$SERVER_USER@$SERVER_HOST" bash -se "$MIRROR_URL" "$GITHUB_SHA" <<'REMOTE'
+          set -Eeuo pipefail
+          mirror_url="$1"
+          target_sha="$2"
+          cd /opt/sida/app
+          export GIT_TERMINAL_PROMPT=0
+          timeout 2400 git -c http.lowSpeedLimit=10240 -c http.lowSpeedTime=120 \
+            fetch --no-tags "$mirror_url" "+refs/heads/main:refs/remotes/mirror/main"
+          git cat-file -e "$target_sha^{commit}"
+          REMOTE
+          then
+            echo "fetched=true" >> "$GITHUB_OUTPUT"
+            echo "Commit fetched on the server through the mirror."
+          else
+            echo "::warning::Mirror fetch failed; pushing the commit over SSH instead."
+          fi
+
+      - name: Check out repository
+        if: steps.mirror.outputs.fetched != 'true'
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
       - name: Push commit to production server
+        if: steps.mirror.outputs.fetched != 'true'
         env:
           SERVER_HOST: ${{ secrets.SERVER_HOST }}
           SERVER_USER: ${{ secrets.SERVER_USER }}
