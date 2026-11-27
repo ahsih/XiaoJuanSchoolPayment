@@ -62,6 +62,18 @@ describe('CIP page on the shared template', () => {
     expect(payment('长期报名优惠')?.amount).toBe('− 50 美元');
   });
 
+  it('prices Power ESL from the November 2026 list (940 per 4 weeks)', () => {
+    page.selectedCourseId = 'power-esl';
+    page.selectedRoomId = 'double';
+    // Price list: Power ESL + Double, 4 weeks 1,720.
+    expect(student().tuition + student().accommodation).toBe(1720);
+    page.selectedRoomId = 'single-a';
+    page.selectedWeeks = 12;
+    // Price list 12 weeks 6,060 − 3 × 50 off-season − 5% of 5,910 (295.5) + 100 registration
+    expect(student().tuition + student().accommodation).toBe(6060);
+    expect(page.quote.quoteUsd).toBe(5714.5);
+  });
+
   it('counts no June–August study week toward the off-season offer and has no peak surcharge', () => {
     page.selectedStartDate = '2027-05-02';
     page.selectedWeeks = 8;

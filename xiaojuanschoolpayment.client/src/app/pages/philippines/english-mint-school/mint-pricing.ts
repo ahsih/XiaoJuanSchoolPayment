@@ -33,7 +33,7 @@ export const MINT_COURSES: MintCourse[] = [
 
 export const MINT_ROOMS: MintRoom[] = [
   { id: 'premium-single', name: '高级单人间（Premium Single）', description: '独立空间；实际房间、楼层与空房以学校确认结果为准。', prices: price([540, 810, 1080, 1350, 2700, 4050, 5400, 6750, 8100]) },
-  { id: 'premium-twin', name: '高级双人间（Premium Twin）', description: '两人入住；2026下半年淡季现金优惠仅适用于双人间。', prices: price([400, 600, 800, 1000, 2000, 3000, 4000, 5000, 6000]) },
+  { id: 'premium-twin', name: '高级双人间（Premium Twin）', description: '两人入住；实际房间、室友与空房以学校确认结果为准。', prices: price([400, 600, 800, 1000, 2000, 3000, 4000, 5000, 6000]) },
   { id: 'deluxe-single', name: '标准单人间（Deluxe Single）', description: '标准房型的单人入住方案；实际空房须确认。', prices: price([480, 720, 960, 1200, 2400, 3600, 4800, 6000, 7200]) },
   { id: 'deluxe-twin', name: '标准双人间（Deluxe Twin）', description: '两人入住；2周成人及亲子全包方案使用此房型。', prices: price([380, 570, 760, 950, 1900, 2850, 3800, 4750, 5700]) },
 ];
@@ -70,19 +70,28 @@ export const MINT_LOCAL_TOTALS: Record<MintLocalFeeWeeks, number> = {
 
 export const MINT_REGISTRATION_FEE = 100;
 
-export const MINT_FAMILY_PRICES: Record<'one-one' | 'one-two' | 'two-two', Record<number, number>> = {
-  'one-one': { 4: 5000, 6: 7500, 8: 10000, 10: 12500, 12: 15000 },
-  'one-two': { 4: 6500, 6: 9750, 8: 13000, 10: 16250, 12: 19500 },
-  'two-two': { 4: 10000, 6: 15000, 8: 20000, 10: 25000, 12: 30000 },
+// 2026/12/01–2027/02/28 family program, school guide and PPT of 2026-11-25 (docs/mint-family-source-2026-11-26.md).
+export type MintFamilyCombination = 'one-one' | 'one-two' | 'two-one' | 'two-two';
+export const MINT_FAMILY_WEEKS = [2, 3, 4, 6, 8, 10, 12] as const;
+export const MINT_FAMILY_DEPOSIT = 500;
+
+export const MINT_FAMILY_COMBINATIONS: { id: MintFamilyCombination; label: string; shortLabel: string; parents: number; children: number; room: string; roomNote: string }[] = [
+  { id: 'one-one', label: '1位家长＋1位孩子', shortLabel: '1家长＋1孩子', parents: 1, children: 1, room: '1间Deluxe Twin双床房', roomNote: '' },
+  { id: 'one-two', label: '1位家长＋2位孩子', shortLabel: '1家长＋2孩子', parents: 1, children: 2, room: '1间Deluxe Twin双床房', roomNote: '三人共住一间双床房，空间相对紧凑。' },
+  { id: 'two-one', label: '2位家长＋1位孩子', shortLabel: '2家长＋1孩子', parents: 2, children: 1, room: '1间Triple三人房', roomNote: '学校目前只公布2至4周价格。' },
+  { id: 'two-two', label: '2位家长＋2位孩子', shortLabel: '2家长＋2孩子', parents: 2, children: 2, room: '2间Deluxe Twin双床房', roomNote: '报名时须直接申请两间房套餐。' },
+];
+
+// Whole-family totals in dollars, deposit included. 2 parents + 1 child has no 6–12 week price yet (待学校确认).
+export const MINT_FAMILY_PRICES: Record<MintFamilyCombination, Record<number, number>> = {
+  'one-one': { 2: 3000, 3: 4000, 4: 5000, 6: 7500, 8: 10000, 10: 12500, 12: 15000 },
+  'one-two': { 2: 3900, 3: 5200, 4: 6500, 6: 9750, 8: 13000, 10: 16250, 12: 19500 },
+  'two-one': { 2: 3720, 3: 4960, 4: 6200 },
+  'two-two': { 2: 6000, 3: 8000, 4: 10000, 6: 15000, 8: 20000, 10: 25000, 12: 30000 },
 };
 
-export const MINT_FAMILY_UPGRADES: Record<'premium-twin' | 'premium-single', Record<number, number>> = {
-  'premium-twin': { 4: 250, 6: 375, 8: 500, 10: 625, 12: 750 },
-  'premium-single': { 4: 400, 6: 600, 8: 800, 10: 1000, 12: 1200 },
-};
-
-export const mintFamilyNoCourseDeduction = (weeks: number): number => weeks >= 12 ? 500 : weeks >= 8 ? 375 : 250;
-export const mintLowSeasonCashDiscount = (weeks: number): number => weeks >= 20 ? 1250 : weeks >= 16 ? 900 : weeks >= 12 ? 600 : weeks >= 8 ? 350 : weeks >= 4 ? 150 : 0;
+/** Per non-studying parent; 2–3 weeks 150, 4–6 weeks 250, 8–10 weeks 350, 12+ weeks 500. */
+export const mintFamilyNoCourseDeduction = (weeks: number): number => weeks >= 12 ? 500 : weeks >= 8 ? 350 : weeks >= 4 ? 250 : weeks >= 2 ? 150 : 0;
 
 export const mintEndDate = (startDate: string, weeks: number): string => {
   const date = new Date(`${startDate}T00:00:00Z`);

@@ -316,8 +316,13 @@ export const mainNavigation: NavigationItem[] = [
             route: '/philippines-study/cebu/global-language-cebu',
           },
           {
+            id: 'qqenglish-it-park-campus',
+            label: '菲律宾宿务QQ English IT Park校区',
+            route: '/philippines-study/cebu/qqenglish-it-park-campus',
+          },
+          {
             id: 'qqenglish-beachfront-campus',
-            label: '菲律宾宿务QQEnglish（Beachfront Campus）',
+            label: '菲律宾宿务QQ English Beach Front校区',
             route: '/philippines-study/cebu/qqenglish-beachfront-campus',
           },
           {
@@ -326,9 +331,14 @@ export const mainNavigation: NavigationItem[] = [
             route: '/philippines-study/cebu/stargate-global-education',
           },
           {
-            id: 'winning-english-academy',
-            label: '菲律宾宿务Winning English Academy',
-            route: '/philippines-study/cebu/winning-english-academy',
+            id: 'winning-ayala-campus',
+            label: '菲律宾宿务Winning Ayala校区',
+            route: '/philippines-study/cebu/winning-ayala-campus',
+          },
+          {
+            id: 'winning-ocean-campus',
+            label: '菲律宾宿务Winning Ocean校区',
+            route: '/philippines-study/cebu/winning-ocean-campus',
           },
           {
             id: 'glant',
@@ -399,6 +409,11 @@ export const mainNavigation: NavigationItem[] = [
             id: 'cebu-blue-ocean-academy',
             label: '菲律宾宿务Cebu Blue Ocean Academy',
             route: '/philippines-study/cebu/cebu-blue-ocean-academy',
+          },
+          {
+            id: 'gitc-cebu-campus',
+            label: '菲律宾宿务GITC College语言学校（Cebu校区）',
+            route: '/philippines-study/cebu/gitc-cebu-campus',
           },
           {
             id: 'cella-premium-campus',

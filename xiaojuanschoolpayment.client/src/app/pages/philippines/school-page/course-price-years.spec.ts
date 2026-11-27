@@ -18,9 +18,14 @@ import { CiecSchoolPageComponent } from '../ciec-school/ciec-school-page.compone
 import { CpiSchoolPageComponent } from '../cpi-school/cpi-school-page.component';
 import { CpilsSchoolPageComponent } from '../cpils-school/cpils-school-page.component';
 import { ElsaSchoolPageComponent } from '../elsa-school/elsa-school-page.component';
+import { TargetSchoolPageComponent } from '../target-school/target-school-page.component';
 import { EvSchoolPageComponent } from '../ev-school/ev-school-page.component';
 import { FellaFirstCampusSchoolComponent } from '../fella-school/fella-first-campus-school.component';
 import { FellaSecondCampusSchoolComponent } from '../fella-school/fella-second-campus-school.component';
+import { QqBeachfrontSchoolComponent } from '../qq-school/qq-beachfront-school.component';
+import { QqItParkSchoolComponent } from '../qq-school/qq-it-park-school.component';
+import { WinningAyalaSchoolComponent } from '../winning-school/winning-ayala-school.component';
+import { WinningOceanSchoolComponent } from '../winning-school/winning-ocean-school.component';
 import { GeniusSchoolPageComponent } from '../genius-school/genius-school-page.component';
 import { GlcSchoolPageComponent } from '../glc-school/glc-school-page.component';
 import { HanaSchoolPageComponent } from '../hana-school/hana-school-page.component';
@@ -32,6 +37,7 @@ import { IuSchoolComponent } from '../iu-school/iu-school.component';
 import { JicChallengerSchoolComponent } from '../jic-school/jic-challenger-school.component';
 import { JicPremiumSchoolComponent } from '../jic-school/jic-premium-school.component';
 import { BeciEopSchoolComponent } from '../beci-school/beci-eop-school.component';
+import { GitcIloiloSchoolComponent } from '../gitc-school/gitc-iloilo-school.component';
 import { LaMerSchoolPageComponent } from '../la-mer-school/la-mer-school-page.component';
 import { MonolSchoolPageComponent } from '../monol-school/monol-school-page.component';
 import { MonolSpartaSchoolPageComponent } from '../monol-sparta-school/monol-sparta-school-page.component';
@@ -100,6 +106,11 @@ describe('one or two course prices on the shared Philippine template', () => {
     ['EV', EvSchoolPageComponent],
     ['English Fella First', FellaFirstCampusSchoolComponent],
     ['English Fella Second', FellaSecondCampusSchoolComponent],
+    ['CampusTop IT Park', QqItParkSchoolComponent],
+    ['CampusTop Beach Front', QqBeachfrontSchoolComponent],
+    // A 2026 registration upgrades ESL4 to the ESL2 price, so a 2027 registration shows the edited price.
+    ['Winning Ayala', WinningAyalaSchoolComponent, page => { (page.students[0] as { selectedRegistrationDate?: string }).selectedRegistrationDate = '2027-01-05'; }],
+    ['Winning Ocean', WinningOceanSchoolComponent],
     ['Genius', GeniusSchoolPageComponent],
     ['GLC', GlcSchoolPageComponent],
     ['HANA', HanaSchoolPageComponent, page => { page.selectedCourseId = 'general-esl'; }],
@@ -113,6 +124,7 @@ describe('one or two course prices on the shared Philippine template', () => {
     ['MONOL', MonolSchoolPageComponent],
     ['EV La Mer', LaMerSchoolPageComponent],
     ['MONOL Sparta', MonolSpartaSchoolPageComponent],
+    ['TARGET', TargetSchoolPageComponent],
     ['SMEAG Capital', SmeagCapitalSchoolPageComponent],
   ];
 
@@ -148,6 +160,7 @@ describe('one or two course prices on the shared Philippine template', () => {
     ['Cebu Blue Ocean', CboaSchoolPageComponent],
     ['PINES', PinesSchoolPageComponent],
     ['SMEAG Encanto', SmeagEncantoSchoolComponent],
+    ['GITC Iloilo', GitcIloiloSchoolComponent],
   ];
 
   for (const [school, type] of TWO_PRICE_PAGES) {

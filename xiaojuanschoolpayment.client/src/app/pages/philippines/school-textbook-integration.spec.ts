@@ -37,13 +37,12 @@ import { SchoolService } from '../../../services/school.service';
 import { ExchangeRateService } from '../../../services/exchange-rate.service';
 import { SchoolQuotePlan, QuotePlanKind, quoteMoney } from '../../components/school-quote-plan';
 import { SchoolQuotePlanComponent } from '../../components/school-quote-plan.component';
-import { TargetStudentQuote } from './target-school/target-student-quote';
-import { TargetSchoolComponent } from './target-school/target-school.component';
+import { TargetSchoolPageComponent } from './target-school/target-school-page.component';
 import { CipSchoolPageComponent } from './cip-school/cip-school-page.component';
 import { LaMerSchoolPageComponent } from './la-mer-school/la-mer-school-page.component';
 import { PhilippinesQuoteImageExporterComponent } from '../../components/philippines-quote-image-exporter.component';
 const schools = [
-  { name: 'TARGET', create: () => new TargetSchoolComponent() },
+  { name: 'TARGET', create: () => new TargetSchoolPageComponent() },
   { name: 'CIP', create: () => new CipSchoolPageComponent() },
   { name: 'EV La Mer', create: () => new LaMerSchoolPageComponent() },
   { name: 'PINES IELTS', create: () => { const p = new PinesSchoolPageComponent(); p.students[0].quotePlan.courses[0].optionId = 'pre-ielts'; return p; } },
@@ -99,13 +98,7 @@ function initialize(create: () => any): any {
   return page;
 }
 function setPeriods(page: any, weeks: number[]) {
-  if (page instanceof TargetSchoolComponent) {
-    const student=page.students[0], original=student.packages[0]; let offset=0;
-    student.packages=weeks.map((week,index)=>{
-      const row={...original,id: index+1,weeks:week,startDate:new Date(Date.parse('2026-11-08T00:00:00Z')+offset*7*86400000).toISOString().slice(0,10)};
-      offset+=week; return row;
-    });
-  } else { const plan=planOf(page); split(plan,'course',weeks);split(plan,'room',weeks); }
+  { const plan=planOf(page); split(plan,'course',weeks);split(plan,'room',weeks); }
 }
 
 describe('Textbook webpage and exported image audit', () => {

@@ -1,7 +1,7 @@
 // CIP English Kepos's content document: courses, rooms, local fees, offers and quote-image copy. The public page
 // (cip-school-page.component.ts), its calculator (cip-page-quote.ts), the local-fee table and the quote image all
 // read it. Keep it pure data (no Angular, DOM or storage), so the WeChat mini program can bundle it later.
-// Sources: the school's Google Drive pack received 2026-11-24 (June 2026 USD price list for 2027 arrivals, June 2026
+// Sources: the school's Google Drive pack received 2026-11-24 (November 2026 USD price list for 2027 arrivals, checked 2026-11-26; June 2026
 // dormitory local-fee sheet, 2026–2027 off-season poster, course summary and rules, 2025–2026 student handbook);
 // see docs/cip-page-2026-11-24.md. Never publish the school's contacts, website or the Drive links.
 import type {
@@ -128,7 +128,7 @@ const createCourses = (): CiaCourseContent[] => [
   course('premium-native-light', 'PNL 外教轻量课程', 1370, '4节外籍老师一对一 + 1节小组课', '只想跟外籍老师上课、课量不想太多的成人', LIGHT_NOTE, 1),
   course('speak-up', 'Speak Up 短期口语冲刺', 1270, '7节菲律宾老师一对一 + 1节外籍老师一对一', '只有1–2周、想集中练口语的成人', '只能报1–2周。', 2),
   course('regular-esl', 'Regular ESL 综合英语', 820, '3节菲律宾老师一对一 + 3节小组课 + 2节大班课', '想全面打好听说读写基础的成人', SEMI_NOTE, 3),
-  course('power-esl', 'Power ESL 一对一强化', 1020, '5节菲律宾老师一对一 + 1节小组课 + 2节大班课', '想多上一对一、进步更快的成人', SEMI_NOTE, 4),
+  course('power-esl', 'Power ESL 一对一强化', 940, '5节菲律宾老师一对一 + 1节小组课 + 2节大班课', '想多上一对一、进步更快的成人', SEMI_NOTE, 4),
   course('native-esl', 'Native ESL 外教综合英语', 1070, '3节菲律宾老师一对一 + 1节外籍老师一对一 + 3节小组课 + 1节大班课', '想每天都有外籍老师一对一的成人', SEMI_NOTE, 5),
   course('speaking-master', 'Speaking Master 口语强化', 1200, '5节菲律宾老师一对一 + 1节外籍老师一对一 + 1节小组课 + 1节大班课', '想集中提升口语和表达的成人', `最多报16周。${SEMI_NOTE}`, 6),
   course('native-master', 'Native Master 外教口语强化', 1370, '4节菲律宾老师一对一 + 2节外籍老师一对一 + 1节小组课 + 1节大班课', '想多跟外籍老师练口语的成人', `最多报16周。${SEMI_NOTE}`, 7),
@@ -138,8 +138,8 @@ const createCourses = (): CiaCourseContent[] => [
   course('ielts-basic', 'IELTS Basic 雅思基础', 970, `4节菲律宾老师一对一 + 3节小组课 + 1节大班课；${EVENING_IELTS}`, '雅思2.5–3.0分、想先打基础的学生', `只能报4周；到校后笔试分班，无线上面试。${SPARTA_NOTE}`, 11),
   course('ielts-intensive', 'IELTS Intensive 雅思强化', 1030, `4节菲律宾老师一对一 + 4节小组课；${EVENING_IELTS}`, '雅思3.5分以上、准备考试的学生', `入学须达到雅思3.5分并通过线上面试；周六下午雅思模考；最多报16周。${SPARTA_NOTE}`, 12),
   course('ielts-native', 'IELTS Native 雅思外教强化', 1200, `3节菲律宾老师一对一 + 1节外籍老师一对一 + 4节小组课；${EVENING_IELTS}`, '雅思3.5分以上、想跟外籍老师练口语和写作的学生', `入学须达到雅思3.5分并通过线上面试；最多报16周。${SPARTA_NOTE}`, 13),
-  // The price list's fee box gives 1,320 per 4 weeks for 8 weeks and 1,200 for 12 weeks; its 12-week totals use
-  // 1,320, but the school said to price from the fee box (2026-11-24), so 12 weeks cost 1,200 × 3 = 3,600.
+  // The price list's fee box gives 1,320 per 4 weeks for 8 weeks and 1,200 for 12 weeks, so 12 weeks cost
+  // 1,200 × 3 = 3,600 (school 2026-11-24: price from the fee box; the November 2026 list's totals agree).
   {
     ...course('ielts-guarantee', 'IELTS Guarantee 雅思保分班', 1320, `4节菲律宾老师一对一 + 4节小组课；${EVENING_IELTS}`, '有明确目标分数、能保证全勤的学生', `只能报8周或12周：8周按1,320美元／4周，12周按1,200美元／4周（共3,600美元）。按目标分数有入学要求，保分条件见下方说明。${SPARTA_NOTE}`, 14),
     feeByWeeks: { '12': 3600 },
@@ -161,7 +161,7 @@ const createRooms = (): CiaRoomContent[] => [
   room('triple', '三人间', 'T', DORM_GROUP, '校内', 670, '三张单人床，房内有卫生间。', 3),
   room('quad', '四人间', 'Q', DORM_GROUP, '校内', 570, '三张床加一张抽拉床，适合家庭或4人同行，床位安排以学校确认为准。', 4),
   room('hotel-king-single', '豪华大床房（1人住）', 'KS', HOTEL_GROUP, '校外', 2026, `约28平方米，一张大床。${HOTEL_NOTE}未成年学生不能单独入住。`, 5),
-  // Fee box price (school 2026-11-24: price from the fee box); the course totals use 1,325.
+  // Fee box price (school 2026-11-24: price from the fee box); the November 2026 list's totals agree.
   room('hotel-king-double', '豪华大床房（2人住）', 'KD', HOTEL_GROUP, '校外', 1326, `约28平方米，一张大床。${SHARED_HOTEL_NOTE}`, 6),
   room('hotel-twin-double', '豪华双床房（2人住）', 'TD', HOTEL_GROUP, '校外', 1430, `约28平方米，两张床。${SHARED_HOTEL_NOTE}`, 7),
   room('hotel-twin-triple', '豪华双床房（3人住）', 'TT', HOTEL_GROUP, '校外', 1149, `约28平方米，两张床。${SHARED_HOTEL_NOTE}`, 8),

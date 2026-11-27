@@ -8,7 +8,6 @@ import {
   MINT_WEEK_OPTIONS,
   mintEndDate,
   mintFamilyNoCourseDeduction,
-  mintLowSeasonCashDiscount,
 } from './mint-pricing';
 import { cloneMintContentConfig, createDefaultMintContentConfig } from './mint-content-config';
 
@@ -38,18 +37,29 @@ describe('English MINT confirmed pricing', () => {
     expect(migrated.quoteImageSettings.localFeeNotes!['acr']).toBe(acr.note);
   });
 
-  it('uses the published low-season discount tiers without interpolation', () => {
-    expect(mintLowSeasonCashDiscount(4)).toBe(150);
-    expect(mintLowSeasonCashDiscount(8)).toBe(350);
-    expect(mintLowSeasonCashDiscount(12)).toBe(600);
-    expect(mintLowSeasonCashDiscount(16)).toBe(900);
-    expect(mintLowSeasonCashDiscount(24)).toBe(1250);
+  it('drops the retired 2026 low-season offer from older published content', () => {
+    const old = createDefaultMintContentConfig();
+    old.quoteSettings.promotions = [
+      { id: 'mint-low-season', name: '2026下半年淡季现金优惠' },
+      { id: 'mint-ssp-benefit', name: '5周起二选一权益' },
+    ] as typeof old.quoteSettings.promotions;
+    expect(cloneMintContentConfig(old).quoteSettings.promotions).toEqual([]);
   });
 
-  it('keeps family totals and guardian deductions exact', () => {
+  it('keeps the 2026-11-25 family package totals and guardian deductions exact', () => {
+    expect(MINT_FAMILY_PRICES['one-one'][2]).toBe(3000);
+    expect(MINT_FAMILY_PRICES['one-one'][3]).toBe(4000);
+    expect(MINT_FAMILY_PRICES['one-two'][3]).toBe(5200);
     expect(MINT_FAMILY_PRICES['one-two'][10]).toBe(16250);
+    expect(MINT_FAMILY_PRICES['two-two'][2]).toBe(6000);
+    expect(MINT_FAMILY_PRICES['two-one']).toEqual({ 2: 3720, 3: 4960, 4: 6200 });
+    expect(MINT_FAMILY_PRICES['two-one'][6]).toBeUndefined();
+    expect(mintFamilyNoCourseDeduction(2)).toBe(150);
+    expect(mintFamilyNoCourseDeduction(3)).toBe(150);
     expect(mintFamilyNoCourseDeduction(4)).toBe(250);
-    expect(mintFamilyNoCourseDeduction(8)).toBe(375);
+    expect(mintFamilyNoCourseDeduction(6)).toBe(250);
+    expect(mintFamilyNoCourseDeduction(8)).toBe(350);
+    expect(mintFamilyNoCourseDeduction(10)).toBe(350);
     expect(mintFamilyNoCourseDeduction(12)).toBe(500);
   });
 

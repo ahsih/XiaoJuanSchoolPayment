@@ -1,0 +1,44 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "client-http",
+      "runtimeExecutable": "cmd",
+      "runtimeArgs": [
+        "/c",
+        "cd xiaojuanschoolpayment.client && npx ng serve --port 4300 --ssl=false"
+      ],
+      "port": 4300
+    },
+    {
+      "name": "client-http-4310",
+      "runtimeExecutable": "cmd",
+      "runtimeArgs": [
+        "/c",
+        "cd xiaojuanschoolpayment.client && npx ng serve --port 4310 --ssl=false"
+      ],
+      "port": 4310,
+      "autoPort": false
+    },
+    {
+      "name": "client-http-4320",
+      "runtimeExecutable": "cmd",
+      "runtimeArgs": [
+        "/c",
+        "cd xiaojuanschoolpayment.client && npx ng serve --port 4320 --ssl=false"
+      ],
+      "port": 4320,
+      "autoPort": false
+    },
+    {
+      "name": "client-http-4330",
+      "runtimeExecutable": "cmd",
+      "runtimeArgs": [
+        "/c",
+        "cd xiaojuanschoolpayment.client && npx ng serve --port 4330 --ssl=false"
+      ],
+      "port": 4330,
+      "autoPort": false
+    }
+  ]
+}

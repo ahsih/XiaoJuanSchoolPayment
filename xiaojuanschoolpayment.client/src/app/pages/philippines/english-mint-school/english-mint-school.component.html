@@ -61,7 +61,7 @@
                     <section><span>1位家长＋1位孩子</span><strong>1,850<small>美元</small></strong><p>孩子须满10岁；家长4节一对一，孩子4节一对一＋4节团体课。</p></section>
                   </div>
                   <div class="package-inclusion-row" aria-label="2周套餐包含项目"><span><mat-icon>school</mat-icon>课程</span><span><mat-icon>hotel</mat-icon>住宿</span><span><mat-icon>restaurant</mat-icon>三餐</span><span><mat-icon>receipt_long</mat-icon>当地费用</span><span><mat-icon>airport_shuttle</mat-icon>机场接机</span></div>
-                  <p class="package-footnote">两种组合均入住Deluxe Twin；另收注册费100美元／人。</p>
+                  <p class="package-footnote">两种组合均入住Deluxe Twin；另收注册费100美元／人；最晚2026年12月7日入学，名额有限。</p>
                 </div>
                 <div class="package-poster">
                   <app-expandable-image src="/assets/english-mint/promo-two-week.webp" [images]="['/assets/english-mint/promo-two-week.webp']" alt="English MINT 2周成人及亲子全包项目官方宣传图" title="English MINT 2周全包项目" caption="学校项目海报" previewHeight="clamp(300px, 30vw, 380px)" previewFit="contain"></app-expandable-image>
@@ -71,22 +71,33 @@
 
               <article class="package-feature package-feature--family">
                 <div class="package-feature-copy">
-                  <div class="package-title-row"><div><span>2026/12/01–2027/02/28</span><h3>4至12周家庭项目</h3></div><strong>家庭</strong></div>
+                  <div class="package-title-row"><div><span>2026/12/01–2027/02/28</span><h3>2至12周家庭项目</h3></div><strong>家庭</strong></div>
                   <div class="family-price-grid" aria-label="English MINT家庭项目4周价格">
-                    <section><span>1家长＋1孩子</span><strong>5,000<small>美元／4周</small></strong></section>
-                    <section><span>1家长＋2孩子</span><strong>6,500<small>美元／4周</small></strong></section>
-                    <section><span>2家长＋2孩子</span><strong>10,000<small>美元／4周</small></strong></section>
+                    <section *ngFor="let item of familyCombinations"><span>{{ item.shortLabel }}</span><strong>{{ formatMoney(familyPrices[item.id][4]) }}<small>美元／4周</small></strong><em>{{ item.room }}</em></section>
                   </div>
-                  <p class="family-summary">可选4、6、8、10或12周；套餐包含课程、房间、三餐、清洁洗衣、项目期签证费用、教材、水电管理、TAG接机及每满4周一次家庭活动。</p>
-                  <p class="package-footnote">500美元／家庭预约金包含在套餐总价内；房型升级和不参加课程的家长减免可在报价区选择。</p>
+                  <p class="family-summary">价格为每个家庭的套餐总价，包含家长和孩子的课程、住宿、三餐、定期清洁洗衣、教材、宿舍管理及水电费、SSP及相关证件费用（含SSP E-Card，如适用）、签证延期及ACR I-Card（如适用）、薄荷-邦劳国际机场接机，以及每满4周1次家庭活动。机票、旅游保险、个人消费、另行报名的校外活动和损坏赔偿不包含。</p>
+                  <ul class="family-detail-list">
+                    <li><strong>家长课程</strong>每天4节一对一（每节45分钟），上午Session A或下午Session B二选一，以学校安排为准；家长课程不能转给孩子或其他家庭成员。</li>
+                    <li><strong>孩子课程</strong>适用6至14周岁（含），每天4节一对一＋2节1:2 Speak-Up Duo＋2节1:8 Debate &amp; Roundtable；按英语水平及学校课表分班。</li>
+                    <li><strong>选修课</strong>视听课和英语图书馆课各1节（每节45分钟），仅对A2及以上、自愿参加的孩子开放，不另收费，开课以学校安排为准。</li>
+                    <li><strong>晚间活动</strong>学校通常安排孩子的Library自习室、电影视听室和桌游区，1至2月另有家长垫上普拉提（参考每人300比索）；开放时间、名额和收费以学校确认为准。</li>
+                    <li><strong>家庭活动</strong>每满4周1次免费家庭活动；其他校外活动另付费，可能因天气、人数和当地情况调整。</li>
+                  </ul>
+                  <p class="package-footnote">每个家庭预订定金500美元，已包含在套餐总价内，并从尾款中扣除；房间获批且学校收到定金后报名确认，取消及退款按学校退款政策。家长不上课时，每位不上课的家长减免：2至3周150美元、4至6周250美元、8至10周350美元、12周及以上500美元，须在报名时确定，之后不能恢复、追加、变更或转让课程。</p>
                 </div>
-                <div class="package-poster">
-                  <app-expandable-image src="/assets/english-mint/promo-family.webp" [images]="['/assets/english-mint/promo-family.webp']" alt="English MINT家庭项目官方宣传图" title="English MINT家庭项目" caption="学校家庭项目海报" previewHeight="clamp(300px, 30vw, 380px)" previewFit="contain"></app-expandable-image>
-                  <p><mat-icon>zoom_in</mat-icon>点击海报查看完整文字</p>
+                <div class="family-table-box">
+                  <h4>家庭套餐总价（美元）</h4>
+                  <div class="family-table-wrap"><table class="family-price-table">
+                    <thead><tr><th>周数</th><th *ngFor="let item of familyCombinations">{{ item.shortLabel }}</th></tr></thead>
+                    <tbody><tr *ngFor="let weeks of familyWeeks"><th>{{ weeks }}周</th><td *ngFor="let item of familyCombinations">{{ familyPrices[item.id][weeks] ? formatMoney(familyPrices[item.id][weeks]) : '待学校确认' }}</td></tr></tbody>
+                  </table></div>
+                  <ul>
+                    <li *ngFor="let item of familyCombinations"><strong>{{ item.shortLabel }}</strong>{{ item.room }}<ng-container *ngIf="item.roomNote">；{{ item.roomNote }}</ng-container></li>
+                    <li>未登记为住宿学员的访客进入校园须提前获批；如需过夜，须自行安排校外住宿。</li>
+                  </ul>
                 </div>
               </article>
             </div>
-            <div class="promotion-panel"><a href="/assets/english-mint/promo-low-season.webp" target="_blank" rel="noopener"><img src="/assets/english-mint/promo-low-season.webp" alt="English MINT 2026下半年淡季优惠官方宣传图" loading="lazy" /></a><div><span>2026下半年淡季优惠</span><h3>双人间4周起，现金优惠150至1,250美元</h3><p>2026/08/15–11/30报名、最迟2026/12/31入学；双人间适用，单人间不享现金优惠。5周起可在首次SSP免费与OW潜水课程之间二选一。</p><ul><li>4至7周减150美元；8至11周减350美元</li><li>12至15周减600美元；16至19周减900美元</li><li>20周及以上减1,250美元；并免TAG接机费</li><li>OW课程受年龄、健康、保险、监护及合作潜店要求限制，不能折现或转让</li></ul></div></div>
           </section>
 
           <section class="section-block" id="gallery">
@@ -123,16 +134,11 @@
           <div class="quote-form-card mint-quote-form">
             <div class="quote-mode" role="group" aria-label="报价类型"><button type="button" [class.active]="quoteMode === 'standard'" (click)="setQuoteMode('standard')">常规课程</button><button type="button" [class.active]="quoteMode === 'two-week-adult'" (click)="setQuoteMode('two-week-adult')">成人2周全包</button><button type="button" [class.active]="quoteMode === 'two-week-family'" (click)="setQuoteMode('two-week-family')">亲子2周全包</button><button type="button" [class.active]="quoteMode === 'family'" (click)="setQuoteMode('family')">家庭项目</button></div>
 
-            <div class="mint-fields" *ngIf="quoteMode === 'standard'">
-              <label>报名注册日<input type="date" [(ngModel)]="registrationDate" /></label>
-              <label *ngIf="benefitEligible">5周起权益（二选一）<select [(ngModel)]="selectedBenefit"><option value="ssp">首次SSP免费</option><option value="ow">OW潜水课程</option></select></label>
-            </div>
-            <div class="mint-fields" *ngIf="quoteMode === 'two-week-adult' || quoteMode === 'two-week-family'"><label>入学及入住（周日）<input type="date" min="2020-01-05" step="7" [(ngModel)]="startDate" /></label><div class="fixed-choice"><span>固定组合</span><strong>{{ quoteMode === 'two-week-adult' ? '成人1人＋Deluxe Twin' : '1位家长＋1位10岁以上孩子＋Deluxe Twin' }}</strong></div></div>
+            <div class="mint-fields" *ngIf="quoteMode === 'two-week-adult' || quoteMode === 'two-week-family'"><label>入学及入住（周日）<input type="date" min="2020-01-05" step="7" [(ngModel)]="startDate" /></label><div class="fixed-choice"><span>固定组合</span><strong>{{ quoteMode === 'two-week-adult' ? '成人1人＋Deluxe Twin' : '1位家长＋1位10岁以上孩子＋Deluxe Twin' }}（最晚2026/12/07入学）</strong></div></div>
             <div class="mint-fields" *ngIf="quoteMode === 'family'">
               <label>入学及入住（周日）<input type="date" min="2020-01-05" step="7" [(ngModel)]="startDate" /></label>
               <label>项目周数<select [(ngModel)]="selectedFamilyWeeks"><option *ngFor="let weeks of familyWeeks" [ngValue]="weeks">{{ weeks }}周</option></select></label>
-              <label>家庭组合<select [(ngModel)]="familyCombination" (ngModelChange)="familyUpgrade = familyCombination === 'one-one' ? familyUpgrade : 'none'; nonStudyingGuardians = 0"><option value="one-one">1位家长＋1位孩子</option><option value="one-two">1位家长＋2位孩子</option><option value="two-two">2位家长＋2位孩子</option></select></label>
-              <label *ngIf="familyCombination === 'one-one'">房型升级<select [(ngModel)]="familyUpgrade"><option value="none">不升级｜Deluxe Twin</option><option value="premium-twin">升级Premium Twin</option><option value="premium-single">升级Premium Single</option></select></label>
+              <label>家庭组合<select [(ngModel)]="familyCombination" (ngModelChange)="nonStudyingGuardians = 0"><option *ngFor="let item of familyCombinations" [value]="item.id">{{ item.label }}｜{{ item.room }}</option></select></label>
               <label>不参加课程的家长人数<input type="number" min="0" [max]="parentCount" step="1" [(ngModel)]="nonStudyingGuardians" /></label>
             </div>
 
@@ -153,7 +159,7 @@
 
         <ng-container *ngIf="!quoteOnly">
           <app-sida-why-section [schoolName]="'菲律宾薄荷岛English MINT International Academy'" [detailed]="true"></app-sida-why-section>
-          <section class="section-block" id="faq"><div class="section-heading"><span>报名前常见问题</span><h2>确认English MINT前，建议先看这些</h2></div><div class="faq-section"><details><summary>淡季优惠可以住单人间吗？</summary><p>可以选择单人间，但学校现金优惠只适用于双人间；单人间不会自动扣减现金优惠。</p></details><details><summary>5周起的SSP或潜水权益能同时选择吗？</summary><p>不能。符合活动条件时只能选择首次SSP免费或OW潜水课程其中一项，并需在报名第一周前确认，不能折现或转让。</p></details><details><summary>家庭项目的500美元预约金会额外加入总价吗？</summary><p>不会。每个家庭的500美元预约金包含在家庭套餐总价中，并从后续应付余额里抵扣。</p></details></div></section>
+          <section class="section-block" id="faq"><div class="section-heading"><span>报名前常见问题</span><h2>确认English MINT前，建议先看这些</h2></div><div class="faq-section"><details><summary>家庭项目的500美元预约金会额外加入总价吗？</summary><p>不会。每个家庭的500美元预约金包含在家庭套餐总价中，并从后续应付余额里抵扣。</p></details></div></section>
           <section class="bottom-cta"><div><span>获取English MINT完整资料与确认报价</span><h2>把日期、课程、房型和同行人数告诉思达启航</h2><p>顾问会协助核对English MINT当期名额、房型、家庭组合、优惠资格和正式账单，并说明薄荷岛抵达安排。</p></div><ul><li><mat-icon>check_circle</mat-icon>免费核对学校空位与项目名额</li><li><mat-icon>check_circle</mat-icon>拆分美元学校费与比索当地费</li><li><mat-icon>check_circle</mat-icon>生成可保存的完整报价图片</li></ul><a class="primary-action" routerLink="/about-sida/contact">联系思达启航顾问<mat-icon>support_agent</mat-icon></a></section>
         </ng-container>
       </main>

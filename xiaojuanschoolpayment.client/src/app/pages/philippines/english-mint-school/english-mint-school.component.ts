@@ -21,8 +21,11 @@ import {
   isSunday,
   MINT_PRICE_WEEKS,
   MINT_COURSES,
+  MINT_FAMILY_COMBINATIONS,
+  MINT_FAMILY_DEPOSIT,
   MINT_FAMILY_PRICES,
-  MINT_FAMILY_UPGRADES,
+  MINT_FAMILY_WEEKS,
+  MintFamilyCombination,
   MINT_LOCAL_FEES,
   MINT_LOCAL_TOTALS,
   MINT_REGISTRATION_FEE,
@@ -31,14 +34,11 @@ import {
   MintLocalFeeWeeks,
   mintEndDate,
   mintFamilyNoCourseDeduction,
-  mintLowSeasonCashDiscount,
   MintQuoteWeeks,
 } from './mint-pricing';
 
 type MintQuoteMode = 'standard' | 'two-week-adult' | 'two-week-family' | 'family';
 type GalleryCategory = '全部' | '校园' | '教室' | '公共区域' | '住宿' | '餐食' | '宣传资料';
-type FamilyCombination = 'one-one' | 'one-two' | 'two-two';
-type FamilyUpgrade = 'none' | 'premium-twin' | 'premium-single';
 
 interface GalleryImage { category: Exclude<GalleryCategory, '全部'>; title: string; description: string; src: string; group?: string; }
 
@@ -66,6 +66,7 @@ const MINT_COMPLETE_GALLERY: GalleryImage[] = [
   ...mintGallerySeries('住宿', 'room-deluxe-bathroom', 4, '标准双人间浴室', 'Deluxe Twin浴室细节实拍。', '标准双人间'),
   ...mintGallerySeries('住宿', 'room-premium-single', 17, '高级单人间', 'Premium Single房间及卫浴多角度实拍。', '高级单人间'),
   ...mintGallerySeries('住宿', 'room-premium-twin', 9, '高级双人间', 'Premium Twin房间多角度实拍。', '高级双人间'),
+  ...mintGallerySeries('住宿', 'room-triple', 3, '三人房（Triple）', '家庭项目2位家长＋1位孩子使用的Triple三人房实拍；实际房间以学校分配为准。', '三人房'),
   ...mintGallerySeries('餐食', 'meal-curry-beef', 2, '咖喱牛肉饭套餐', '校内真实餐食照片；菜单按当期安排变化。', '咖喱牛肉饭'),
   ...mintGallerySeries('餐食', 'meal-pork-cutlet', 2, '香酥炸猪排套餐', '校内真实餐食照片；菜单按当期安排变化。', '香酥炸猪排'),
   ...mintGallerySeries('餐食', 'meal-boiled-pork', 3, '白切肉与肉饼套餐', '校内真实餐食照片；菜单按当期安排变化。', '白切肉与肉饼'),
@@ -78,8 +79,6 @@ const MINT_COMPLETE_GALLERY: GalleryImage[] = [
   ...mintGallerySeries('餐食', 'meal-seafood-noodles', 3, '香辣海鲜炒面套餐', '校内真实餐食照片；菜单按当期安排变化。', '香辣海鲜炒面'),
   ...mintGallerySeries('餐食', 'meal-overview', 1, '学校套餐合照', '五款套餐合照；实际菜单以到校安排为准。', '套餐合照'),
   { category: '宣传资料', group: '学校项目海报', title: '2周成人及亲子全包项目', description: '学校项目海报，不代表校园实景。', src: '/assets/english-mint/promo-two-week.webp' },
-  { category: '宣传资料', group: '学校项目海报', title: '冬季家庭项目', description: '学校家庭项目海报，不代表校园实景。', src: '/assets/english-mint/promo-family.webp' },
-  { category: '宣传资料', group: '学校项目海报', title: '2026下半年淡季优惠', description: '学校优惠海报，不代表校园实景。', src: '/assets/english-mint/promo-low-season.webp' },
   ...Array.from({ length: 13 }, (_, index): GalleryImage => {
     const titles = ['Deluxe Twin宣传照', '宿舍走廊宣传图', '浴室宣传图', '餐厅宣传图', 'GC宣传照1', 'GC宣传照2', 'Gemini宣传图1', 'Gemini宣传图2', '图书馆宣传照', 'MTM宣传照', '前台宣传照', '房间宣传照1', '房间宣传照2'];
     const aiIndexes = new Set([1, 2, 3, 6, 7]);
@@ -123,7 +122,9 @@ export class EnglishMintSchoolComponent implements OnInit, AfterViewInit {
   readonly localFeeWeeks = [4, 8, 12, 16, 20, 24] as const;
   readonly localFeeReferenceRows = MINT_LOCAL_FEES;
   readonly localFeeReferenceTotals = MINT_LOCAL_TOTALS;
-  readonly familyWeeks = [4, 6, 8, 10, 12];
+  readonly familyWeeks = MINT_FAMILY_WEEKS;
+  readonly familyCombinations = MINT_FAMILY_COMBINATIONS;
+  readonly familyPrices = MINT_FAMILY_PRICES;
   readonly galleryCategories: GalleryCategory[] = ['全部', '校园', '教室', '公共区域', '住宿', '餐食', '宣传资料'];
   readonly galleryAlbumCategories: Exclude<GalleryCategory, '全部'>[] = ['校园', '教室', '公共区域', '住宿', '餐食', '宣传资料'];
   selectedGalleryCategory: GalleryCategory = '全部';
@@ -145,11 +146,8 @@ export class EnglishMintSchoolComponent implements OnInit, AfterViewInit {
   private packageStart = '2026-09-20';
   get startDate() { return this.quoteMode === 'standard' ? this.quotePlan.startDate : this.packageStart; }
   set startDate(value: string) { if (this.quoteMode === 'standard') this.quotePlan.updateStartDate('course', this.quotePlan.courses[0].id, value); else this.packageStart = value; }
-  registrationDate = '2026-09-17';
-  selectedBenefit: 'ssp' | 'ow' = 'ssp';
-  familyCombination: FamilyCombination = 'one-one';
+  familyCombination: MintFamilyCombination = 'one-one';
   selectedFamilyWeeks = 4;
-  familyUpgrade: FamilyUpgrade = 'none';
   nonStudyingGuardians = 0;
   quoteCalculated = false;
   usdToCny = Number.NaN;
@@ -171,13 +169,13 @@ export class EnglishMintSchoolComponent implements OnInit, AfterViewInit {
   readonly highlights = [
     { title: '薄荷岛学习与海岛生活结合', text: '学校位于邦劳，距机场、阿罗娜海滩和多尔霍海滩均约10分钟车程。' },
     { title: '一对一为核心的课程结构', text: '四类课程均包含每天4节一对一；Adult ESL另含1:2与1:8互动课。' },
-    { title: '成人、青少年与家庭项目', text: '常规成人与Junior课程之外，另有2周成人/亲子全包和冬季家庭项目。' },
+    { title: '成人、青少年与家庭项目', text: '常规成人与Junior课程之外，另有2周成人/亲子全包和2至12周冬季家庭项目。' },
   ];
 
   readonly suitableFor = [
     { title: '希望在薄荷岛集中学习', text: '校内教室、住宿、餐厅、泳池与自习空间集中，日常通勤较少。' },
     { title: '想兼顾口语输出和自由时间', text: '可在Adult ESL、Speaking Master与Lite ESL之间按课量选择。' },
-    { title: '亲子或家庭同行', text: '学校开设青少年课程、2周亲子全包及4至12周家庭项目。' },
+    { title: '亲子或家庭同行', text: '学校开设青少年课程、2周亲子全包及2至12周家庭项目，家庭项目孩子适用6至14周岁。' },
   ];
 
   readonly lessSuitableFor = [
@@ -278,32 +276,21 @@ export class EnglishMintSchoolComponent implements OnInit, AfterViewInit {
   }
   get activeWeeks(): number { return this.quoteMode === 'family' ? this.selectedFamilyWeeks : this.quoteMode.startsWith('two-week') ? 2 : this.selectedWeeks; }
   get endDate(): string { return mintEndDate(this.startDate, this.activeWeeks); }
-  get parentCount(): number { return this.familyCombination === 'two-two' ? 2 : 1; }
-  get childCount(): number { return this.familyCombination === 'one-two' || this.familyCombination === 'two-two' ? 2 : 1; }
-  get familyLabel(): string { return this.familyCombination === 'one-one' ? '1位家长＋1位孩子' : this.familyCombination === 'one-two' ? '1位家长＋2位孩子' : '2位家长＋2位孩子'; }
-
-  get lowSeasonEligible(): boolean {
-    return this.quoteMode === 'standard'
-      && this.registrationDate >= '2026-08-15' && this.registrationDate <= '2026-11-30'
-      && this.startDate <= '2026-12-31' && this.startDate >= this.registrationDate
-      && this.quotePlan.rooms.every(row => row.optionId === 'premium-twin' || row.optionId === 'deluxe-twin');
-  }
-  get cashDiscount(): number { return this.lowSeasonEligible ? mintLowSeasonCashDiscount(this.selectedWeeks) : 0; }
-  get benefitEligible(): boolean { return this.lowSeasonEligible && this.selectedWeeks >= 5; }
+  get familyInfo() { return MINT_FAMILY_COMBINATIONS.find(item => item.id === this.familyCombination) ?? MINT_FAMILY_COMBINATIONS[0]; }
+  get parentCount(): number { return this.familyInfo.parents; }
+  get childCount(): number { return this.familyInfo.children; }
+  get familyLabel(): string { return this.familyInfo.label; }
 
   get standardSubtotal(): number {
     return MINT_REGISTRATION_FEE + this.quotePlan.total('course') + this.quotePlan.total('room');
   }
   get familyBase(): number { return MINT_FAMILY_PRICES[this.familyCombination][this.selectedFamilyWeeks] ?? 0; }
-  get familyUpgradeAmount(): number {
-    return this.familyCombination === 'one-one' && this.familyUpgrade !== 'none' ? MINT_FAMILY_UPGRADES[this.familyUpgrade][this.selectedFamilyWeeks] ?? 0 : 0;
-  }
-  get guardianDeduction(): number { return Math.min(this.parentCount, Math.max(0, this.nonStudyingGuardians)) * mintFamilyNoCourseDeduction(this.selectedFamilyWeeks); }
+  get guardianDeduction(): number { return !this.familyBase ? 0 : Math.min(this.parentCount, Math.max(0, this.nonStudyingGuardians)) * mintFamilyNoCourseDeduction(this.selectedFamilyWeeks); }
   get quoteUsd(): number {
-    if (this.quoteMode === 'standard') return this.standardSubtotal - this.cashDiscount;
+    if (this.quoteMode === 'standard') return this.standardSubtotal;
     if (this.quoteMode === 'two-week-adult') return 1050 + 100;
     if (this.quoteMode === 'two-week-family') return 1850 + 200;
-    return this.familyBase + this.familyUpgradeAmount - this.guardianDeduction;
+    return this.familyBase - this.guardianDeduction;
   }
   get quoteHeading(): string {
     if (this.quoteMode === 'two-week-adult') return 'English MINT成人2周全包报价';
@@ -315,9 +302,10 @@ export class EnglishMintSchoolComponent implements OnInit, AfterViewInit {
   get quoteError(): string {
     if (this.quoteMode === 'standard' && this.quotePlan.error) return this.quotePlan.error;
     if (this.quoteMode === 'standard' && !this.hasConfirmedLocalFees) return '当前周数的完整学杂费尚未确认，请联系顾问。';
-    if (this.quoteMode === 'family' && !this.familyWeeks.includes(this.selectedFamilyWeeks)) return '请选择已公布的家庭套餐周数。';
+    if (this.quoteMode === 'family' && !(this.familyWeeks as readonly number[]).includes(this.selectedFamilyWeeks)) return '请选择已公布的家庭套餐周数。';
+    if (this.quoteMode === 'family' && !this.familyBase) return `${this.familyLabel}的${this.selectedFamilyWeeks}周套餐价格待学校确认，暂不能生成报价，请联系顾问向学校询价。`;
+    if (this.quoteMode.startsWith('two-week') && this.startDate > '2026-12-07') return '2周全包项目最晚须在2026年12月7日前入学；之后请选择家庭项目或常规课程。';
     if (!this.startDate || !isSunday(this.startDate)) return '入学及入住日期请选择周日。';
-    if (this.quoteMode === 'standard' && this.registrationDate > this.startDate) return '报名注册日不能晚于入学日期。';
     if (this.quoteMode === 'family' && (this.startDate < '2026-12-01' || this.endDate > '2027-02-28')) return '家庭项目须完整安排在2026年12月1日至2027年2月28日项目期内。';
     if (this.quoteMode === 'family' && this.nonStudyingGuardians > this.parentCount) return '不参加课程的家长人数不能超过当前家庭组合中的家长人数。';
     if (!this.quoteUsd) return '当前选择没有完整价格，不能生成报价。';
@@ -342,8 +330,6 @@ export class EnglishMintSchoolComponent implements OnInit, AfterViewInit {
         { icon: '注', label: '注册费', amount: `${this.formatMoney(MINT_REGISTRATION_FEE)} 美元`, note: '一次性费用。' },
         ...this.quotePlan.paymentItems().map(item => ({ ...item, label: item.label.replace('课程费', '课程名称').replace('住宿费', '住宿名称') })),
       ];
-      if (this.cashDiscount) items.push({ icon: '惠', label: '2026下半年淡季现金优惠', amount: `−${this.formatMoney(this.cashDiscount)} 美元`, note: '双人房且报名、最迟入学日期符合，按当前周数档位扣减。', promotionKey: 'mint-low-season', accent: true });
-      if (this.benefitEligible) items.push({ icon: '礼', label: this.selectedBenefit === 'ssp' ? '首次SSP权益' : 'OW潜水课程权益', amount: '报名时确认', note: this.selectedBenefit === 'ssp' ? '学杂费表仍按原额展示；符合资格后的减免以学校账单为准。' : '年龄、健康、保险、监护与合作潜店条件须确认；不可折现或转让。', promotionKey: 'mint-ssp-benefit' });
     } else if (this.quoteMode === 'two-week-adult') {
       items = [
         { icon: '注', label: '注册费', amount: '100 美元', note: '成人1人。' },
@@ -355,8 +341,7 @@ export class EnglishMintSchoolComponent implements OnInit, AfterViewInit {
         { icon: '套', label: '亲子2周全包方案', amount: '1,850 美元', note: '孩子须满10岁；含两人课程、1间Deluxe双人间、餐食、当地费用和机场接机。' },
       ];
     } else {
-      items = [{ icon: '套', label: `${this.familyLabel}家庭套餐`, amount: `${this.formatMoney(this.familyBase)} 美元`, note: '已含套餐列明的课程、住宿、餐食、签证当地费用、教材、接机和家庭活动。' }];
-      if (this.familyUpgradeAmount) items.push({ icon: '宿', label: this.familyUpgrade === 'premium-twin' ? '升级高级双人间' : '升级高级单人间', amount: `${this.formatMoney(this.familyUpgradeAmount)} 美元`, note: '仅1位家长＋1位孩子组合可选。' });
+      items = [{ icon: '套', label: `${this.familyLabel}家庭套餐`, amount: this.familyBase ? `${this.formatMoney(this.familyBase)} 美元` : '待学校确认', note: `${this.familyInfo.room}；含课程、住宿、餐食、清洁洗衣、教材、水电管理、SSP及签证相关费用、TAG接机和每满4周1次家庭活动，已含每个家庭${MINT_FAMILY_DEPOSIT}美元预订定金。` }];
       if (this.guardianDeduction) items.push({ icon: '减', label: '家长不参加课程减免', amount: `−${this.formatMoney(this.guardianDeduction)} 美元`, note: '须报名时确定，之后不可恢复、加回或转让课程。', accent: true });
     }
     return applyEditableQuotePaymentItems(items, this.contentConfig.quoteImageSettings, this.contentConfig.quoteSettings.promotions);
@@ -385,7 +370,6 @@ export class EnglishMintSchoolComponent implements OnInit, AfterViewInit {
       ruleNotes: [
         `周日入住，周六离校；当前日期为${this.startDate.replaceAll('-', '/')}–${this.endDate.replaceAll('-', '/')}。`,
         this.quoteMode === 'standard' ? '常规报价开放4、8、12、16、20、24周，学杂费直接使用学校对应周数表格金额。' : '全包价格只按学校列明的固定组合计算。',
-        ...(this.benefitEligible ? ['5周起权益为首次SSP减免或OW潜水课程二选一；须报名时确认，不能折现、转让或事后更改。'] : []),
       ], fullFeeDetails: true, localFeeTableLayout: 'web',
     });
     const laidOut = applySchoolQuoteImageLayout({

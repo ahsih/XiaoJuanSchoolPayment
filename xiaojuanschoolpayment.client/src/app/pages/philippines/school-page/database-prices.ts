@@ -16,7 +16,9 @@ export const CONTENT_ONLY_PRICE_SCHOOL_CODES: readonly string[] = [
   'CPILS',
   'ELSA',
   'FELLA',
+  'QQ',
   'GENIUS',
+  'GITC',
   'GLC',
   'HANA',
   'HELP-CLARK',
@@ -27,6 +29,8 @@ export const CONTENT_ONLY_PRICE_SCHOOL_CODES: readonly string[] = [
   'MONOL',
   'PINES',
   'SMEAG-ENCANTO',
+  'TARGET',
+  'WINNING',
 ];
 
 /** Whether the school's page and editor fill missing prices from the database (every school not listed above). */

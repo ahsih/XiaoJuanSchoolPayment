@@ -8,12 +8,9 @@ const imageSettings = (): CiaQuoteImageSettings => ({
     registration: '常规课程一次性100美元／人；全包项目按项目列明的人数计算。',
     course: '课程、日期、周数和金额按当前选择自动计算。',
     accommodation: '住宿、日期、周数和金额按当前选择自动计算；房型空位须确认。',
-    promotion: '优惠金额与资格按当前报名日、入学日、周数和房型自动判断。',
+    promotion: '学校当前没有另行公布的优惠。',
   },
-  promotionNotes: {
-    'mint-low-season': '双人房、报名日和最迟入学日期均符合时，按学校档位自动扣减。',
-    'mint-ssp-benefit': '5周起可在首次SSP减免与OW潜水课程之间二选一，须报名时确认。',
-  },
+  promotionNotes: {},
   localFeeSectionTitle: '到校后学杂费明细',
   localFeeIntro: '学杂费直接引用学校4、8、12、16、20、24周对应表格；促销权益另列，不改写学校参考总额。',
   localFeeNotes: Object.fromEntries(MINT_LOCAL_FEES.map(row => [row.id, row.note])),
@@ -60,10 +57,8 @@ export const createDefaultMintContentConfig = (): CiaContentConfig => ({
     registrationFee: MINT_REGISTRATION_FEE,
     futurePriceRegistrationStart: '', futurePriceArrivalStart: '', shortStayRatios: {},
     peakSeasonFeePerWeek: 0, peakSeasonRanges: [],
-    promotions: [
-      { id: 'mint-low-season', name: '2026下半年淡季现金优惠', description: '双人房且报名、入学日期符合时按周数档位减免。', enabled: true, sortOrder: 0, priority: 10, stackable: false, newStudentsOnly: false, discountType: 'fixed', discountValue: 0, appliesTo: 'school-total', waiveRegistration: false, minimumCourseWeeks: 4, minimumAccommodationWeeks: 4, registrationStart: '2026-08-15', registrationEnd: '2026-11-30', arrivalEnd: '2026-12-31', coverageTarget: 'course-and-accommodation', ruleKind: 'mint-low-season' },
-      { id: 'mint-ssp-benefit', name: '5周起二选一权益', description: '首次SSP减免或OW潜水课程二选一。', enabled: true, sortOrder: 1, priority: 20, stackable: false, newStudentsOnly: false, discountType: 'none', discountValue: 0, appliesTo: 'school-total', waiveRegistration: false, minimumCourseWeeks: 5, minimumAccommodationWeeks: 5, registrationStart: '2026-08-15', registrationEnd: '2026-11-30', arrivalEnd: '2026-12-31', coverageTarget: 'course-and-accommodation', ruleKind: 'mint-ssp-or-ow' },
-    ],
+    // The 2026 low-season offer (cash discount, SSP or OW choice) was removed on 2026-11-26.
+    promotions: [],
     localFeeIntro: '学校公布了4、8、12、16、20、24周的完整当地费用；教材费和超额用电另结。',
     courseTableTitle: 'English MINT课程费用', courseTableNote: '1/2/3/4/8/12/16/24周采用学校原价；20周按已确认的4周平均价计算。',
     groupClassNote: '实际分班、教师和团体人数按学校测评及当期安排。',
@@ -77,6 +72,8 @@ export const createDefaultMintContentConfig = (): CiaContentConfig => ({
   media: [],
 });
 
+const MINT_RETIRED_PROMOTIONS = ['mint-low-season', 'mint-ssp-benefit'];
+
 export const cloneMintContentConfig = (value: CiaContentConfig): CiaContentConfig => {
   const defaults = createDefaultMintContentConfig();
   if (value?.schemaVersion !== 1 || value.schoolCode !== 'MINT') return defaults;
@@ -86,7 +83,8 @@ export const cloneMintContentConfig = (value: CiaContentConfig): CiaContentConfi
   result.localFees ??= structuredClone(defaults.localFees);
   result.media ??= [];
   result.quoteSettings = { ...defaults.quoteSettings, ...(result.quoteSettings ?? {}) };
-  result.quoteSettings.promotions ??= structuredClone(defaults.quoteSettings.promotions);
+  result.quoteSettings.promotions = (result.quoteSettings.promotions ?? structuredClone(defaults.quoteSettings.promotions))
+    .filter(item => !MINT_RETIRED_PROMOTIONS.includes(item.id));
   result.quoteImageSettings = { ...structuredClone(defaults.quoteImageSettings), ...(result.quoteImageSettings ?? {}) };
   result.quoteImageSettings.paymentNotes = { ...defaults.quoteImageSettings.paymentNotes, ...(result.quoteImageSettings.paymentNotes ?? {}) };
   result.quoteImageSettings.promotionNotes = { ...defaults.quoteImageSettings.promotionNotes, ...(result.quoteImageSettings.promotionNotes ?? {}) };

@@ -40,7 +40,21 @@
 .package-inclusion-row span { display: inline-flex; align-items: center; gap: 5px; padding: 7px 10px; border-radius: 10px; background: #eaf7f6; color: #12636c; font-size: 13px; font-weight: 750; }
 .package-inclusion-row mat-icon { width: 17px; height: 17px; font-size: 17px; }
 .package-footnote { margin: 0; padding: 12px 14px; border-left: 3px solid var(--mint); border-radius: 0 10px 10px 0; background: #f4f9f9; font-size: 13px; }
-.family-price-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+.family-price-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+.family-price-grid section > em { display: block; margin-top: 6px; color: #56737a; font-size: 12px; font-style: normal; font-weight: 700; }
+.family-detail-list { display: grid; gap: 8px; margin: 0; padding: 0; list-style: none; }
+.family-detail-list li { color: #526b72; font-size: 14px; line-height: 1.7; }
+.family-detail-list strong { margin-right: 8px; color: var(--mint-dark); }
+.family-table-box { display: grid; min-width: 0; gap: 12px; padding: 14px; border-radius: 17px; background: #eef7f7; }
+.family-table-box h4 { margin: 0; color: var(--mint-dark); font-size: 16px; }
+.family-table-wrap { overflow-x: auto; border-radius: 12px; background: #fff; }
+.family-price-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.family-price-table th, .family-price-table td { padding: 8px 6px; border-bottom: 1px solid #e0ecec; text-align: right; white-space: nowrap; }
+.family-price-table thead th { color: #365d67; font-size: 12px; text-align: right; white-space: normal; }
+.family-price-table th:first-child { text-align: left; }
+.family-price-table td { color: var(--mint-dark); font-weight: 800; }
+.family-table-box ul { display: grid; gap: 6px; margin: 0; padding: 0; list-style: none; color: #526b72; font-size: 13px; line-height: 1.6; }
+.family-table-box li strong { margin-right: 6px; color: var(--mint-dark); }
 .family-price-grid section > strong { font-size: 23px; }
 .family-price-grid strong small { display: block; margin: 4px 0 0; }
 .family-summary { margin: 0; }
@@ -126,7 +140,12 @@
   .mint-fields { grid-template-columns: 1fr; }
   .package-feature, .promotion-panel { padding: 15px; }
   .package-title-row h3, .promotion-panel h3 { font-size: 20px; }
-  .two-week-options, .family-price-grid { grid-template-columns: 1fr; }
+  .two-week-options { grid-template-columns: 1fr; }
+  .family-price-grid section > strong { font-size: 20px; }
+  .family-table-box { padding: 10px; }
+  .family-price-table th, .family-price-table td { padding: 7px 3px; font-size: 12px; white-space: normal; }
+  .family-price-table thead th { font-size: 11px; }
+  .family-price-table tbody th { white-space: nowrap; }
   .two-week-options section, .family-price-grid section { padding: 14px; }
   .package-title-row > strong { display: none; }
   .mint-scroll-table { margin-inline: -2px; }

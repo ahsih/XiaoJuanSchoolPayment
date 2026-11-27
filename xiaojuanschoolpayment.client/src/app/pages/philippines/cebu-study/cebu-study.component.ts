@@ -485,9 +485,9 @@ export class CebuStudyComponent {
       image: 'https://stargate-cebu.com/wp-content/themes/stargate/images/top2025/slide1/slide1_img01_2.jpg', highlights: ['标准 / 轻松英语', '强化口语', '托业', '商务英语'],
     },
     {
-      name: 'Winning 海滨校区', route: '/philippines-study/cebu/winning-english-academy', tag: '海滨校区',
-      location: 'Mactan · Lapu-Lapu', summary: '海滨校区覆盖综合英语、雅思、商务和亲子课程，学习与海岛生活兼顾。',
-      image: 'https://tabiken-ryugaku.co.jp/ph/wp-content/uploads/sites/3/2023/08/6-2-1024x576.jpg', highlights: ['剑桥综合英语', '强化 / 集中口语', '旅游英语', '商务英语', '雅思 / 托业', '亲子 / 青少年英语'],
+      name: 'Winning 海滨校区', route: '/philippines-study/cebu/winning-ocean-campus', tag: '海滨校区',
+      location: 'Mactan · Lapu-Lapu', summary: '麦克坦岛上约50人的小校区，ESL、口语强化、旅游英语和亲子家庭课程。',
+      image: '/assets/winning/ocean/building.webp', highlights: ['剑桥ESL', '口语强化', '旅游英语', '亲子家庭英语'],
     },
     {
       name: 'GLANT', route: '/philippines-study/cebu/glant', tag: '小规模自由管理',

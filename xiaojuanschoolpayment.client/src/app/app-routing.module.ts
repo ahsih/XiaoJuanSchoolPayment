@@ -214,6 +214,11 @@ const routes: Routes = [
           ),
       },
       {
+        path: 'philippines-study/cebu/gitc-cebu-campus',
+        loadComponent: () =>
+          import('./pages/philippines/gitc-school/gitc-cebu-school.component').then((m) => m.GitcCebuSchoolComponent),
+      },
+      {
         path: 'philippines-study/cebu/ciec',
         loadComponent: () =>
           import('./pages/philippines/ciec-school/ciec-school-page.component').then((m) => m.CiecSchoolPageComponent),
@@ -236,8 +241,8 @@ const routes: Routes = [
       {
         path: 'philippines-study/cebu/target-global-english-academy',
         loadComponent: () =>
-          import('./pages/philippines/target-school/target-school.component').then(
-            (m) => m.TargetSchoolComponent,
+          import('./pages/philippines/target-school/target-school-page.component').then(
+            (m) => m.TargetSchoolPageComponent,
           ),
       },
       {
@@ -264,9 +269,12 @@ const routes: Routes = [
       {
         path: 'philippines-study/cebu/qqenglish-beachfront-campus',
         loadComponent: () =>
-          import(
-            './pages/philippines/qqenglish-beachfront-school/qqenglish-beachfront-school.component'
-          ).then((m) => m.QqenglishBeachfrontSchoolComponent),
+          import('./pages/philippines/qq-school/qq-beachfront-school.component').then((m) => m.QqBeachfrontSchoolComponent),
+      },
+      {
+        path: 'philippines-study/cebu/qqenglish-it-park-campus',
+        loadComponent: () =>
+          import('./pages/philippines/qq-school/qq-it-park-school.component').then((m) => m.QqItParkSchoolComponent),
       },
       {
         path: 'philippines-study/cebu/stargate-global-education',
@@ -276,11 +284,18 @@ const routes: Routes = [
           ),
       },
       {
-        path: 'philippines-study/cebu/winning-english-academy',
+        path: 'philippines-study/cebu/winning-ayala-campus',
         loadComponent: () =>
-          import('./pages/philippines/winning-school/winning-school.component').then(
-            (m) => m.WinningSchoolComponent,
-          ),
+          import('./pages/philippines/winning-school/winning-ayala-school.component').then((m) => m.WinningAyalaSchoolComponent),
+      },
+      {
+        path: 'philippines-study/cebu/winning-ocean-campus',
+        loadComponent: () =>
+          import('./pages/philippines/winning-school/winning-ocean-school.component').then((m) => m.WinningOceanSchoolComponent),
+      },
+      {
+        path: 'philippines-study/cebu/winning-english-academy',
+        redirectTo: '/philippines-study/cebu/winning-ayala-campus',
       },
       {
         path: 'philippines-study/cebu/api-beci-city-campus',
@@ -658,7 +673,7 @@ const routes: Routes = [
       {
         path: 'philippines-study/iloilo/gitc-college-international-language-center',
         loadComponent: () =>
-          import('./pages/philippines/gitc-school/gitc-school.component').then((m) => m.GitcSchoolComponent),
+          import('./pages/philippines/gitc-school/gitc-iloilo-school.component').then((m) => m.GitcIloiloSchoolComponent),
       },
       {
         path: 'philippines-study/iloilo/we-academy',

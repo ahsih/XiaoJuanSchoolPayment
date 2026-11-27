@@ -8,9 +8,10 @@ import type { CiaContentConfig } from '../cia-school/cia-content-config';
 /**
  * Content documents whose `tuition2027` is a price of its own: CIA, CPILS, I.BREEZE, Cebu Blue Ocean and PINES
  * (`tuition` = 2026 price list, `tuition2027` = 2027 price list) and SMEAG Encanto (family courses: `tuition` =
- * off-season, `tuition2027` = peak whole-family price).
+ * off-season, `tuition2027` = peak whole-family price) and GITC (`tuition` = courses starting before 2027-02-15,
+ * `tuition2027` = from then on).
  */
-export const TWO_COURSE_PRICE_SCHOOL_CODES: readonly string[] = ['CIA', 'CPILS', 'IBREEZE', 'BLUE-OCEAN', 'PINES', 'SMEAG-ENCANTO'];
+export const TWO_COURSE_PRICE_SCHOOL_CODES: readonly string[] = ['CIA', 'CPILS', 'IBREEZE', 'BLUE-OCEAN', 'PINES', 'SMEAG-ENCANTO', 'GITC'];
 
 export const keepsTwoCoursePrices = (schoolCode: string | undefined): boolean =>
   !!schoolCode && TWO_COURSE_PRICE_SCHOOL_CODES.includes(schoolCode);

@@ -348,9 +348,9 @@ const libraryPages: Record<string, LibraryPage> = {
       {
         icon: 'school',
         title: 'Winning English Academy',
-        tag: '宿务 / City与Ocean多校区',
-        text: '适合想在台资多国籍环境中选择City市区或Ocean海岛校区，兼顾ESL、考试、商务和亲子课程的学生。',
-        route: '/philippines-study/cebu/winning-english-academy',
+        tag: '宿务 / Ayala与Ocean两个校区',
+        text: '市中心的新城市Ayala校区有ESL、托业、雅思、商务和亲子课程；麦克坦岛的Ocean校区规模小，适合亲子家庭。',
+        route: '/philippines-study/cebu/winning-ayala-campus',
       },
       {
         icon: 'landscape',

@@ -1,0 +1,172 @@
+// Text and data of the GITC Cebu campus page (Lapu-Lapu, Mactan), from GITC's 2026 and 2027 brochures, the Cebu
+// orientation guide (2026-07-16) and the photos and dormitory film in GITC's Drive pack (docs/gitc-source-2026-11-26.md).
+// Read by gitc-page-profile.ts. Keep it pure data (no Angular, DOM or storage). Never add the school's phone, address,
+// website or social accounts: the campus signboard photos print the website and are left out, and the dormitory
+// stills are cropped below the film's website watermark.
+import { gitcSchedule, type GitcCampusPageContent } from './gitc-shared-content';
+
+const img = (file: string) => `assets/gitc-cebu/${file}.webp`;
+
+export const GITC_CEBU_PAGE: GitcCampusPageContent = {
+  campus: 'cebu',
+  text: {
+    breadcrumb: '菲律宾游学 / 宿务学校 / GITC College Cebu校区',
+    heroTitle: '菲律宾宿务 GITC College 语言学校 Cebu 校区',
+    heroLead: 'GITC学院在宿务麦克坦岛Lapu-Lapu市的新校区：可以住校内胶囊式单人间（含三餐和水电），下楼就上课，也可以住附近的公寓坐班车上学。课程有ESL、口语强化、雅思和托业入门及保分课程；校内有桑拿、休息区和化妆间。',
+    heroTags: [
+      { icon: 'king_bed', text: '校内单人间' },
+      { icon: 'restaurant', text: '含三餐' },
+      { icon: 'workspace_premium', text: '雅思／托业保分' },
+      { icon: 'scuba_diving', text: '海岛活动' },
+    ],
+    overviewTitle: '30 秒看懂 GITC Cebu 校区',
+    advisorTitle: '顾问怎么看 GITC Cebu',
+    advisorText: 'Cebu校区适合想住单人间、又不想每天通勤的学生：校内宿舍全部是胶囊式单人间，价格比公寓低，三餐和水电都含在住宿费里；老师也住在校内宿舍（学校安排），课后容易找到人说英语。校区在麦克坦岛，周末去潜水、跳岛很方便。想要更大空间可以选附近的公寓。',
+    campusTitle: 'GITC Cebu 校区介绍',
+    campusIntro: '教学楼、校内宿舍、餐厅和休息区在同一个校园；一对一教室区和小组教室分开，另有学习休息区、桑拿、淋浴间、化妆间和小卖部。',
+    galleryTitle: '按区域查看 GITC Cebu 校区环境',
+    galleryIntro: '按区域查看校园、教室、宿舍和设施；相册内用左右箭头或缩略图切换，点击主图可放大。',
+    coursesTitle: 'Cebu 校区课程怎么选？',
+    coursesIntro: '每门课下面是每天的课时；点开可看适合人群和说明。每节课45分钟。',
+    detailHint: '雅思／托业保分表、加课、免费线上课、TESOL、亲子和青少年营地',
+    scheduleTitle: 'Cebu 校区每日作息参考（周一至周五）',
+    scheduleIntro: '每节课45分钟，课间10分钟；一对一和小组课按个人课表，以学校实际安排为准。',
+    scheduleBadge: '每月最后一个周五月考',
+    roomsPhotoIntro: '点选房型查看实景；照片来自学校的宿舍视频，实际房间由学校安排。',
+    finalCtaTitle: '想确认 GITC Cebu 的空房和价格？',
+    finalCtaText: '告诉顾问你的入学日期、周数、课程和想住的房型，我们帮你确认房间并做一份完整报价。',
+    quoteLabel: '获取 GITC Cebu 报价',
+    compareRoomHint: '如校内单人间和校外公寓',
+  },
+  quickInfo: [
+    { icon: 'king_bed', title: '校内单人间', text: '胶囊式单人间，含三餐和水电' },
+    { icon: 'apartment', title: '校外公寓', text: '单人或双人，班车约10分钟到校' },
+    { icon: 'record_voice_over', title: '课后英语环境', text: '老师住校内宿舍（学校安排）' },
+    { icon: 'workspace_premium', title: '保分课程', text: '雅思、托业保分，最低12周' },
+    { icon: 'spa', title: '校内设施', text: '桑拿、休息区、化妆间、小卖部' },
+    { icon: 'scuba_diving', title: '海岛活动', text: '潜水、跳岛、海洋公园等，自费参加' },
+  ],
+  overviewFacts: [
+    { icon: 'location_on', label: '位置', value: '菲律宾宿务麦克坦岛Lapu-Lapu市' },
+    { icon: 'account_balance', label: '学校', value: 'CHED认可的四年制学院GITC在宿务的校区，2025年开设' },
+    { icon: 'king_bed', label: '住宿', value: '校内胶囊式单人间（含三餐和水电），或校外公寓（含三餐和班车，水电另付）' },
+    { icon: 'menu_book', label: '课程', value: 'Basic、Regular、Power Speaking，雅思／托业入门和保分课程' },
+    { icon: 'event', label: '入学', value: '每周日入住，周一开课；2027/02/15起开课按2027年价格' },
+    { icon: 'flight_land', label: '接机', value: '麦克坦机场到学校1,000比索' },
+  ],
+  basicInfo: [
+    { label: '学校', value: 'GITC College（Green International Technological College）语言中心 Cebu校区' },
+    { label: '位置', value: '菲律宾宿务麦克坦岛Lapu-Lapu市' },
+    { label: '课程', value: 'ESL、口语强化、雅思和托业入门及保分课程' },
+    { label: '住宿', value: '校内胶囊式单人间或校外公寓（含三餐）' },
+    { label: '入学', value: '每周日入住，周一开课' },
+  ],
+  suitableFor: [
+    '想住单人间、又想控制预算的学生',
+    '不想每天通勤，想下楼就上课的学生',
+    '想在课后多和老师说英语的学生',
+    '周末想去潜水、跳岛的学生',
+  ],
+  notSuitableFor: [
+    '想要大房间或独立卫浴的学生（校内是胶囊式单人间，可以选校外公寓）',
+    '想在大城市商圈里生活的学生（校区在麦克坦岛的Lapu-Lapu市）',
+  ],
+  campusAreas: [
+    { code: 'CLASS', title: '教学区', icon: 'school', facilities: ['一对一教室区', '小组教室', '学习休息区'] },
+    { code: 'DORM', title: '校内宿舍', icon: 'king_bed', facilities: ['胶囊式单人间', '更衣室', '淋浴间', '化妆间'] },
+    { code: 'LIFE', title: '生活', icon: 'restaurant', facilities: ['餐厅', '小卖部', '休息区'] },
+    { code: 'RELAX', title: '放松', icon: 'spa', facilities: ['桑拿'] },
+  ],
+  galleryImages: [
+    { category: '校园', title: 'GITC Cebu 校舍', description: 'Cebu校区的教学楼。', src: img('campus-main') },
+    { category: '校园', title: '校园一角', description: '校舍外的草地。', src: img('campus-side') },
+    { category: '校园', title: '学校入口', description: '进门处的GITC标志。', src: img('entrance') },
+    { category: '校园', title: '前台', description: '学校前台和服务台。', src: img('front-desk') },
+    { category: '教室', title: '一对一教室区', description: '一对一教室所在的走廊。', src: img('classroom-hallway') },
+    { category: '教室', title: '一对一课', description: '每节课45分钟。', src: img('one-to-one') },
+    { category: '教室', title: '一对一课', description: '一对一教室。', src: img('one-to-one-2') },
+    { category: '教室', title: '小组教室', description: '小组课的教室。', src: img('group-classroom') },
+    { category: '教室', title: '小组教室', description: '小组课的教室。', src: img('group-classroom-2') },
+    { category: '教室', title: '互动小组课', description: '学生和老师一起的互动课。', src: img('group-activity') },
+    { category: '住宿', title: '校内胶囊单人间', description: '校内宿舍的胶囊式单人间，上下两层。', src: img('capsule-rooms') },
+    { category: '住宿', title: '胶囊间和书桌', description: '胶囊间旁边的书桌。', src: img('capsule-desk') },
+    { category: '住宿', title: '胶囊间内部', description: '胶囊间里的床。', src: img('capsule-inside') },
+    { category: '设施', title: '学习休息区', description: '教学区的休息和自习空间。', src: img('academy-lounge') },
+    { category: '设施', title: '休息区', description: '课后休息的地方。', src: img('resting-area') },
+    { category: '设施', title: '休息区', description: '懒人沙发区。', src: img('resting-area-2') },
+    { category: '设施', title: '小卖部', description: '零食、饮料和日用品。', src: img('canteen') },
+    { category: '设施', title: '更衣室', description: '储物柜和洗手台。', src: img('locker-room') },
+    { category: '设施', title: '化妆间', description: '化妆间。', src: img('powder-room') },
+    { category: '设施', title: '桑拿', description: '校内的桑拿房。', src: img('sauna') },
+    { category: '设施', title: '淋浴间', description: '宿舍的淋浴间。', src: img('shower-room') },
+  ],
+  albumDescriptions: {
+    校园: 'Cebu校区校舍和入口',
+    教室: '一对一和小组教室',
+    住宿: '校内胶囊式单人间',
+    餐厅: '学生餐',
+    设施: '休息区、小卖部、桑拿和淋浴间',
+  },
+  roomProfiles: [
+    {
+      id: 'cb-capsule', rateIds: ['cb-capsule-regular', 'cb-capsule-big'],
+      label: '校内胶囊单人间', location: '校内', service: '含三餐和水电；更衣室、淋浴间、化妆间和桑拿共用',
+      suitable: '想住单人间、控制预算、不想通勤的学生', note: '胶囊式单人间，有标准和大尺寸两种；照片来自学校的宿舍视频，没有标出尺寸。',
+      image: img('capsule-rooms'), gallery: [img('capsule-rooms'), img('capsule-desk'), img('capsule-inside'), img('locker-room'), img('shower-room'), img('powder-room')],
+      imageAlt: 'GITC Cebu校内胶囊单人间实景',
+    },
+  ],
+  roomGroupNotes: {
+    'Cebu 校外公寓': '校外公寓在New Town区，班车约10分钟到校；公寓照片学校暂未单独提供，可向顾问索取。',
+  },
+  dormRules: [
+    { title: '水电', text: '校内宿舍的水电在学杂费里按周收取；校外公寓按实际用量另付。' },
+    { title: '洗衣', text: '外包洗衣，每天可送洗。' },
+    { title: '网络', text: '校内有免费Wi-Fi；住校外公寓建议用手机卡上网。' },
+    { title: '禁止事项', text: '宿舍内禁止饮酒和吸烟；损坏物品从押金扣除。' },
+  ],
+  schedule: gitcSchedule('住校外公寓的学生07:00左右坐班车到校'),
+  afternoonFrom: '12:25',
+  courseGroups: [
+    { icon: 'forum', title: 'ESL 英语课程', text: '按每天一对一节数选择', courseIds: ['cb-basic', 'cb-regular', 'cb-power'] },
+    { icon: 'workspace_premium', title: '雅思和托业', text: '入门课程打基础，保分课程最低12周', courseIds: ['cb-pre-ielts', 'cb-pre-toeic', 'cb-ielts-guarantee', 'cb-toeic-guarantee'] },
+  ],
+  practicalGuides: [
+    {
+      icon: 'flight_land',
+      eyebrow: 'ARRIVAL',
+      title: '入学与接机',
+      facts: [
+        { label: '入住', value: '周日入住，周一开课' },
+        { label: '接机', value: '麦克坦机场到学校1,000比索' },
+        { label: '续读', value: '至少在合同结束前3周申请，结束前2周付款' },
+      ],
+      note: '接机时间以学校安排为准。',
+    },
+    {
+      icon: 'restaurant',
+      eyebrow: 'MEALS & HOURS',
+      title: '用餐与开放时间',
+      facts: [
+        { label: '周一至周五', value: '早餐07:00–08:00，午餐12:25–13:25，晚餐16:55以后' },
+        { label: '周末和假日', value: '早餐08:00–09:00' },
+        { label: '办公室', value: '08:00–17:00；自习室开放到22:00' },
+      ],
+      note: '用餐时间和菜单以学校实际安排为准。',
+    },
+    {
+      icon: 'scuba_diving',
+      eyebrow: 'WEEKENDS',
+      title: '周末活动',
+      facts: [
+        { label: '常见行程', value: '潜水体验、滑翔伞、水上摩托、跳岛、Oslob、宿务海洋公园和野生动物园' },
+        { label: '费用', value: '自愿参加，费用自付；学生证可享合作商家优惠' },
+      ],
+      note: '活动按天气和报名情况安排。',
+    },
+  ],
+  faqs: [
+    { question: '校内胶囊单人间是什么样的？', answer: '每人一个独立的胶囊式床位间，上下两层排列，刷房卡开门，里面有灯和插座；书桌、更衣室、淋浴间和化妆间在外面共用。住宿费含三餐，水电在学杂费里按周收取。' },
+    { question: '校内宿舍和校外公寓怎么选？', answer: '想省钱、不想通勤选校内胶囊单人间；想要更大的独立房间选校外公寓（含三餐和班车，水电按实际用量另付）。' },
+  ],
+};

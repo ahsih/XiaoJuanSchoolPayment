@@ -152,6 +152,27 @@ describe('Genius school page on the shared template', () => {
     expect(student().quoteError).toContain('未满18岁');
   });
 
+  it('takes regular courses from 13 and family-program children from 6', () => {
+    const ageChoice = () => student().extraChoices.find(choice => choice.label === '孩子年龄');
+    expect(ageChoice()?.visible).toBeFalse();
+    student().selectedAgeGroup = 'minor';
+    expect(ageChoice()?.visible).toBeTrue();
+    expect(student().minorAge).toBe('teen');
+    expect(student().quoteError).toBe('');
+    expect(page.quoteImageData.quoteConditions?.[0]).toContain('13–17岁');
+    student().minorAge = 'child';
+    expect(student().quoteError).toContain('不能报常规课程');
+    pickCourse(student(), GENIUS_FAMILY_KID_ID);
+    expect(student().quoteError).toBe('');
+    expect(page.quoteImageData.quoteConditions?.[0]).toContain('6–12岁');
+    student().minorAge = 'under6';
+    expect(student().quoteError).toContain('6岁以上');
+    // Adults are never asked.
+    pickCourse(student(), GENIUS_FAMILY_PARENT_ID);
+    expect(student().selectedAgeGroup).toBe('adult');
+    expect(student().quoteError).toBe('');
+  });
+
   it('estimates visa extensions, the I-Card and the dollar fees in pesos', () => {
     expect(localFee('签证续签')).toBe(0);
     expect(localFee('ACR')).toBe(0);

@@ -141,7 +141,7 @@ const createCourses = (): CiaCourseContent[] => [
   course('survival-b', '生存英语 B', 1300, B_SCHEDULE, '英语基础较弱、想多上一对一的学员', `短期：${short('survival-b')}。`, 5),
   course('exam-a', '商务英语／托业／托福／雅思／专项英语 A', 1300, A_SCHEDULE, '为工作或考试学英语的学员', `报名时选商务英语、托业、托福、雅思备考或专项英语（ESP）。短期：${short('exam-a')}。`, 6),
   course('exam-b', '商务英语／托业／托福／雅思／专项英语 B', 1550, B_SCHEDULE, '为工作或考试学英语、想多上一对一的学员', `报名时选商务英语、托业、托福、雅思备考或专项英语（ESP）。短期：${short('exam-b')}。`, 7),
-  course(GENIUS_FAMILY_KID_ID, '亲子课程：孩子', 2100, '每天8节：一对一4节 + 小组课2节 + 特色课2节（音乐和美术）', '和家长一起来读的孩子', `价格含学费、住宿和三餐。一个孩子4周2,100美元；同一家庭2个及以上孩子，每个孩子4周1,900美元。短期：${short(GENIUS_FAMILY_KID_ID)}（2个及以上孩子每人670、1,145、1,620美元）。`, 8, { family: true }),
+  course(GENIUS_FAMILY_KID_ID, '亲子课程：孩子', 2100, '每天8节：一对一4节 + 小组课2节 + 特色课2节（音乐和美术）', '和家长一起来读的6岁以上孩子', `价格含学费、住宿和三餐。一个孩子4周2,100美元；同一家庭2个及以上孩子，每个孩子4周1,900美元。短期：${short(GENIUS_FAMILY_KID_ID)}（2个及以上孩子每人670、1,145、1,620美元）。`, 8, { family: true }),
   course(GENIUS_FAMILY_PARENT_ID, '亲子课程：家长上课', 1400, '每天4节：一对一2节 + 小组课2节', '陪孩子来、自己也想学的家长', `价格含学费、住宿和三餐。短期：${short(GENIUS_FAMILY_PARENT_ID)}。`, 9, { family: true }),
   course(GENIUS_FAMILY_FREE_ID, '亲子课程：家长不上课', 900, '不上课，只住宿和用餐', '只陪孩子、不想上课的家长', `价格含住宿和三餐。短期：${short(GENIUS_FAMILY_FREE_ID)}。`, 10, { family: true }),
 ];
@@ -212,7 +212,7 @@ export const createDefaultGeniusContentConfig = (): CiaContentConfig => ({
     promotions: createPromotions(),
     localFeeIntro: LOCAL_FEE_INTRO,
     courseTableTitle: 'Genius 2026–2027年4周学费',
-    courseTableNote: '每节课50分钟，周一至周五上课。1–3周按学校短期价格，4周及以上按4周价格折算。亲子课程价格已含住宿和三餐。',
+    courseTableNote: '每节课50分钟，周一至周五上课。1–3周按学校短期价格，4周及以上按4周价格折算。亲子课程价格已含住宿和三餐。没有旺季附加费。',
     groupClassNote: '小组课由外教上（亲子课程的特色课为音乐和美术）。',
     roomTableTitle: 'Genius 4周住宿费',
     roomTableNote: '2026–2027年价格相同。宿舍在校园内，每间都有私人厨房、冰箱、空调、WiFi和阳台；住宿费含每天三餐、每周2次清洁和洗衣。',

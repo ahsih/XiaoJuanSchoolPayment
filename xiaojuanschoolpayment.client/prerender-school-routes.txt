@@ -38,6 +38,7 @@
 /philippines-study/cebu/cella-uni-sparta-campus
 /philippines-study/cebu/cella-premium-campus
 /philippines-study/cebu/cebu-blue-ocean-academy
+/philippines-study/cebu/gitc-cebu-campus
 /philippines-study/cebu/glant
 /philippines-study/cebu/cij-academy-premium-campus
 /philippines-study/cebu/3d-academy
@@ -47,8 +48,10 @@
 /philippines-study/cebu/howdy-english-academy
 /philippines-study/cebu/lapulapu
 /philippines-study/cebu/qqenglish-beachfront-campus
+/philippines-study/cebu/qqenglish-it-park-campus
 /philippines-study/cebu/stargate-global-education
-/philippines-study/cebu/winning-english-academy
+/philippines-study/cebu/winning-ayala-campus
+/philippines-study/cebu/winning-ocean-campus
 /philippines-study/boracay/boracay-coco-english-academy
 /philippines-study/boracay/paradise-english-boracay-language-institute
 /philippines-study/iloilo/gitc-college-international-language-center
